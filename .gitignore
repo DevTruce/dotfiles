@@ -1,0 +1,32 @@
+# OS junk
+.DS_Store
+Thumbs.db
+
+# Secrets / sensitive
+*.pem
+*.key
+id_rsa
+id_rsa.pub
+id_ed25519
+id_ed25519.pub
+.env
+.netrc
+*.gpg
+
+# Shell history / runtime state - machine-specific, not config
+.zsh_history
+.zcompdump*
+.histfile
+
+# Zinit/plugin manager generated state (gets re-cloned on fresh install anyway)
+.local/share/zinit/
+.cache/
+
+# Editor/IDE noise 
+.vscode/
+*.swp
+*.swo
+
+# Backup files some editors leave behind
+*~
+*.bak
