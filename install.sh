@@ -152,6 +152,26 @@ setup_gpg_key() {
     echo ""
 }
 
+setup_git_lfs() {
+    echo "Setting up git-lfs..."
+
+    if command -v git-lfs >/dev/null 2>&1; then
+        echo "git-lfs is already installed."
+    else
+        echo "Installing git-lfs..."
+        case "$OS" in
+            macos) brew install git-lfs ;;
+            *)     sudo apt install git-lfs -y ;;
+        esac
+    fi
+
+    if git config --global --get filter.lfs.process >/dev/null 2>&1; then
+        echo "git-lfs hooks are already registered globally."
+    else
+        echo "Registering git-lfs hooks globally..."
+        git lfs install
+    fi
+}
 
 check_vscode_cli() {
     if command -v code >/dev/null 2>&1; then
@@ -207,6 +227,7 @@ setup_macos() {
     fi
 
     setup_git
+    setup_git_lfs
     setup_ssh_key
     setup_gpg_key
     setup_zsh_plugins
@@ -239,6 +260,7 @@ setup_linux() {
     fi
 
     setup_git
+    setup_git_lfs
     setup_ssh_key
     setup_gpg_key
     setup_zsh_plugins
