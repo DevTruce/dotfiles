@@ -207,12 +207,10 @@ Every function checks whether a tool is already present before doing anything, s
 bash ~/dotfiles/install.sh
 ```
 
-To run a single component without the full install, source the relevant script after loading helpers and set `OS` — many functions branch on it. Also set `PERSONAL_MACHINE` if the function needs it:
+To run a single setup function without the full install, use `run.sh`. It loads all scripts, detects your OS, and prompts for the personal machine flag automatically:
 
 ```bash
-source ~/dotfiles/scripts/helpers.sh
-source ~/dotfiles/scripts/security.sh
-OS="$(detect_os)"
-PERSONAL_MACHINE="y"
-setup_gpg_key
+bash ~/dotfiles/run.sh setup_gpg_key
 ```
+
+Replace `setup_gpg_key` with any function name from the `scripts/` directory.
