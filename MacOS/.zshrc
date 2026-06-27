@@ -1,24 +1,17 @@
-# 1. Copy .zshrc over (scp, cloud sync, whatever)
-# 2. Install nvm fresh (not something .zshrc can do for you)
-# 3. exec zsh — zinit + plugins auto-install on first launch
-# 4. Regenerate docker completions:
-# mkdir -p ~/.zsh/completions
-# docker completion zsh > ~/.zsh/completions/_docker
+# 1. Copy .zshrc over 
+# 2. Install nvm fresh 
+# 3. exec zsh - zinit + plugins auto-install on first launch
 
 
+
+# ---------------------
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
 # confirmations, etc.) must go above this block; everything else may go below.
+# ---------------------
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
-
-
-# ---------------------
-# Add custom completions folder, then initialize zsh's tab-completion system
-# ---------------------
-fpath=(~/.zsh/completions $fpath)
-autoload -Uz compinit && compinit
 
 
 # ---------------------
@@ -44,6 +37,8 @@ autoload -Uz _zinit
 zinit light zsh-users/zsh-syntax-highlighting
 zinit light zsh-users/zsh-autosuggestions
 zinit light zsh-users/zsh-completions
+zinit snippet OMZP::docker/docker.plugin.zsh
+zinit snippet OMZP::docker-compose/docker-compose.plugin.zsh
 
 # Initialize the completion system
 autoload -Uz compinit && compinit
@@ -64,4 +59,44 @@ zinit light romkatv/powerlevel10k
 # NVM loader 
 # ---------------------
 export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" 
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # loads nvm completions
+
+# Auto-switch Node version when entering a project folder with an .nvmrc
+autoload -U add-zsh-hook
+load-nvmrc() {
+  local nvmrc_path
+  nvmrc_path="$(nvm_find_nvmrc)"
+
+  if [[ -n "$nvmrc_path" ]]; then
+    local nvmrc_node_version
+    nvmrc_node_version=$(nvm version "$(cat "${nvmrc_path}")")
+
+    if [[ "$nvmrc_node_version" = "N/A" ]]; then
+      nvm install
+    elif [[ "$nvmrc_node_version" != "$(nvm version)" ]]; then
+      nvm use --silent
+    fi
+  elif [[ -n "$(PWD=$OLDPWD nvm_find_nvmrc)" ]] && [[ "$(nvm version)" != "$(nvm version default)" ]]; then
+    echo "Reverting to nvm default version"
+    nvm use default --silent
+  fi
+}
+add-zsh-hook chpwd load-nvmrc
+load-nvmrc
+
+
+# ---------------------
+# Docker Aliases 
+# ---------------------
+alias dc="docker compose"
+alias dcu="docker compose up -d"
+alias dcd="docker compose down"
+alias dcl="docker compose logs -f"
+alias nrd="npm run dev"
+
+
+# ---------------------
+# Claude Code 
+# ---------------------
+export PATH="$HOME/.local/bin:$PATH"
