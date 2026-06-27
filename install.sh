@@ -63,14 +63,15 @@ setup_nvm() {
     else
         echo "Installing nvm..."
         # PROFILE=/dev/null stops nvm's installer from editing .zshrc itself,
-        # since the loader lines are already maintained by hand in our dotfiles.
+        # since the loader lines are already maintained by dotfiles.
         PROFILE=/dev/null bash -c "$(curl -fsSL https://raw.githubusercontent.com/nvm-sh/nvm/HEAD/install.sh)"
     fi
 
-    # nvm is a shell function, not a binary, so it has to be loaded into this
-    # script's current shell before we can call it below.
-    # shellcheck disable=SC1091
-    \. "${NVM_DIR}/nvm.sh"
+    # nvm.sh and several nvm subcommands reference internal variables that
+    # aren't always set, which trips `set -u`. Relax it for this block only.
+   set +u
+   \. "${NVM_DIR}/nvm.sh"
+
 
     if nvm ls --no-colors 2>/dev/null | grep -q 'lts/\*'; then
         echo "Node LTS is already installed via nvm."
@@ -80,6 +81,7 @@ setup_nvm() {
     fi
 
     nvm alias default 'lts/*' >/dev/null
+    set -u
 }
 
 
