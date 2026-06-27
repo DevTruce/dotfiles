@@ -5,6 +5,7 @@
 # mkdir -p ~/.zsh/completions
 # docker completion zsh > ~/.zsh/completions/_docker
 
+
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
 # confirmations, etc.) must go above this block; everything else may go below.
@@ -18,6 +19,7 @@ fi
 # ---------------------
 fpath=(~/.zsh/completions $fpath)
 autoload -Uz compinit && compinit
+
 
 # ---------------------
 # Zinit Package Manager
@@ -41,8 +43,7 @@ autoload -Uz _zinit
 zinit light zsh-users/zsh-completions
 zinit light zsh-users/zsh-autosuggestions
 zinit light zsh-users/zsh-syntax-highlighting
-source ~/powerlevel10k/powerlevel10k.zsh-theme #Linux
-# source /opt/homebrew/share/powerlevel10k/powerlevel10k.zsh-theme #MacOS
+source ~/powerlevel10k/powerlevel10k.zsh-theme 
 
 
 # ---------------------
