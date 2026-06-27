@@ -15,11 +15,10 @@ Personal dotfiles and automated installer for macOS and Linux / WSL2.
   - [1. Clone the Repo](#1-clone-the-repo)
   - [2. Run the Installer](#2-run-the-installer)
 - [Manual Steps](#manual-steps)
-  - [1. Set Your GPG Signing Key](#1-set-your-gpg-signing-key)
-  - [2. Add Your SSH Key to GitHub](#2-add-your-ssh-key-to-github)
-  - [3. Add Your GPG Key to GitHub](#3-add-your-gpg-key-to-github)
-  - [4. Install MesloLGS NF Fonts](#4-install-meslogls-nf-fonts)
-  - [5. Open a New Terminal](#5-open-a-new-terminal)
+  - [1. Add Your SSH Key to GitHub](#1-add-your-ssh-key-to-github)
+  - [2. Add Your GPG Key to GitHub](#2-add-your-gpg-key-to-github)
+  - [3. Install MesloLGS NF Fonts](#3-install-meslogls-nf-fonts)
+  - [4. Open a New Terminal](#4-open-a-new-terminal)
 - [File Structure](#file-structure)
 - [Re-running the Installer](#re-running-the-installer)
 
@@ -78,6 +77,7 @@ The installer is fully **idempotent**: every step checks whether a tool or confi
 | Powerlevel10k config | `Common/.p10k.zsh`            | `~/.p10k.zsh`                                    |
 | Claude Code settings | `Common/claude/settings.json` | `~/.claude/settings.json`                        |
 | GPG agent config     | `Common/gnupg/gpg-agent.conf` | `~/.gnupg/gpg-agent.conf` (written by installer) |
+| git local identity   | *(not tracked)*               | `~/.gitconfig.local` (created by installer)       |
 
 ---
 
@@ -113,24 +113,9 @@ The installer detects your OS, symlinks your dotfiles, and prompts whether this 
 
 The installer handles everything it can automatically, including symlinking all dotfiles into your home directory. On personal machines it also generates SSH/GPG keys and prints them ready to paste. The steps below require manual action and are also printed at the end of every install run as a reminder.
 
-> Steps 1–3 apply to personal machine installs only.
+> Steps 1–2 apply to personal machine installs only.
 
-### 1. Set Your GPG Signing Key
-
-The installer prints your GPG key ID during setup. Open `~/.gitconfig` and replace the `gpg_sec_key` placeholder under `[user]` with that key ID:
-
-```ini
-[user]
-    signingkey = YOUR_KEY_ID_HERE
-```
-
-To look up your key ID again at any time:
-
-```bash
-gpg --list-secret-keys --keyid-format=long
-```
-
-### 2. Add Your SSH Key to GitHub
+### 1. Add Your SSH Key to GitHub
 
 The installer prints your public key during setup. To view it again:
 
@@ -144,7 +129,7 @@ Then add it to GitHub:
 2. Click **New SSH key**
 3. Paste the public key
 
-### 3. Add Your GPG Key to GitHub
+### 2. Add Your GPG Key to GitHub
 
 The installer prints your full armored public key during setup — copy it directly from the terminal output. To export it again at any time:
 
@@ -159,7 +144,7 @@ Then add it to GitHub:
 3. Click **New GPG key**
 4. Paste the output
 
-### 4. Install MesloLGS NF Fonts
+### 3. Install MesloLGS NF Fonts
 
 MesloLGS NF is required for Powerlevel10k to render correctly. Download all four font variants:
 
@@ -178,7 +163,7 @@ Fonts must be installed on the Windows side for Windows Terminal to use them:
 2. Open **Windows Terminal** → **Settings** → select your profile → **Appearance**
 3. Set **Font face** to `MesloLGS NF`
 
-### 5. Open a New Terminal
+### 4. Open a New Terminal
 
 Open a fresh terminal session for all changes (default shell, plugins, PATH) to take effect.
 
