@@ -1,13 +1,4 @@
 # ─────────────────────────────────────────
-# User Identity
-# ─────────────────────────────────────────
-[user]
-	name = DevTruce
-	email = 85980370+DevTruce@users.noreply.github.com
-	# replace with your GPG key ID after running install.sh
-	signingkey = gpg_sec_key
-
-# ─────────────────────────────────────────
 # Core Settings
 # ─────────────────────────────────────────
 [core]
@@ -54,3 +45,11 @@
 	process = git-lfs filter-process
 	required = true
 	clean   = git-lfs clean -- %f
+
+# ─────────────────────────────────────────
+# Local Identity (machine-specific, not tracked)
+# ─────────────────────────────────────────
+# user.name, user.email, and user.signingkey live in ~/.gitconfig.local
+# which is created by install.sh and never committed to the repo
+[include]
+	path = ~/.gitconfig.local
