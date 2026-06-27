@@ -29,6 +29,18 @@ OS="$(detect_os)"
 echo "Detected OS: ${OS}"
 
 # --- Shared setup (same on every OS) ----------------------------------------
+setup_git() {
+    if command -v git >/dev/null 2>&1; then
+        echo "git is already installed."
+    else
+        echo "Installing git..."
+        case "$OS" in
+            macos) brew install git ;;
+            *)     sudo apt install git -y ;;
+        esac
+    fi
+}
+
 setup_zsh_plugins() {
     echo "Setting up zsh plugin manager (zinit)..."
  
@@ -84,18 +96,75 @@ setup_nvm() {
     set -u
 }
 
-setup_git() {
-    if command -v git >/dev/null 2>&1; then
-        echo "git is already installed."
+setup_ssh_key() {
+    echo "Setting up SSH key..."
+
+    SSH_KEY="${HOME}/.ssh/id_ed25519"
+
+    if [ -f "${SSH_KEY}.pub" ]; then
+        echo "SSH key already exists at ${SSH_KEY}.pub, skipping generation."
     else
-        echo "Installing git..."
-        case "$OS" in
-            macos) brew install git ;;
-            *)     sudo apt install git -y ;;
-        esac
+        echo "No SSH key found, generating a new ed25519 key..."
+        mkdir -p "${HOME}/.ssh"
+        chmod 700 "${HOME}/.ssh"
+        ssh-keygen -t ed25519 -f "$SSH_KEY" -N "" -C "$(git config --global user.email 2>/dev/null || echo "$(whoami)@$(hostname)")"
     fi
+
+    echo ""
+    echo "SSH public key fingerprint:"
+    ssh-keygen -lf "${SSH_KEY}.pub"
+    echo ""
+    echo "SSH public key (copy this to GitHub > Settings > SSH and GPG keys):"
+    cat "${SSH_KEY}.pub"
+    echo ""
 }
 
+setup_gpg_key() {
+    echo "Setting up GPG key..."
+
+    if gpg --list-secret-keys --keyid-format=long 2>/dev/null | grep -q '^sec'; then
+        echo "A GPG secret key already exists, skipping generation."
+    else
+        GIT_NAME="$(git config --global user.name 2>/dev/null || true)"
+        GIT_EMAIL="$(git config --global user.email 2>/dev/null || true)"
+
+        if [ -z "$GIT_NAME" ] || [ -z "$GIT_EMAIL" ]; then
+            echo "No GPG key found, but git user.name/user.email aren't set yet."
+            echo "Set them in .gitconfig first, then re-run this script to generate a GPG key."
+            return
+        fi
+
+        echo "No GPG key found, generating one for ${GIT_NAME} <${GIT_EMAIL}>..."
+        echo "You'll be prompted for a passphrase (this protects your private key)."
+        # No --passphrase flag here on purpose: gpg falls back to its normal
+        # pinentry prompt, so the passphrase is entered interactively and
+        # never appears in this script, shell history, or the process list.
+        gpg --quick-gen-key "${GIT_NAME} <${GIT_EMAIL}>" default default
+    fi
+
+    echo ""
+    echo "GPG secret keys on this machine:"
+    gpg --list-secret-keys --keyid-format=long
+
+    echo ""
+    echo "Key ID(s) to add to .gitconfig's 'signingkey' and to GitHub > Settings > SSH and GPG keys:"
+    gpg --list-secret-keys --keyid-format=long | awk -F'/' '/^sec/{print $2}' | awk '{print $1}'
+    echo ""
+}
+
+
+check_vscode_cli() {
+    if command -v code >/dev/null 2>&1; then
+        echo "VS Code CLI (code) is available."
+    else
+        echo "WARNING: 'code' command not found on PATH."
+        echo "  Your .gitconfig sets 'core.editor = code --wait', so git commit"
+        echo "  will hang waiting on an editor that doesn't exist until this is fixed."
+        echo "  Open VS Code once and run 'Shell Command: Install code command in PATH'"
+        echo "  (Mac), or open this machine's folder in VS Code via the WSL/Remote"
+        echo "  extension at least once (WSL), then re-run this script to confirm."
+    fi
+}
 
 # --- Per-OS setup functions --------------------------------------------------
 setup_macos() {
@@ -137,9 +206,12 @@ setup_macos() {
         echo "zsh is already the default shell."
     fi
 
-    setup_zsh_plugins
     setup_git
+    setup_ssh_key
+    setup_gpg_key
+    setup_zsh_plugins
     setup_nvm
+    check_vscode_cli
 }
 
 setup_linux() {
@@ -166,9 +238,12 @@ setup_linux() {
         echo "zsh is already the default shell."
     fi
 
-    setup_zsh_plugins
     setup_git
+    setup_ssh_key
+    setup_gpg_key
+    setup_zsh_plugins
     setup_nvm
+    check_vscode_cli
 }
 
 # --- Dispatch ----------------------------------------------------------------
