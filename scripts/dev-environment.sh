@@ -53,3 +53,17 @@ setup_nvm() {
     echo "  Node.js LTS set as the default version."
     set -u
 }
+
+# -- Claude Code CLI
+
+setup_claude() {
+    section "Dev Environment — Claude Code CLI"
+
+    if command -v claude >/dev/null 2>&1; then
+        echo "  Claude Code is already installed."
+    else
+        echo "  Installing Claude Code CLI..."
+        npm install -g @anthropic-ai/claude-code
+        echo "  Claude Code installed."
+    fi
+}

@@ -62,6 +62,7 @@ The installer is fully **idempotent**: every step checks whether a tool or confi
 | GPG key + gpg-agent            | _(personal)_ Commit signing key, agent configured for passphrase caching |
 | pinentry-mac / pinentry-curses | _(personal)_ GPG passphrase prompt (GUI on macOS, terminal on Linux)     |
 | keychain                       | _(personal)_ SSH agent persistence across terminal sessions (Linux only) |
+| Claude Code CLI                | _(personal)_ Terminal AI coding assistant                                |
 
 > Items marked _(personal)_ are only installed when you answer **y** to the personal machine prompt.
 
@@ -75,9 +76,8 @@ The installer is fully **idempotent**: every step checks whether a tool or confi
 | zshrc (macOS)        | `MacOS/.zshrc`                | `~/.zshrc`                                       |
 | git config           | `Common/.gitconfig`           | `~/.gitconfig`                                   |
 | Powerlevel10k config | `Common/.p10k.zsh`            | `~/.p10k.zsh`                                    |
-| Claude Code settings | `Common/claude/settings.json` | `~/.claude/settings.json`                        |
-| GPG agent config     | `Common/gnupg/gpg-agent.conf` | `~/.gnupg/gpg-agent.conf` (written by installer) |
-| git local identity   | *(not tracked)*               | `~/.gitconfig.local` (created by installer)       |
+| Claude Code settings | `Common/claude/settings.json` | `~/.claude/settings.json`                  |
+| git local identity   | *(not tracked)*               | `~/.gitconfig.local` (created by installer) |
 
 ---
 
@@ -105,7 +105,7 @@ cd ~/dotfiles
 bash install.sh
 ```
 
-The installer detects your OS, symlinks your dotfiles, and prompts whether this is a personal machine. Answering **y** adds SSH/GPG key setup, keychain, and GPG agent configuration. Answering **n** skips those and installs only the core tooling. It then prints a todo list of any remaining manual steps when it finishes.
+The installer detects your OS, symlinks your dotfiles, and prompts whether this is a personal machine. Answering **y** adds SSH/GPG key setup, keychain, GPG agent configuration, and Claude Code CLI. Answering **n** skips those and installs only the core tooling. It then prints a todo list of any remaining manual steps when it finishes.
 
 ---
 
@@ -178,10 +178,8 @@ dotfiles/
 ├── Common/                     # dotfiles shared across all platforms
 │   ├── .gitconfig              # aliases, signing settings, and LFS config (identity in ~/.gitconfig.local)
 │   ├── .p10k.zsh               # Powerlevel10k prompt configuration
-│   ├── claude/
-│   │   └── settings.json       # Claude Code settings
-│   └── gnupg/
-│       └── gpg-agent.conf      # GPG agent cache TTL and pinentry reference
+│   └── claude/
+│       └── settings.json       # Claude Code settings
 ├── Linux/
 │   └── .zshrc                  # zsh config for Linux / WSL2
 ├── MacOS/
@@ -192,7 +190,7 @@ dotfiles/
 │   ├── shell.sh                # setup_zsh
 │   ├── version-control.sh      # setup_git, setup_git_lfs
 │   ├── security.sh             # setup_ssh_key, setup_gpg_key, setup_gpg_agent_conf, setup_keychain
-│   ├── dev-environment.sh      # setup_zsh_plugins, setup_nvm
+│   ├── dev-environment.sh      # setup_zsh_plugins, setup_nvm, setup_claude
 │   ├── dotfiles.sh             # setup_dotfiles - symlinks all dotfiles into home directory
 │   ├── utilities.sh            # setup_tree, check_vscode_cli
 │   └── finish.sh               # completion banner and manual todo list

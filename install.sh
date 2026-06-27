@@ -52,6 +52,7 @@ setup_macos() {
         setup_gpg_agent_conf
         setup_ssh_key
         setup_gpg_key
+        setup_claude
     fi
     finish
 }
@@ -73,6 +74,7 @@ setup_linux() {
         setup_keychain
         setup_ssh_key
         setup_gpg_key
+        setup_claude
     fi
     finish
 }
