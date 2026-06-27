@@ -15,29 +15,31 @@ finish() {
 
     # -- Todo List
 
-    echo "  [ ${step} ]  Set your GPG signing key in ~/.gitconfig"
-    echo ""
-    echo "         Open ~/.gitconfig and replace 'gpg_sec_key' under [user]"
-    echo "         with the key ID printed above, then save the file."
-    echo ""
-    step=$((step + 1))
+    # -- Personal machine steps
+    if [ "$PERSONAL_MACHINE" = "y" ]; then
+        echo "  [ ${step} ]  Set your GPG signing key in ~/.gitconfig"
+        echo ""
+        echo "         Open ~/.gitconfig and replace 'gpg_sec_key' under [user]"
+        echo "         with the key ID printed above, then save the file."
+        echo ""
+        step=$((step + 1))
 
-    echo "  [ ${step} ]  Add your SSH public key to GitHub"
-    echo ""
-    echo "         github.com → Settings → SSH and GPG Keys → New SSH key"
-    echo "         Paste the public key printed above."
-    echo ""
-    step=$((step + 1))
+        echo "  [ ${step} ]  Add your SSH public key to GitHub"
+        echo ""
+        echo "         github.com → Settings → SSH and GPG Keys → New SSH key"
+        echo "         Paste the public key printed above."
+        echo ""
+        step=$((step + 1))
 
-    echo "  [ ${step} ]  Add your GPG public key to GitHub"
-    echo ""
-    echo "         Run:  gpg --armor --export <KEY_ID>"
-    echo "         github.com → Settings → SSH and GPG Keys → New GPG key"
-    echo "         Paste the output."
-    echo ""
-    step=$((step + 1))
+        echo "  [ ${step} ]  Add your GPG public key to GitHub"
+        echo ""
+        echo "         github.com → Settings → SSH and GPG Keys → New GPG key"
+        echo "         Paste the public key printed above."
+        echo ""
+        step=$((step + 1))
+    fi
 
-    # vscode step only shown if the CLI is missing
+    # -- vscode step only shown if the CLI is missing
     if ! command -v code >/dev/null 2>&1; then
         echo "  [ ${step} ]  Install the VS Code CLI"
         echo ""

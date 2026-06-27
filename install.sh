@@ -21,6 +21,16 @@ echo "  ════════════════════════
 echo "  dotfiles installer"
 printf "  OS: %s\n" "${OS}"
 echo "  ════════════════════════════════════════════════════"
+echo ""
+
+# -- Personal machine prompt
+printf "  Is this a personal machine? (y/N): "
+read -r _reply
+case "$_reply" in
+    [Yy]) PERSONAL_MACHINE="y" ;;
+    *)    PERSONAL_MACHINE="n" ;;
+esac
+echo ""
 
 # ─────────────────────────────────────────
 # OS Orchestrators
@@ -37,10 +47,12 @@ setup_macos() {
     setup_nvm
     setup_tree
     check_vscode_cli
-    setup_gpg_agent_conf
-    setup_dotfiles
-    setup_ssh_key
-    setup_gpg_key
+    if [ "$PERSONAL_MACHINE" = "y" ]; then
+        setup_gpg_agent_conf
+        setup_dotfiles
+        setup_ssh_key
+        setup_gpg_key
+    fi
     finish
 }
 
@@ -55,11 +67,13 @@ setup_linux() {
     setup_nvm
     setup_tree
     check_vscode_cli
-    setup_gpg_agent_conf
-    setup_keychain
-    setup_dotfiles
-    setup_ssh_key
-    setup_gpg_key
+    if [ "$PERSONAL_MACHINE" = "y" ]; then
+        setup_gpg_agent_conf
+        setup_keychain
+        setup_dotfiles
+        setup_ssh_key
+        setup_gpg_key
+    fi
     finish
 }
 
