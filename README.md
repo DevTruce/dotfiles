@@ -174,7 +174,7 @@ Open a fresh terminal session for all changes (default shell, plugins, PATH) to 
 ```
 dotfiles/
 ├── Common/                     # dotfiles shared across all platforms
-│   ├── .gitconfig              # git identity, aliases, signing, and LFS config
+│   ├── .gitconfig              # aliases, signing settings, and LFS config (identity in ~/.gitconfig.local)
 │   ├── .p10k.zsh               # Powerlevel10k prompt configuration
 │   ├── claude/
 │   │   └── settings.json       # Claude Code settings
@@ -207,12 +207,13 @@ Every function checks whether a tool is already present before doing anything, s
 bash ~/dev/dotfiles/install.sh
 ```
 
-To run a single component without the full install, source the relevant script after loading helpers and set `OS` - many functions branch on it:
+To run a single component without the full install, source the relevant script after loading helpers and set `OS` — many functions branch on it. Also set `PERSONAL_MACHINE` and `DOTFILES_DIR` if the function needs them:
 
 ```bash
 source ~/dev/dotfiles/scripts/helpers.sh
 source ~/dev/dotfiles/scripts/security.sh
 OS="$(detect_os)"
 PERSONAL_MACHINE="y"
+DOTFILES_DIR="$HOME/dev/dotfiles"  # needed only for setup_dotfiles
 setup_gpg_key
 ```

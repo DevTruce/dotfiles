@@ -7,7 +7,7 @@
 setup_zsh_plugins() {
     section "Dev Environment — Zsh Plugins (zinit)"
 
-    ZINIT_HOME="${HOME}/.local/share/zinit/zinit.git"
+    local ZINIT_HOME="${HOME}/.local/share/zinit/zinit.git"
 
     if [ -d "$ZINIT_HOME" ]; then
         echo "  zinit is already installed."

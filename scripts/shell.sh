@@ -7,6 +7,8 @@
 setup_zsh() {
     section "Shell — zsh"
 
+    local ZSH_PATH
+
     case "$OS" in
         macos)
             if brew list zsh >/dev/null 2>&1; then
