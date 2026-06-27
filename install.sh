@@ -31,6 +31,7 @@ setup_macos() {
     setup_gpg_agent_conf
     setup_zsh_plugins
     setup_nvm
+    setup_tree
     check_vscode_cli
     finish
 }
@@ -48,6 +49,7 @@ setup_linux() {
     setup_keychain
     setup_zsh_plugins
     setup_nvm
+    setup_tree
     check_vscode_cli
     finish
 }
