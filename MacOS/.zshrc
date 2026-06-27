@@ -1,11 +1,4 @@
 # ─────────────────────────────────────────
-# Setup Notes
-# ─────────────────────────────────────────
-# 1. Copy this file to ~/.zshrc
-# 2. Run install.sh to install all tools
-# 3. exec zsh — zinit and plugins auto-install on first launch
-
-# ─────────────────────────────────────────
 # Powerlevel10k
 # ─────────────────────────────────────────
 
