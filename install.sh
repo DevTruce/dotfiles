@@ -53,6 +53,35 @@ setup_zsh_plugins() {
     fi
 }
 
+setup_nvm() {
+    echo "Setting up nvm..."
+
+    NVM_DIR="${HOME}/.nvm"
+
+    if [ -s "${NVM_DIR}/nvm.sh" ]; then
+        echo "nvm is already installed."
+    else
+        echo "Installing nvm..."
+        # PROFILE=/dev/null stops nvm's installer from editing .zshrc itself,
+        # since the loader lines are already maintained by hand in our dotfiles.
+        PROFILE=/dev/null bash -c "$(curl -fsSL https://raw.githubusercontent.com/nvm-sh/nvm/HEAD/install.sh)"
+    fi
+
+    # nvm is a shell function, not a binary, so it has to be loaded into this
+    # script's current shell before we can call it below.
+    # shellcheck disable=SC1091
+    \. "${NVM_DIR}/nvm.sh"
+
+    if nvm ls --no-colors 2>/dev/null | grep -q 'lts/\*'; then
+        echo "Node LTS is already installed via nvm."
+    else
+        echo "Installing latest Node LTS via nvm..."
+        nvm install --lts
+    fi
+
+    nvm alias default 'lts/*' >/dev/null
+}
+
 
 # --- Per-OS setup functions --------------------------------------------------
 setup_macos() {
@@ -95,6 +124,7 @@ setup_macos() {
     fi
 
     setup_zsh_plugins
+    setup_nvm
 }
 
 setup_linux() {
@@ -122,6 +152,7 @@ setup_linux() {
     fi
 
     setup_zsh_plugins
+    setup_nvm
 }
 
 # --- Dispatch ----------------------------------------------------------------
