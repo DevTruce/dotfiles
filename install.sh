@@ -30,6 +30,7 @@ setup_macos() {
     echo ""
     echo "  Starting macOS setup..."
     setup_homebrew
+    setup_dotfiles
     setup_zsh
     setup_git
     setup_git_lfs
@@ -47,6 +48,7 @@ setup_linux() {
     echo ""
     echo "  Starting Linux setup..."
     setup_apt
+    setup_dotfiles
     setup_zsh
     setup_git
     setup_git_lfs
