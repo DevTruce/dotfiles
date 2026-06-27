@@ -17,6 +17,36 @@ setup_git() {
         esac
         echo "  git installed."
     fi
+
+    # -- Local identity (~/.gitconfig.local is not tracked in the repo)
+
+    local git_local="${HOME}/.gitconfig.local"
+    local existing_name existing_email
+
+    existing_name="$(git config --file "$git_local" user.name 2>/dev/null || true)"
+    existing_email="$(git config --file "$git_local" user.email 2>/dev/null || true)"
+
+    if [ -n "$existing_name" ] && [ -n "$existing_email" ]; then
+        echo "  Git identity already configured (${existing_name} <${existing_email}>)."
+    else
+        echo ""
+        echo "  Git identity is stored in ~/.gitconfig.local (not tracked in the repo)."
+        echo ""
+
+        if [ -z "$existing_name" ]; then
+            printf "  Enter your git name:  "
+            read -r git_name
+            git config --file "$git_local" user.name "$git_name"
+        fi
+
+        if [ -z "$existing_email" ]; then
+            printf "  Enter your git email: "
+            read -r git_email
+            git config --file "$git_local" user.email "$git_email"
+        fi
+
+        echo "  Git identity saved to ~/.gitconfig.local."
+    fi
 }
 
 # -- git-lfs

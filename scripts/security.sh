@@ -58,7 +58,7 @@ setup_gpg_key() {
     local key_id
     key_id="$(gpg --list-secret-keys --keyid-format=long | awk -F'/' '/^sec/{print $2}' | awk '{print $1}' | head -1)"
 
-    git config --global user.signingkey "${key_id}"
+    git config --file "${HOME}/.gitconfig.local" user.signingkey "${key_id}"
 
     echo ""
     echo "  Key ID (written to ~/.gitconfig):"
