@@ -2,7 +2,6 @@
 # Core Settings
 # ─────────────────────────────────────────
 [core]
-	editor = code --wait
 	# normalise line endings to LF on commit
 	autocrlf = input
 
@@ -41,7 +40,7 @@
 # ─────────────────────────────────────────
 # Local Identity (machine-specific, not tracked)
 # ─────────────────────────────────────────
-# user.name, user.email, and user.signingkey live in ~/.gitconfig.local
+# user.name, user.email, user.signingkey, and core.editor live in ~/.gitconfig.local
 # which is created by install.sh and never committed to the repo
 [include]
 	path = ~/.gitconfig.local

@@ -21,7 +21,7 @@ setup_git() {
     # -- Local identity (~/.gitconfig.local is not tracked in the repo)
 
     local git_local="${HOME}/.gitconfig.local"
-    local existing_name existing_email
+    local existing_name existing_email existing_editor git_editor
 
     existing_name="$(git config --file "$git_local" user.name 2>/dev/null || true)"
     existing_email="$(git config --file "$git_local" user.email 2>/dev/null || true)"
@@ -46,6 +46,35 @@ setup_git() {
         fi
 
         echo "  Git identity saved to ~/.gitconfig.local."
+    fi
+
+    existing_editor="$(git config --file "$git_local" core.editor 2>/dev/null || true)"
+
+    if [ -z "$existing_editor" ]; then
+        echo ""
+        echo "  Select your git editor:"
+        echo "    1) VS Code  (code --wait)"
+        echo "    2) Neovim   (nvim)"
+        echo "    3) Vim      (vim)"
+        echo "    4) Nano     (nano)"
+        echo "    5) Use system default (\$EDITOR)"
+        printf "  Enter number [1]: "
+        read -r editor_choice
+        case "${editor_choice:-1}" in
+            2) git_editor="nvim" ;;
+            3) git_editor="vim" ;;
+            4) git_editor="nano" ;;
+            5) git_editor="" ;;
+            *) git_editor="code --wait" ;;
+        esac
+        if [ -n "$git_editor" ]; then
+            git config --file "$git_local" core.editor "$git_editor"
+            echo "  Git editor set to: ${git_editor}"
+        else
+            echo "  Git editor left as system default (\$EDITOR)."
+        fi
+    else
+        echo "  Git editor already configured (${existing_editor})."
     fi
 }
 
