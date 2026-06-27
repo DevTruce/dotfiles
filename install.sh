@@ -16,9 +16,6 @@ detect_os() {
         Darwin*)
             echo "macos"
             ;;
-        CYGWIN*|MINGW*|MSYS*)
-            echo "windows"
-            ;;
         *)
             echo "unknown"
             ;;
@@ -64,9 +61,9 @@ setup_git_lfs() {
 
 setup_zsh_plugins() {
     echo "Setting up zsh plugin manager (zinit)..."
- 
+
     ZINIT_HOME="${HOME}/.local/share/zinit/zinit.git"
- 
+
     if [ -d "$ZINIT_HOME" ]; then
         echo "zinit is already installed."
     else
@@ -74,10 +71,10 @@ setup_zsh_plugins() {
         mkdir -p "$(dirname "$ZINIT_HOME")"
         git clone https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME"
     fi
- 
+
     echo "Setting up completions directory..."
     mkdir -p "${HOME}/.zsh/completions"
- 
+
     if command -v docker >/dev/null 2>&1; then
         echo "Generating docker zsh completion..."
         docker completion zsh > "${HOME}/.zsh/completions/_docker"
@@ -102,9 +99,8 @@ setup_nvm() {
 
     # nvm.sh and several nvm subcommands reference internal variables that
     # aren't always set, which trips `set -u`. Relax it for this block only.
-   set +u
-   \. "${NVM_DIR}/nvm.sh"
-
+    set +u
+    \. "${NVM_DIR}/nvm.sh"
 
     if nvm ls --no-colors 2>/dev/null | grep -q 'lts/\*'; then
         echo "Node LTS is already installed via nvm."
@@ -227,8 +223,6 @@ setup_keychain() {
     fi
 }
 
-
-
 check_vscode_cli() {
     if command -v code >/dev/null 2>&1; then
         echo "VS Code CLI (code) is available."
@@ -244,7 +238,7 @@ check_vscode_cli() {
 
 # --- Per-OS setup functions --------------------------------------------------
 setup_macos() {
-   echo "Running macOS setup..."
+    echo "Running macOS setup..."
 
     echo "Checking if Homebrew already exists"
     if command -v brew >/dev/null 2>&1; then
@@ -290,7 +284,6 @@ setup_macos() {
     setup_zsh_plugins
     setup_nvm
     check_vscode_cli
-
 }
 
 setup_linux() {
@@ -331,9 +324,13 @@ setup_linux() {
 # --- Dispatch ----------------------------------------------------------------
 if [ "$OS" = "macos" ]; then
     setup_macos
-elif [ "$OS" = "ubuntu" ] || [ "$OS" = "debian" ] || [ "$OS" = "arch" ] || [ "$OS" = "fedora" ] || [ "$OS" = "linux" ]; then
+elif [ "$OS" = "ubuntu" ] || [ "$OS" = "debian" ]; then
     setup_linux
 else
-    echo "Unsupported OS: ${OS}" >&2
+    echo ""
+    echo "  Unsupported OS: ${OS}"
+    echo "  This installer only supports macOS, Ubuntu, and Debian."
+    echo "  Please install dependencies manually."
+    echo ""
     exit 1
 fi
