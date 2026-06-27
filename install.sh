@@ -47,9 +47,9 @@ setup_macos() {
     setup_nvm
     setup_tree
     check_vscode_cli
+    setup_dotfiles
     if [ "$PERSONAL_MACHINE" = "y" ]; then
         setup_gpg_agent_conf
-        setup_dotfiles
         setup_ssh_key
         setup_gpg_key
     fi
@@ -67,10 +67,10 @@ setup_linux() {
     setup_nvm
     setup_tree
     check_vscode_cli
+    setup_dotfiles
     if [ "$PERSONAL_MACHINE" = "y" ]; then
         setup_gpg_agent_conf
         setup_keychain
-        setup_dotfiles
         setup_ssh_key
         setup_gpg_key
     fi
