@@ -7,15 +7,16 @@
 setup_ssh_key() {
     section "Security — SSH Key"
 
-    SSH_KEY="${HOME}/.ssh/id_ed25519"
+    local SSH_KEY="${HOME}/.ssh/id_ed25519"
 
     if [ -f "${SSH_KEY}.pub" ]; then
         echo "  SSH key already exists at ${SSH_KEY}.pub — skipping generation."
     else
         echo "  No SSH key found. Generating a new ed25519 key..."
+        echo "  You will be prompted to set a passphrase to protect your private key."
         mkdir -p "${HOME}/.ssh"
         chmod 700 "${HOME}/.ssh"
-        ssh-keygen -t ed25519 -f "$SSH_KEY" -N "" -C "$(git config --global user.email 2>/dev/null || echo "$(whoami)@$(hostname)")"
+        ssh-keygen -t ed25519 -f "$SSH_KEY" -C "$(git config --global user.email 2>/dev/null || echo "$(whoami)@$(hostname)")"
         echo "  SSH key generated."
     fi
 
@@ -38,12 +39,13 @@ setup_gpg_key() {
     if gpg --list-secret-keys --keyid-format=long 2>/dev/null | grep -q '^sec'; then
         echo "  A GPG secret key already exists — skipping generation."
     else
+        local GIT_NAME GIT_EMAIL
         GIT_NAME="$(git config --global user.name 2>/dev/null || true)"
         GIT_EMAIL="$(git config --global user.email 2>/dev/null || true)"
 
         if [ -z "$GIT_NAME" ] || [ -z "$GIT_EMAIL" ]; then
             echo "  No GPG key found, but git user.name/user.email are not configured yet."
-            echo "  Update Common/.gitconfig with your name and email, then re-run this script."
+            echo "  Re-run the installer so setup_git can prompt for your identity first."
             return
         fi
 
@@ -59,9 +61,11 @@ setup_gpg_key() {
     key_id="$(gpg --list-secret-keys --keyid-format=long | awk -F'/' '/^sec/{print $2}' | awk '{print $1}' | head -1)"
 
     git config --file "${HOME}/.gitconfig.local" user.signingkey "${key_id}"
+    git config --file "${HOME}/.gitconfig.local" commit.gpgsign true
+    git config --file "${HOME}/.gitconfig.local" tag.gpgsign true
 
     echo ""
-    echo "  Key ID (written to ~/.gitconfig):"
+    echo "  Key ID (written to ~/.gitconfig.local):"
     echo ""
     echo "  ${key_id}"
     echo ""
@@ -77,7 +81,8 @@ setup_gpg_agent_conf() {
     section "Security — GPG Agent"
 
     mkdir -p "${HOME}/.gnupg"
-    GPG_AGENT_CONF="${HOME}/.gnupg/gpg-agent.conf"
+    local GPG_AGENT_CONF="${HOME}/.gnupg/gpg-agent.conf"
+    local PINENTRY_PATH
 
     case "$OS" in
         macos)

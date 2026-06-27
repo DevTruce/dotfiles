@@ -87,7 +87,9 @@ load-nvmrc
 
 # -- Keychain
 # reuses one ssh-agent across all terminal sessions — avoids passphrase prompts on every new tab
-eval "$(keychain --eval --quiet ~/.ssh/id_ed25519)"
+if command -v keychain >/dev/null 2>&1 && [ -f "${HOME}/.ssh/id_ed25519" ]; then
+  eval "$(keychain --eval --quiet ~/.ssh/id_ed25519)"
+fi
 
 # ─────────────────────────────────────────
 # GPG
