@@ -21,7 +21,7 @@ setup_git() {
     # -- Local identity (~/.gitconfig.local is not tracked in the repo)
 
     local git_local="${HOME}/.gitconfig.local"
-    local existing_name existing_email existing_editor git_editor
+    local existing_name existing_email existing_editor git_editor git_name git_email
 
     existing_name="$(git config --file "$git_local" user.name 2>/dev/null || true)"
     existing_email="$(git config --file "$git_local" user.email 2>/dev/null || true)"
