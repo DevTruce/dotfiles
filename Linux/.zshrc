@@ -50,7 +50,8 @@ autoload -Uz compinit && compinit
 zinit cdreplay -q
 
 # Load theme
-source ~/powerlevel10k/powerlevel10k.zsh-theme 
+zinit ice depth=1
+zinit light romkatv/powerlevel10k
 
 
 # ---------------------
