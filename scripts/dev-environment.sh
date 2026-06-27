@@ -12,17 +12,6 @@ setup_zsh_plugins() {
         echo "  zinit installed. Plugins will be downloaded on first shell launch."
     fi
 
-    echo "  Ensuring zsh completions directory exists..."
-    mkdir -p "${HOME}/.zsh/completions"
-
-    if command -v docker >/dev/null 2>&1; then
-        echo "  Generating Docker zsh completion..."
-        docker completion zsh > "${HOME}/.zsh/completions/_docker"
-        echo "  Docker completion written."
-    else
-        echo "  Docker not found — skipping Docker completion."
-        echo "  Re-run this script once Docker is installed to generate it."
-    fi
 }
 
 setup_nvm() {
