@@ -30,17 +30,17 @@ setup_macos() {
     echo ""
     echo "  Starting macOS setup..."
     setup_homebrew
-    setup_dotfiles
     setup_zsh
     setup_git
     setup_git_lfs
-    setup_ssh_key
-    setup_gpg_key
-    setup_gpg_agent_conf
     setup_zsh_plugins
     setup_nvm
     setup_tree
     check_vscode_cli
+    setup_gpg_agent_conf
+    setup_dotfiles
+    setup_ssh_key
+    setup_gpg_key
     finish
 }
 
@@ -48,18 +48,18 @@ setup_linux() {
     echo ""
     echo "  Starting Linux setup..."
     setup_apt
-    setup_dotfiles
     setup_zsh
     setup_git
     setup_git_lfs
-    setup_ssh_key
-    setup_gpg_key
-    setup_gpg_agent_conf
-    setup_keychain
     setup_zsh_plugins
     setup_nvm
     setup_tree
     check_vscode_cli
+    setup_gpg_agent_conf
+    setup_keychain
+    setup_dotfiles
+    setup_ssh_key
+    setup_gpg_key
     finish
 }
 

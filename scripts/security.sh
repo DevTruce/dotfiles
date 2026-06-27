@@ -20,10 +20,11 @@ setup_ssh_key() {
     fi
 
     echo ""
-    echo "  Fingerprint:"
+    echo "  Fingerprint (for your records):"
+    echo ""
     ssh-keygen -lf "${SSH_KEY}.pub"
     echo ""
-    echo "  Public key (you will need this for GitHub — see the todo list at the end):"
+    echo "  Public key (copy this to GitHub → Settings → SSH and GPG Keys → New SSH key):"
     echo ""
     cat "${SSH_KEY}.pub"
     echo ""
@@ -54,13 +55,17 @@ setup_gpg_key() {
         echo "  GPG key generated."
     fi
 
+    local key_id
+    key_id="$(gpg --list-secret-keys --keyid-format=long | awk -F'/' '/^sec/{print $2}' | awk '{print $1}' | head -1)"
+
     echo ""
-    echo "  GPG secret keys on this machine:"
-    gpg --list-secret-keys --keyid-format=long
+    echo "  Key ID (add this to ~/.gitconfig under signingkey):"
     echo ""
-    echo "  Key ID(s) — you will need these for .gitconfig and GitHub (see the todo list at the end):"
+    echo "  ${key_id}"
     echo ""
-    gpg --list-secret-keys --keyid-format=long | awk -F'/' '/^sec/{print $2}' | awk '{print $1}'
+    echo "  Public key (copy this to GitHub → Settings → SSH and GPG Keys → New GPG key):"
+    echo ""
+    gpg --armor --export "${key_id}"
     echo ""
 }
 
