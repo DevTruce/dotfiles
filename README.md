@@ -115,6 +115,8 @@ The installer handles everything it can automatically, including symlinking all 
 
 > Steps 1–2 apply to personal machine installs only.
 
+> A VS Code CLI step is also shown at the end if the `code` command is not found on your PATH.
+
 ### 1. Add Your SSH Key to GitHub
 
 The installer prints your public key during setup. To view it again:
@@ -194,7 +196,8 @@ dotfiles/
 │   ├── dotfiles.sh             # setup_dotfiles - symlinks all dotfiles into home directory
 │   ├── utilities.sh            # setup_tree, check_vscode_cli
 │   └── finish.sh               # completion banner and manual todo list
-└── install.sh                  # entry point: loads scripts, detects OS, dispatches
+├── install.sh                  # entry point: loads scripts, detects OS, dispatches
+└── run.sh                      # run a single setup function without the full install
 ```
 
 ---
