@@ -84,6 +84,18 @@ setup_nvm() {
     set -u
 }
 
+setup_git() {
+    if command -v git >/dev/null 2>&1; then
+        echo "git is already installed."
+    else
+        echo "Installing git..."
+        case "$OS" in
+            macos) brew install git ;;
+            *)     sudo apt install git -y ;;
+        esac
+    fi
+}
+
 
 # --- Per-OS setup functions --------------------------------------------------
 setup_macos() {
@@ -126,6 +138,7 @@ setup_macos() {
     fi
 
     setup_zsh_plugins
+    setup_git
     setup_nvm
 }
 
@@ -154,6 +167,7 @@ setup_linux() {
     fi
 
     setup_zsh_plugins
+    setup_git
     setup_nvm
 }
 
