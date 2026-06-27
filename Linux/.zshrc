@@ -40,9 +40,16 @@ autoload -Uz _zinit
 # ---------------------
 # Plug-ins
 # ---------------------
-zinit light zsh-users/zsh-completions
-zinit light zsh-users/zsh-autosuggestions
+# Load essential Zsh community plugins
 zinit light zsh-users/zsh-syntax-highlighting
+zinit light zsh-users/zsh-autosuggestions
+zinit light zsh-users/zsh-completions
+
+# Initialize the completion system
+autoload -Uz compinit && compinit
+zinit cdreplay -q
+
+# Load theme
 source ~/powerlevel10k/powerlevel10k.zsh-theme 
 
 
