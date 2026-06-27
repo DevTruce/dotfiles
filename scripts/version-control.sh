@@ -1,3 +1,9 @@
+# ─────────────────────────────────────────
+# Version Control
+# ─────────────────────────────────────────
+
+# -- git
+
 setup_git() {
     section "Version Control — git"
 
@@ -12,6 +18,8 @@ setup_git() {
         echo "  git installed."
     fi
 }
+
+# -- git-lfs
 
 setup_git_lfs() {
     section "Version Control — git-lfs"

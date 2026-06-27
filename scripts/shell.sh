@@ -1,3 +1,9 @@
+# ─────────────────────────────────────────
+# Shell
+# ─────────────────────────────────────────
+
+# -- zsh
+
 setup_zsh() {
     section "Shell — zsh"
 
@@ -12,6 +18,7 @@ setup_zsh() {
 
             ZSH_PATH="$(brew --prefix zsh)/bin/zsh"
 
+            # register Homebrew zsh as a valid login shell
             if ! grep -qxF "$ZSH_PATH" /etc/shells; then
                 echo "  Registering ${ZSH_PATH} in /etc/shells..."
                 echo "$ZSH_PATH" | sudo tee -a /etc/shells >/dev/null

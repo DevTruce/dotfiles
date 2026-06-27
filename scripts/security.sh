@@ -1,3 +1,9 @@
+# ─────────────────────────────────────────
+# Security
+# ─────────────────────────────────────────
+
+# -- SSH Key
+
 setup_ssh_key() {
     section "Security — SSH Key"
 
@@ -23,6 +29,8 @@ setup_ssh_key() {
     echo ""
 }
 
+# -- GPG Key
+
 setup_gpg_key() {
     section "Security — GPG Key"
 
@@ -40,9 +48,8 @@ setup_gpg_key() {
 
         echo "  No GPG key found. Generating a key for ${GIT_NAME} <${GIT_EMAIL}>..."
         echo "  You will be prompted to enter a passphrase to protect your private key."
-        # No --passphrase flag here on purpose: gpg falls back to its normal
-        # pinentry prompt, so the passphrase is entered interactively and
-        # never appears in this script, shell history, or the process list.
+        # passphrase is entered interactively via pinentry — never stored in the script,
+        # shell history, or the process list
         gpg --quick-gen-key "${GIT_NAME} <${GIT_EMAIL}>" default default
         echo "  GPG key generated."
     fi
@@ -56,6 +63,8 @@ setup_gpg_key() {
     gpg --list-secret-keys --keyid-format=long | awk -F'/' '/^sec/{print $2}' | awk '{print $1}'
     echo ""
 }
+
+# -- GPG Agent
 
 setup_gpg_agent_conf() {
     section "Security — GPG Agent"
@@ -95,6 +104,8 @@ EOF
         echo "  gpg-agent restarted."
     fi
 }
+
+# -- Keychain
 
 setup_keychain() {
     section "Security — Keychain (ssh-agent persistence)"

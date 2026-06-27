@@ -1,51 +1,56 @@
-# ---------------------
+# ─────────────────────────────────────────
 # User Identity
-# ---------------------
+# ─────────────────────────────────────────
 [user]
 	name = DevTruce
 	email = 85980370+DevTruce@users.noreply.github.com
+	# replace with your GPG key ID after running install.sh
 	signingkey = gpg_sec_key
 
-# ---------------------
-# Core Git Settings
-# ---------------------
+# ─────────────────────────────────────────
+# Core Settings
+# ─────────────────────────────────────────
 [core]
 	editor = code --wait
-	autocrlf = input 
+	# normalise line endings to LF on commit
+	autocrlf = input
 
-# ---------------------
-# Commit/Tag Signing
-# ---------------------
+# ─────────────────────────────────────────
+# Commit & Tag Signing
+# ─────────────────────────────────────────
 [commit]
 	gpgsign = true
 [tag]
 	gpgsign = true
 
-# ---------------------
-# Custom Git Aliases
-# ---------------------
-[alias]  
-	hist = log --all --graph --decorate --oneline --pretty # clean git history log
-	lo = log --oneline # display git history in one line 
-	l = log --pretty=format:"%C(yellow)%h\\ %ad%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate --date=short # List commits in short form, with colors and branch/tag annotations
-  lds = log --pretty=format:"%C(yellow)%h\\ %ad%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate --date=short # List oneline commits showing dates
-	ld = log --pretty=format:"%C(yellow)%h\\ %ad%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate --date=relative # List oneline commits showing relative dates:
-	co = checkout # switch branches 
-	c = commit # make commits 
-	cm = commit -m # make commits with a message
-	cam = commit -am # add and commit with a message 
-	st = status # display git commit status
-  pl = pull # pull commits
-	ps = push # push commits 
-	br = branch # Display all branches & * the current working branch
-	ta = tag --list # Display tag list 
+# ─────────────────────────────────────────
+# Aliases
+# ─────────────────────────────────────────
+[alias]
+	# -- History
+	hist = log --all --graph --decorate --oneline --pretty
+	lo   = log --oneline
+	l    = log --pretty=format:"%C(yellow)%h\\ %ad%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate --date=short
+	lds  = log --pretty=format:"%C(yellow)%h\\ %ad%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate --date=short
+	ld   = log --pretty=format:"%C(yellow)%h\\ %ad%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate --date=relative
 
-# ---------------------
-# Git LFS Config
-# ---------------------
-# this auto populates once you setup git lfs
+	# -- Workflow
+	co  = checkout
+	c   = commit
+	cm  = commit -m
+	cam = commit -am
+	st  = status
+	pl  = pull
+	ps  = push
+	br  = branch
+	ta  = tag --list
+
+# ─────────────────────────────────────────
+# Git LFS
+# ─────────────────────────────────────────
+# auto-populated by `git lfs install` — do not edit manually
 [filter "lfs"]
-	smudge = git-lfs smudge -- %f
+	smudge  = git-lfs smudge -- %f
 	process = git-lfs filter-process
 	required = true
-	clean = git-lfs clean -- %f
+	clean   = git-lfs clean -- %f

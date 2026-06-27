@@ -1,3 +1,9 @@
+# ─────────────────────────────────────────
+# Dev Environment
+# ─────────────────────────────────────────
+
+# -- Zsh Plugins (zinit)
+
 setup_zsh_plugins() {
     section "Dev Environment — Zsh Plugins (zinit)"
 
@@ -11,8 +17,9 @@ setup_zsh_plugins() {
         git clone https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME"
         echo "  zinit installed. Plugins will be downloaded on first shell launch."
     fi
-
 }
+
+# -- Node.js (nvm)
 
 setup_nvm() {
     section "Dev Environment — Node.js (nvm)"
@@ -24,14 +31,13 @@ setup_nvm() {
     else
         echo "  Installing nvm (Node Version Manager)..."
         echo "  The .zshrc loader is already in your dotfiles — skipping shell profile edits."
-        # PROFILE=/dev/null stops nvm's installer from editing .zshrc itself,
-        # since the loader lines are already maintained by dotfiles.
+        # PROFILE=/dev/null prevents nvm's installer from modifying .zshrc,
+        # since the nvm loader is already maintained in dotfiles
         PROFILE=/dev/null bash -c "$(curl -fsSL https://raw.githubusercontent.com/nvm-sh/nvm/HEAD/install.sh)"
         echo "  nvm installed."
     fi
 
-    # nvm.sh and several nvm subcommands reference internal variables that
-    # aren't always set, which trips `set -u`. Relax it for this block only.
+    # nvm references unbound variables internally, which trips set -u
     set +u
     \. "${NVM_DIR}/nvm.sh"
 

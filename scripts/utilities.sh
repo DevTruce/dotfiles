@@ -1,3 +1,9 @@
+# ─────────────────────────────────────────
+# Utilities
+# ─────────────────────────────────────────
+
+# -- tree
+
 setup_tree() {
     section "Utilities — tree"
 
@@ -12,6 +18,8 @@ setup_tree() {
         echo "  tree installed."
     fi
 }
+
+# -- VS Code CLI
 
 check_vscode_cli() {
     section "Utilities — VS Code CLI"

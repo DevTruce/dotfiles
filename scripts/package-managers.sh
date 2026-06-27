@@ -1,3 +1,9 @@
+# ─────────────────────────────────────────
+# Package Managers
+# ─────────────────────────────────────────
+
+# -- Homebrew (macOS)
+
 setup_homebrew() {
     section "Package Manager — Homebrew"
 
@@ -13,8 +19,11 @@ setup_homebrew() {
     brew update
 
     echo "  Upgrading outdated packages..."
+    # || true prevents a single failed formula from aborting the installer
     brew upgrade || true
 }
+
+# -- apt (Linux)
 
 setup_apt() {
     section "Package Manager — apt"

@@ -3,13 +3,17 @@ set -euo pipefail
 
 DOTFILES_DIR="$(cd "$(dirname "$0")" && pwd)"
 
-# --- Load all setup functions -----------------------------------------------
+# ─────────────────────────────────────────
+# Bootstrap
+# ─────────────────────────────────────────
+
+# -- Load all setup functions
 for f in "${DOTFILES_DIR}/scripts/"*.sh; do
     # shellcheck source=/dev/null
     . "$f"
 done
 
-# --- Detect OS --------------------------------------------------------------
+# -- Detect OS
 OS="$(detect_os)"
 
 echo ""
@@ -18,7 +22,10 @@ echo "  dotfiles installer"
 printf "  OS: %s\n" "${OS}"
 echo "  ════════════════════════════════════════════════════"
 
-# --- OS orchestrators -------------------------------------------------------
+# ─────────────────────────────────────────
+# OS Orchestrators
+# ─────────────────────────────────────────
+
 setup_macos() {
     echo ""
     echo "  Starting macOS setup..."
@@ -54,7 +61,10 @@ setup_linux() {
     finish
 }
 
-# --- Dispatch ---------------------------------------------------------------
+# ─────────────────────────────────────────
+# Dispatch
+# ─────────────────────────────────────────
+
 if [ "$OS" = "macos" ]; then
     setup_macos
 elif [ "$OS" = "ubuntu" ] || [ "$OS" = "debian" ]; then

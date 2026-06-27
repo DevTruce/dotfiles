@@ -1,3 +1,7 @@
+# ─────────────────────────────────────────
+# Finish
+# ─────────────────────────────────────────
+
 finish() {
     local os_dir
     case "$OS" in
@@ -7,11 +11,15 @@ finish() {
 
     local step=1
 
+    # -- Header
+
     echo ""
     echo "  ════════════════════════════════════════════════════"
     echo "  All tools are installed! A few manual steps remain:"
     echo "  ════════════════════════════════════════════════════"
     echo ""
+
+    # -- Todo List
 
     echo "  [ ${step} ]  Copy your dotfiles to your home directory"
     echo ""
@@ -45,6 +53,7 @@ finish() {
     echo ""
     step=$((step + 1))
 
+    # vscode step only shown if the CLI is missing
     if ! command -v code >/dev/null 2>&1; then
         echo "  [ ${step} ]  Install the VS Code CLI"
         echo ""
