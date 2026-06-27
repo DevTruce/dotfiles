@@ -95,13 +95,13 @@ The installer is fully **idempotent**: every step checks whether a tool or confi
 ### 1. Clone the Repo
 
 ```bash
-git clone git@github.com:DevTruce/dotfiles.git ~/dev/dotfiles
+git clone git@github.com:DevTruce/dotfiles.git ~/dotfiles
 ```
 
 ### 2. Run the Installer
 
 ```bash
-cd ~/dev/dotfiles
+cd ~/dotfiles
 bash install.sh
 ```
 
@@ -204,16 +204,15 @@ dotfiles/
 Every function checks whether a tool is already present before doing anything, so re-running is safe and fast - most steps will print "already installed" and skip. Pull the latest changes and re-run to pick up any new tools:
 
 ```bash
-bash ~/dev/dotfiles/install.sh
+bash ~/dotfiles/install.sh
 ```
 
-To run a single component without the full install, source the relevant script after loading helpers and set `OS` — many functions branch on it. Also set `PERSONAL_MACHINE` and `DOTFILES_DIR` if the function needs them:
+To run a single component without the full install, source the relevant script after loading helpers and set `OS` — many functions branch on it. Also set `PERSONAL_MACHINE` if the function needs it:
 
 ```bash
-source ~/dev/dotfiles/scripts/helpers.sh
-source ~/dev/dotfiles/scripts/security.sh
+source ~/dotfiles/scripts/helpers.sh
+source ~/dotfiles/scripts/security.sh
 OS="$(detect_os)"
 PERSONAL_MACHINE="y"
-DOTFILES_DIR="$HOME/dev/dotfiles"  # needed only for setup_dotfiles
 setup_gpg_key
 ```
