@@ -18,7 +18,6 @@ fi
 # Add custom completions folder, then initialize zsh's tab-completion system
 # ---------------------
 fpath=(~/.zsh/completions $fpath)
-autoload -Uz compinit && compinit
 
 
 # ---------------------
