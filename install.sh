@@ -173,6 +173,61 @@ setup_gpg_key() {
     echo ""
 }
 
+setup_gpg_agent_conf() {
+    echo "Setting up gpg-agent caching..."
+
+    mkdir -p "${HOME}/.gnupg"
+    GPG_AGENT_CONF="${HOME}/.gnupg/gpg-agent.conf"
+
+    case "$OS" in
+        macos)
+            if ! command -v pinentry-mac >/dev/null 2>&1; then
+                echo "Installing pinentry-mac..."
+                brew install pinentry-mac
+            fi
+            PINENTRY_PATH="$(command -v pinentry-mac)"
+            ;;
+        *)
+            if ! command -v pinentry-curses >/dev/null 2>&1; then
+                echo "Installing pinentry-curses..."
+                sudo apt install pinentry-curses -y
+            fi
+            PINENTRY_PATH="$(command -v pinentry-curses)"
+            ;;
+    esac
+
+    if grep -q "pinentry-program ${PINENTRY_PATH}" "$GPG_AGENT_CONF" 2>/dev/null; then
+        echo "gpg-agent.conf already points at ${PINENTRY_PATH}."
+    else
+        echo "Writing gpg-agent.conf (pinentry: ${PINENTRY_PATH})..."
+        cat > "$GPG_AGENT_CONF" <<EOF
+default-cache-ttl 28800
+max-cache-ttl 86400
+pinentry-program ${PINENTRY_PATH}
+EOF
+        gpgconf --kill gpg-agent 2>/dev/null || true
+    fi
+}
+
+setup_keychain() {
+    # WSL2/Linux has no Keychain equivalent to persist ssh-agent across
+    # terminal sessions the way macOS does, so `keychain` fills that gap.
+    # macOS doesn't need this at all.
+    if [ "$OS" = "macos" ]; then
+        return
+    fi
+
+    echo "Setting up keychain (ssh-agent persistence)..."
+
+    if command -v keychain >/dev/null 2>&1; then
+        echo "keychain is already installed."
+    else
+        echo "Installing keychain..."
+        sudo apt install keychain -y
+    fi
+}
+
+
 
 check_vscode_cli() {
     if command -v code >/dev/null 2>&1; then
@@ -231,9 +286,11 @@ setup_macos() {
     setup_git_lfs
     setup_ssh_key
     setup_gpg_key
+    setup_gpg_agent_conf
     setup_zsh_plugins
     setup_nvm
     check_vscode_cli
+
 }
 
 setup_linux() {
@@ -264,6 +321,8 @@ setup_linux() {
     setup_git_lfs
     setup_ssh_key
     setup_gpg_key
+    setup_gpg_agent_conf
+    setup_keychain
     setup_zsh_plugins
     setup_nvm
     check_vscode_cli
