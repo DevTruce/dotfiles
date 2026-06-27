@@ -40,7 +40,7 @@ setup_git() {
         fi
 
         if [ -z "$existing_email" ]; then
-            printf "  Enter your git email: "
+            printf "  Enter your git email (tip: use your GitHub no-reply address — github.com/settings/emails): "
             read -r git_email
             git config --file "$git_local" user.email "$git_email"
         fi
