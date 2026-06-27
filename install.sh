@@ -28,6 +28,32 @@ detect_os() {
 OS="$(detect_os)"
 echo "Detected OS: ${OS}"
 
+# --- Shared setup (same on every OS) ----------------------------------------
+setup_zsh_plugins() {
+    echo "Setting up zsh plugin manager (zinit)..."
+ 
+    ZINIT_HOME="${HOME}/.local/share/zinit/zinit.git"
+ 
+    if [ -d "$ZINIT_HOME" ]; then
+        echo "zinit is already installed."
+    else
+        echo "Installing zinit..."
+        mkdir -p "$(dirname "$ZINIT_HOME")"
+        git clone https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME"
+    fi
+ 
+    echo "Setting up completions directory..."
+    mkdir -p "${HOME}/.zsh/completions"
+ 
+    if command -v docker >/dev/null 2>&1; then
+        echo "Generating docker zsh completion..."
+        docker completion zsh > "${HOME}/.zsh/completions/_docker"
+    else
+        echo "docker not found, skipping docker completion (run setup again once Docker is available)."
+    fi
+}
+
+
 # --- Per-OS setup functions --------------------------------------------------
 setup_macos() {
    echo "Running macOS setup..."
@@ -67,6 +93,8 @@ setup_macos() {
     else
         echo "zsh is already the default shell."
     fi
+
+    setup_zsh_plugins
 }
 
 setup_linux() {
@@ -93,7 +121,7 @@ setup_linux() {
         echo "zsh is already the default shell."
     fi
 
-    
+    setup_zsh_plugins
 }
 
 # --- Dispatch ----------------------------------------------------------------
