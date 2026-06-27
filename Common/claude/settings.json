@@ -1,8 +1,4 @@
 {
   "theme": "dark",
-  "includeCoAuthoredBy": false,
-  "attribution": {
-    "commit": "",
-    "pr": ""
-  }
+  "includeCoAuthoredBy": false
 }
