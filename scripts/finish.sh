@@ -17,13 +17,6 @@ finish() {
 
     # -- Personal machine steps
     if [ "$PERSONAL_MACHINE" = "y" ]; then
-        echo "  [ ${step} ]  Set your GPG signing key in ~/.gitconfig"
-        echo ""
-        echo "         Open ~/.gitconfig and replace 'gpg_sec_key' under [user]"
-        echo "         with the key ID printed above, then save the file."
-        echo ""
-        step=$((step + 1))
-
         echo "  [ ${step} ]  Add your SSH public key to GitHub"
         echo ""
         echo "         github.com → Settings → SSH and GPG Keys → New SSH key"
