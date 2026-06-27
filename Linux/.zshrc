@@ -1,23 +1,17 @@
 # 1. Copy .zshrc over 
 # 2. Install nvm fresh 
 # 3. exec zsh - zinit + plugins auto-install on first launch
-# 4. Regenerate docker completions:
-# mkdir -p ~/.zsh/completions
-# docker completion zsh > ~/.zsh/completions/_docker
 
 
+
+# ---------------------
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
 # confirmations, etc.) must go above this block; everything else may go below.
+# ---------------------
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
-
-
-# ---------------------
-# Add custom completions folder, then initialize zsh's tab-completion system
-# ---------------------
-fpath=(~/.zsh/completions $fpath)
 
 
 # ---------------------
@@ -43,6 +37,8 @@ autoload -Uz _zinit
 zinit light zsh-users/zsh-syntax-highlighting
 zinit light zsh-users/zsh-autosuggestions
 zinit light zsh-users/zsh-completions
+zinit snippet OMZP::docker/docker.plugin.zsh
+zinit snippet OMZP::docker-compose/docker-compose.plugin.zsh
 
 # Initialize the completion system
 autoload -Uz compinit && compinit
@@ -90,15 +86,15 @@ add-zsh-hook chpwd load-nvmrc
 load-nvmrc
 
 # ---------------------
-# Load SSH key into a persistent agent
-# ---------------------
-eval "$(keychain --eval --quiet id_ed25519)"
-
-
-# ---------------------
 # Start/reuse ssh-agent and load key via keychain
-# (WSL2 has no Keychain like macOS, so this does the same job -
+# (WSL2 has no Keychain like macOS, so this does the same job —
 # reuses one agent across all terminals instead of prompting every tab)
+# ---------------------
+eval "$(keychain --eval --quiet ~/.ssh/id_ed25519)"
+
+
+# ---------------------
+# Tell zsh which TTY this session is using, so GPG's pinentry can find it
 # ---------------------
 export GPG_TTY=$TTY
 
