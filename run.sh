@@ -1,10 +1,11 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Usage: bash ~/dotfiles/run.sh <function_name>
-#   e.g. bash ~/dotfiles/run.sh setup_gpg_key
-
 DOTFILES_DIR="$(cd "$(dirname "$0")" && pwd)"
+
+# ─────────────────────────────────────────
+# Bootstrap
+# ─────────────────────────────────────────
 
 if [ $# -eq 0 ]; then
     echo "  Usage: bash run.sh <function_name>"
@@ -12,13 +13,16 @@ if [ $# -eq 0 ]; then
     exit 1
 fi
 
+# -- Load all setup functions
 for f in "${DOTFILES_DIR}/scripts/"*.sh; do
     # shellcheck source=/dev/null
     . "$f"
 done
 
+# -- Detect OS
 OS="$(detect_os)"
 
+# -- Personal machine prompt
 printf "  Is this a personal machine? (y/N): "
 read -r _reply
 case "$_reply" in
@@ -26,6 +30,10 @@ case "$_reply" in
     *)    PERSONAL_MACHINE="n" ;;
 esac
 echo ""
+
+# ─────────────────────────────────────────
+# Dispatch
+# ─────────────────────────────────────────
 
 if ! declare -f "$1" >/dev/null 2>&1; then
     echo "  Unknown function: $1"
