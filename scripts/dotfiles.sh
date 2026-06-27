@@ -26,9 +26,11 @@ setup_dotfiles() {
     ln -sf "${DOTFILES_DIR}/Common/.p10k.zsh"              "${HOME}/.p10k.zsh"
     echo "  ~/.p10k.zsh        → ${DOTFILES_DIR}/Common/.p10k.zsh"
 
-    mkdir -p "${HOME}/.claude"
-    ln -sf "${DOTFILES_DIR}/Common/claude/settings.json"   "${HOME}/.claude/settings.json"
-    echo "  ~/.claude/settings.json → ${DOTFILES_DIR}/Common/claude/settings.json"
+    if [ "${PERSONAL_MACHINE:-n}" = "y" ]; then
+        mkdir -p "${HOME}/.claude"
+        ln -sf "${DOTFILES_DIR}/Common/claude/settings.json"   "${HOME}/.claude/settings.json"
+        echo "  ~/.claude/settings.json → ${DOTFILES_DIR}/Common/claude/settings.json"
+    fi
 
     echo ""
     echo "  All dotfiles symlinked."

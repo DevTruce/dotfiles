@@ -9,7 +9,7 @@ Personal dotfiles and automated installer for macOS and Linux / WSL2.
 - [Overview](#overview)
 - [Supported Systems](#supported-systems)
 - [What Gets Installed](#what-gets-installed)
-- [What's Included](#whats-included)
+- [Files Deployed to Your System](#files-deployed-to-your-system)
 - [Installation](#installation)
   - [Prerequisites](#prerequisites)
   - [1. Clone the Repo](#1-clone-the-repo)
@@ -68,16 +68,17 @@ The installer is fully **idempotent**: every step checks whether a tool or confi
 
 ---
 
-## What's Included
+## Files Deployed to Your System
 
-| File                 | Repo Path                     | Destination                                      |
-| -------------------- | ----------------------------- | ------------------------------------------------ |
-| zshrc (Linux / WSL2) | `Linux/.zshrc`                | `~/.zshrc`                                       |
-| zshrc (macOS)        | `MacOS/.zshrc`                | `~/.zshrc`                                       |
-| git config           | `Common/.gitconfig`           | `~/.gitconfig`                                   |
-| Powerlevel10k config | `Common/.p10k.zsh`            | `~/.p10k.zsh`                                    |
-| Claude Code settings | `Common/claude/settings.json` | `~/.claude/settings.json`                  |
-| git local identity   | *(not tracked)*               | `~/.gitconfig.local` (created by installer) |
+| File                 | Repo Path                     | Destination                                                 |
+| -------------------- | ----------------------------- | ----------------------------------------------------------- |
+| zshrc (Linux / WSL2) | `Linux/.zshrc`                | `~/.zshrc`                                                  |
+| zshrc (macOS)        | `MacOS/.zshrc`                | `~/.zshrc`                                                  |
+| git config           | `Common/.gitconfig`           | `~/.gitconfig`                                              |
+| git local identity   | _(not tracked)_               | `~/.gitconfig.local` (built by installer)                   |
+| Powerlevel10k config | `Common/.p10k.zsh`            | `~/.p10k.zsh`                                               |
+| Claude Code settings | `Common/claude/settings.json` | `~/.claude/settings.json` _(personal)_                      |
+| GPG agent config     | _(not tracked)_               | `~/.gnupg/gpg-agent.conf` (built by installer) _(personal)_ |
 
 ---
 
