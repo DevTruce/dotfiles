@@ -175,7 +175,7 @@ Open a fresh terminal session for all changes (default shell, plugins, PATH) to 
 ```
 dotfiles/
 ├── Common/                     # dotfiles shared across all platforms
-│   ├── .gitconfig              # aliases, signing settings, and LFS config (identity in ~/.gitconfig.local)
+│   ├── .gitconfig              # git aliases, LFS config, and default settings (identity in ~/.gitconfig.local)
 │   ├── .p10k.zsh               # Powerlevel10k prompt configuration
 │   └── claude/
 │       └── settings.json       # Claude Code settings
@@ -191,7 +191,7 @@ dotfiles/
 │   ├── security.sh             # setup_ssh_key, setup_gpg_key, setup_gpg_agent_conf, setup_keychain
 │   ├── dev-environment.sh      # setup_zsh_plugins, setup_nvm, setup_claude
 │   ├── dotfiles.sh             # setup_dotfiles - symlinks all dotfiles into home directory
-│   ├── utilities.sh            # setup_tree, check_vscode_cli
+│   ├── utilities.sh            # setup_tree
 │   └── finish.sh               # completion banner and manual todo list
 ├── install.sh                  # entry point: loads scripts, detects OS, dispatches
 └── run.sh                      # run a single setup function without the full install
