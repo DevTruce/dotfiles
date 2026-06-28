@@ -14,7 +14,7 @@ setup_zsh_plugins() {
     else
         echo "  Installing zinit plugin manager..."
         mkdir -p "$(dirname "$ZINIT_HOME")"
-        git clone https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME"
+        git clone --depth 1 https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME"
         echo "  zinit installed. Plugins will be downloaded on first shell launch."
     fi
 }

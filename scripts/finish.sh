@@ -32,16 +32,6 @@ finish() {
         step=$((step + 1))
     fi
 
-    # -- vscode step only shown if the CLI is missing
-    if ! command -v code >/dev/null 2>&1; then
-        echo "  [ ${step} ]  Install the VS Code CLI"
-        echo ""
-        echo "         macOS — Open VS Code → Command Palette → Shell Command: Install 'code' in PATH"
-        echo "         WSL   — Open this folder in VS Code via the Remote extension, then restart."
-        echo ""
-        step=$((step + 1))
-    fi
-
     echo "  [ ${step} ]  Install the MesloLGS NF fonts (required for Powerlevel10k)"
     echo ""
     echo "         Download all four fonts from:"

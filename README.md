@@ -99,6 +99,11 @@ The installer is fully **idempotent**: every step checks whether a tool or confi
 git clone git@github.com:DevTruce/dotfiles.git ~/dotfiles
 ```
 
+> On a fresh machine without SSH keys configured yet, use HTTPS:
+> ```bash
+> git clone https://github.com/DevTruce/dotfiles.git ~/dotfiles
+> ```
+
 ### 2. Run the Installer
 
 ```bash

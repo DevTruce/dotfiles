@@ -5,6 +5,9 @@
 	# normalise line endings to LF on commit
 	autocrlf = input
 
+[init]
+	defaultBranch = main
+
 # ─────────────────────────────────────────
 # Aliases
 # ─────────────────────────────────────────
