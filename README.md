@@ -96,13 +96,8 @@ The installer is fully **idempotent**: every step checks whether a tool or confi
 ### 1. Clone the Repo
 
 ```bash
-git clone git@github.com:DevTruce/dotfiles.git ~/dotfiles
+git clone https://github.com/DevTruce/dotfiles.git ~/dotfiles
 ```
-
-> On a fresh machine without SSH keys configured yet, use HTTPS:
-> ```bash
-> git clone https://github.com/DevTruce/dotfiles.git ~/dotfiles
-> ```
 
 ### 2. Run the Installer
 
@@ -120,8 +115,6 @@ The installer detects your OS, symlinks your dotfiles, and prompts whether this 
 The installer handles everything it can automatically, including symlinking all dotfiles into your home directory. On personal machines it also generates SSH/GPG keys and prints them ready to paste. The steps below require manual action and are also printed at the end of every install run as a reminder.
 
 > Steps 1–2 apply to personal machine installs only.
-
-> A VS Code CLI step is also shown at the end if the `code` command is not found on your PATH.
 
 ### 1. Add Your SSH Key to GitHub
 
