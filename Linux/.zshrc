@@ -32,8 +32,8 @@ autoload -Uz _zinit
 zinit light zsh-users/zsh-syntax-highlighting
 zinit light zsh-users/zsh-autosuggestions
 zinit light zsh-users/zsh-completions
-zinit ice svn; zinit snippet OMZP::docker
-zinit ice svn; zinit snippet OMZP::docker-compose
+zinit ice as"completion"; zinit snippet "https://raw.githubusercontent.com/docker/cli/master/contrib/completion/zsh/_docker"
+zinit ice as"completion"; zinit snippet "https://raw.githubusercontent.com/docker/compose/main/contrib/completion/zsh/_docker-compose"
 
 # -- Completions
 autoload -Uz compinit && compinit
