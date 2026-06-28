@@ -3,57 +3,57 @@
 # ─────────────────────────────────────────
 
 finish() {
-    local step=1
+    local n=1
 
     # -- Header
 
     echo ""
-    echo "  ════════════════════════════════════════════════════"
-    echo "  All tools are installed! A few manual steps remain:"
-    echo "  ════════════════════════════════════════════════════"
+    printf "  ${BOLD_CYAN}════════════════════════════════════════════════════${RESET}\n"
+    printf "  ${BOLD_GREEN}✓${RESET}  ${BOLD_WHITE}Setup complete! A few manual steps remain:${RESET}\n"
+    printf "  ${BOLD_CYAN}════════════════════════════════════════════════════${RESET}\n"
     echo ""
 
     # -- Todo List
 
     # -- Personal machine steps
     if [ "$PERSONAL_MACHINE" = "y" ]; then
-        echo "  [ ${step} ]  Add your SSH public key to GitHub"
+        printf "  ${BOLD_WHITE}[ %s ]${RESET}  ${BOLD}Add your SSH public key to GitHub${RESET}\n" "${n}"
         echo ""
-        echo "         github.com → Settings → SSH and GPG Keys → New SSH key"
-        echo "         Paste the public key printed above."
+        note "github.com → Settings → SSH and GPG Keys → New SSH key"
+        note "Paste the public key printed above."
         echo ""
-        step=$((step + 1))
+        n=$((n + 1))
 
-        echo "  [ ${step} ]  Add your GPG public key to GitHub"
+        printf "  ${BOLD_WHITE}[ %s ]${RESET}  ${BOLD}Add your GPG public key to GitHub${RESET}\n" "${n}"
         echo ""
-        echo "         github.com → Settings → SSH and GPG Keys → New GPG key"
-        echo "         Paste the public key printed above."
+        note "github.com → Settings → SSH and GPG Keys → New GPG key"
+        note "Paste the public key printed above."
         echo ""
-        step=$((step + 1))
+        n=$((n + 1))
     fi
 
-    echo "  [ ${step} ]  Install the MesloLGS NF fonts (required for Powerlevel10k)"
+    printf "  ${BOLD_WHITE}[ %s ]${RESET}  ${BOLD}Install the MesloLGS NF fonts (required for Powerlevel10k)${RESET}\n" "${n}"
     echo ""
-    echo "         Download all four fonts from:"
-    echo "         https://github.com/romkatv/powerlevel10k#meslo-nerd-font-patched-for-powerlevel10k"
+    note "Download all four fonts from:"
+    note "https://github.com/romkatv/powerlevel10k#meslo-nerd-font-patched-for-powerlevel10k"
     echo ""
     case "$OS" in
         macos)
-            echo "         Double-click each .ttf file to install, then open your terminal"
-            echo "         preferences and set the font to \"MesloLGS NF Regular\"."
+            note "Double-click each .ttf file to install, then open your terminal"
+            note "preferences and set the font to \"MesloLGS NF Regular\"."
             ;;
         *)
-            echo "         On WSL, fonts must be installed on the Windows side:"
-            echo "           1. Double-click each .ttf file → Install for all users"
-            echo "           2. Open Windows Terminal → Settings → your profile"
-            echo "              → Appearance → Font face → MesloLGS NF"
+            note "On WSL, fonts must be installed on the Windows side:"
+            note "  1. Double-click each .ttf file → Install for all users"
+            note "  2. Open Windows Terminal → Settings → your profile"
+            note "     → Appearance → Font face → MesloLGS NF"
             ;;
     esac
     echo ""
-    step=$((step + 1))
+    n=$((n + 1))
 
-    echo "  [ ${step} ]  Open a new terminal for all changes to take effect."
+    printf "  ${BOLD_WHITE}[ %s ]${RESET}  ${BOLD}Open a new terminal for all changes to take effect.${RESET}\n" "${n}"
     echo ""
-    echo "  ════════════════════════════════════════════════════"
+    printf "  ${BOLD_CYAN}════════════════════════════════════════════════════${RESET}\n"
     echo ""
 }

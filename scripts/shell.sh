@@ -12,26 +12,29 @@ setup_zsh() {
     case "$OS" in
         macos)
             if brew list zsh >/dev/null 2>&1; then
-                echo "  zsh is already installed via Homebrew."
+                skip "zsh is already installed via Homebrew."
             else
-                echo "  Installing zsh via Homebrew..."
+                step "Installing zsh via Homebrew..."
                 brew install zsh
+                ok "zsh installed."
             fi
 
             ZSH_PATH="$(brew --prefix zsh)/bin/zsh"
 
             # register Homebrew zsh as a valid login shell
             if ! grep -qxF "$ZSH_PATH" /etc/shells; then
-                echo "  Registering ${ZSH_PATH} in /etc/shells..."
+                step "Registering ${ZSH_PATH} in /etc/shells..."
                 echo "$ZSH_PATH" | sudo tee -a /etc/shells >/dev/null
+                ok "zsh registered in /etc/shells."
             fi
             ;;
         *)
             if command -v zsh >/dev/null 2>&1; then
-                echo "  zsh is already installed."
+                skip "zsh is already installed."
             else
-                echo "  Installing zsh..."
+                step "Installing zsh..."
                 sudo apt install zsh -y
+                ok "zsh installed."
             fi
 
             ZSH_PATH="$(command -v zsh)"
@@ -39,10 +42,10 @@ setup_zsh() {
     esac
 
     if [ "$SHELL" = "$ZSH_PATH" ]; then
-        echo "  zsh is already the default shell."
+        skip "zsh is already the default shell."
     else
-        echo "  Setting zsh as the default shell..."
+        step "Setting zsh as the default shell..."
         chsh -s "$ZSH_PATH"
-        echo "  Default shell updated — open a new terminal for this to take effect."
+        ok "Default shell updated — open a new terminal for this to take effect."
     fi
 }

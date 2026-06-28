@@ -10,13 +10,14 @@ setup_zsh_plugins() {
     local ZINIT_HOME="${HOME}/.local/share/zinit/zinit.git"
 
     if [ -d "$ZINIT_HOME" ]; then
-        echo "  zinit is already installed."
+        skip "zinit is already installed."
     else
-        echo "  Installing zinit plugin manager..."
+        step "Installing zinit plugin manager..."
         mkdir -p "$(dirname "$ZINIT_HOME")"
         git clone --depth 1 https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME"
         echo ""
-        echo "  zinit installed. Plugins will be downloaded on first shell launch."
+        ok "zinit installed."
+        note "Plugins will be downloaded on first shell launch."
     fi
 }
 
@@ -28,15 +29,15 @@ setup_nvm() {
     NVM_DIR="${HOME}/.nvm"
 
     if [ -s "${NVM_DIR}/nvm.sh" ]; then
-        echo "  nvm is already installed."
+        skip "nvm is already installed."
     else
-        echo "  Installing nvm (Node Version Manager)..."
-        echo "  Skipping nvm shell profile changes — your .zshrc already includes the loader."
+        step "Installing nvm (Node Version Manager)..."
+        note "Skipping shell profile changes — your .zshrc already includes the nvm loader."
         # PROFILE=/dev/null prevents nvm's installer from modifying .zshrc,
         # since the nvm loader is already maintained in dotfiles
         PROFILE=/dev/null bash -c "$(curl -fsSL https://raw.githubusercontent.com/nvm-sh/nvm/HEAD/install.sh)"
         echo ""
-        echo "  nvm installed."
+        ok "nvm installed."
     fi
 
     # nvm references unbound variables internally, which trips set -u
@@ -44,15 +45,15 @@ setup_nvm() {
     \. "${NVM_DIR}/nvm.sh"
 
     if nvm ls --no-colors 2>/dev/null | grep -q 'lts/\*'; then
-        echo "  Node.js LTS is already installed."
+        skip "Node.js LTS is already installed."
     else
-        echo "  Installing the latest Node.js LTS release..."
+        step "Installing the latest Node.js LTS release..."
         nvm install --lts
-        echo "  Node.js LTS installed."
+        ok "Node.js LTS installed."
     fi
 
     nvm alias default 'lts/*' >/dev/null
-    echo "  Node.js LTS set as the default version."
+    ok "Node.js LTS set as the default version."
     set -u
 }
 
@@ -62,11 +63,11 @@ setup_claude() {
     section "Dev Environment — Claude Code CLI"
 
     if command -v claude >/dev/null 2>&1; then
-        echo "  Claude Code is already installed."
+        skip "Claude Code is already installed."
     else
-        echo "  Installing Claude Code CLI..."
+        step "Installing Claude Code CLI..."
         npm install -g @anthropic-ai/claude-code
         echo ""
-        echo "  Claude Code installed."
+        ok "Claude Code installed."
     fi
 }

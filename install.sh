@@ -17,14 +17,14 @@ done
 OS="$(detect_os)"
 
 echo ""
-echo "  ════════════════════════════════════════════════════"
-echo "  dotfiles installer"
-printf "  OS: %s\n" "${OS}"
-echo "  ════════════════════════════════════════════════════"
+printf "  ${BOLD_CYAN}┌──────────────────────────────────────────────────────┐${RESET}\n"
+printf "  ${BOLD_CYAN}│${RESET}  ${BOLD_WHITE}%-52s${RESET}${BOLD_CYAN}│${RESET}\n" "dotfiles installer"
+printf "  ${BOLD_CYAN}│${RESET}  ${DIM}%-52s${RESET}${BOLD_CYAN}│${RESET}\n" "OS: ${OS}"
+printf "  ${BOLD_CYAN}└──────────────────────────────────────────────────────┘${RESET}\n"
 echo ""
 
 # -- Personal machine prompt
-printf "  Is this a personal machine? (y/N): "
+printf "  ${CYAN}?${RESET}  Is this a personal machine? ${DIM}(y/N)${RESET}: "
 read -r _reply
 case "$_reply" in
     [Yy]) PERSONAL_MACHINE="y" ;;
@@ -37,8 +37,7 @@ echo ""
 # ─────────────────────────────────────────
 
 setup_macos() {
-    echo ""
-    echo "  Starting macOS setup..."
+    step "Starting macOS setup..."
     setup_homebrew
     setup_zsh
     setup_git
@@ -57,8 +56,7 @@ setup_macos() {
 }
 
 setup_linux() {
-    echo ""
-    echo "  Starting Linux setup..."
+    step "Starting Linux setup..."
     setup_apt
     setup_zsh
     setup_git
@@ -87,9 +85,9 @@ elif [ "$OS" = "ubuntu" ] || [ "$OS" = "debian" ]; then
     setup_linux
 else
     echo ""
-    echo "  Unsupported OS: ${OS}"
-    echo "  This installer only supports macOS, Ubuntu, and Debian."
-    echo "  Please install dependencies manually."
+    warn "Unsupported OS: ${OS}"
+    note "This installer only supports macOS, Ubuntu, and Debian."
+    note "Please install dependencies manually."
     echo ""
     exit 1
 fi

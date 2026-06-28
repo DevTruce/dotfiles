@@ -8,19 +8,20 @@ setup_homebrew() {
     section "Package Manager — Homebrew"
 
     if command -v brew >/dev/null 2>&1; then
-        echo "  Homebrew is already installed."
+        skip "Homebrew is already installed."
     else
-        echo "  Homebrew not found. Installing..."
+        step "Installing Homebrew..."
         /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-        echo "  Homebrew installed."
+        ok "Homebrew installed."
     fi
 
-    echo "  Fetching latest Homebrew updates..."
+    step "Fetching latest Homebrew updates..."
     brew update
 
-    echo "  Upgrading outdated packages..."
+    step "Upgrading outdated packages..."
     # || true prevents a single failed formula from aborting the installer
     brew upgrade || true
+    ok "Packages up to date."
 }
 
 # -- apt (Linux)
@@ -28,9 +29,10 @@ setup_homebrew() {
 setup_apt() {
     section "Package Manager — apt"
 
-    echo "  Refreshing package lists..."
+    step "Refreshing package lists..."
     sudo apt update
 
-    echo "  Upgrading outdated packages..."
+    step "Upgrading outdated packages..."
     sudo apt upgrade -y
+    ok "Packages up to date."
 }
