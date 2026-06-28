@@ -15,6 +15,7 @@ setup_zsh_plugins() {
         echo "  Installing zinit plugin manager..."
         mkdir -p "$(dirname "$ZINIT_HOME")"
         git clone --depth 1 https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME"
+        echo ""
         echo "  zinit installed. Plugins will be downloaded on first shell launch."
     fi
 }
@@ -30,10 +31,11 @@ setup_nvm() {
         echo "  nvm is already installed."
     else
         echo "  Installing nvm (Node Version Manager)..."
-        echo "  The .zshrc loader is already in your dotfiles — skipping shell profile edits."
+        echo "  Skipping nvm shell profile changes — your .zshrc already includes the loader."
         # PROFILE=/dev/null prevents nvm's installer from modifying .zshrc,
         # since the nvm loader is already maintained in dotfiles
         PROFILE=/dev/null bash -c "$(curl -fsSL https://raw.githubusercontent.com/nvm-sh/nvm/HEAD/install.sh)"
+        echo ""
         echo "  nvm installed."
     fi
 
@@ -64,6 +66,7 @@ setup_claude() {
     else
         echo "  Installing Claude Code CLI..."
         npm install -g @anthropic-ai/claude-code
+        echo ""
         echo "  Claude Code installed."
     fi
 }

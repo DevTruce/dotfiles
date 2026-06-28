@@ -17,6 +17,7 @@ setup_ssh_key() {
         mkdir -p "${HOME}/.ssh"
         chmod 700 "${HOME}/.ssh"
         ssh-keygen -t ed25519 -f "$SSH_KEY" -C "$(git config --global user.email 2>/dev/null || echo "$(whoami)@$(hostname)")"
+        echo ""
         echo "  SSH key generated."
     fi
 
@@ -51,6 +52,7 @@ setup_gpg_key() {
 
         echo "  No GPG key found. Generating a key for ${GIT_NAME} <${GIT_EMAIL}>..."
         echo "  You will be prompted to enter a passphrase to protect your private key."
+        echo ""
         # passphrase is entered interactively via pinentry — never stored in the script,
         # shell history, or the process list
         gpg --quick-gen-key "${GIT_NAME} <${GIT_EMAIL}>" default default

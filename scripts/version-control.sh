@@ -99,6 +99,7 @@ setup_git_lfs() {
     else
         echo "  Registering git-lfs hooks globally..."
         git lfs install
+        echo ""
         echo "  git-lfs hooks registered."
     fi
 }
