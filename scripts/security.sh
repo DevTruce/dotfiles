@@ -40,8 +40,8 @@ setup_gpg_key() {
         echo "  A GPG secret key already exists — skipping generation."
     else
         local GIT_NAME GIT_EMAIL
-        GIT_NAME="$(git config --global user.name 2>/dev/null || true)"
-        GIT_EMAIL="$(git config --global user.email 2>/dev/null || true)"
+        GIT_NAME="$(git config --file "${HOME}/.gitconfig.local" user.name 2>/dev/null || true)"
+        GIT_EMAIL="$(git config --file "${HOME}/.gitconfig.local" user.email 2>/dev/null || true)"
 
         if [ -z "$GIT_NAME" ] || [ -z "$GIT_EMAIL" ]; then
             echo "  No GPG key found, but git user.name/user.email are not configured yet."
