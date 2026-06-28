@@ -81,6 +81,7 @@ setup_gpg_agent_conf() {
     section "Security — GPG Agent"
 
     mkdir -p "${HOME}/.gnupg"
+    chmod 700 "${HOME}/.gnupg"
     local GPG_AGENT_CONF="${HOME}/.gnupg/gpg-agent.conf"
     local PINENTRY_PATH
 
