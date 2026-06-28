@@ -33,7 +33,6 @@ zinit light zsh-users/zsh-syntax-highlighting
 zinit light zsh-users/zsh-autosuggestions
 zinit light zsh-users/zsh-completions
 zinit ice as"completion"; zinit snippet "https://raw.githubusercontent.com/docker/cli/master/contrib/completion/zsh/_docker"
-zinit ice as"completion"; zinit snippet "https://raw.githubusercontent.com/docker/compose/main/contrib/completion/zsh/_docker-compose"
 
 # -- Completions
 autoload -Uz compinit && compinit
