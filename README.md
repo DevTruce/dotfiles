@@ -65,7 +65,7 @@ The installer is fully **idempotent**: every step checks whether a tool or confi
 | lazygit                        | Terminal UI for git                                                      |
 | gh (GitHub CLI)                | GitHub operations (PRs, issues, repos) from the terminal                 |
 | pnpm                           | Fast, disk-efficient Node.js package manager                             |
-| SSH + GPG keys | _(personal)_ SSH key for GitHub auth; GPG key for commit and tag signing |
+| SSH + GPG keys (ed25519 / GPG) | _(personal)_ SSH key for GitHub auth; GPG key for commit and tag signing |
 | pinentry-mac / pinentry-curses | _(personal)_ GPG passphrase prompt (GUI on macOS, terminal on Linux)     |
 | gpg-agent                      | _(personal)_ Passphrase caching for GPG and SSH keys (SSH support: Linux only) |
 | Claude Code CLI                | _(personal)_ Terminal AI coding assistant                                |
@@ -193,7 +193,7 @@ dotfiles/
 │   ├── MesloLGS NF Italic.ttf
 │   └── MesloLGS NF Bold Italic.ttf
 ├── scripts/                    # modular installer components
-│   ├── helpers.sh              # section() output helper and detect_os()
+│   ├── helpers.sh              # output helpers (section, step, ok, skip, warn, note, link) and detect_os()
 │   ├── package-managers.sh     # setup_homebrew, setup_apt
 │   ├── shell.sh                # setup_zsh
 │   ├── version-control.sh      # setup_git, setup_git_lfs
