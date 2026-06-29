@@ -82,3 +82,109 @@ setup_zoxide() {
         ok "zoxide installed."
     fi
 }
+
+# -- ripgrep
+
+setup_ripgrep() {
+    section "Utilities — ripgrep"
+
+    if command -v rg >/dev/null 2>&1; then
+        skip "ripgrep is already installed."
+    else
+        step "Installing ripgrep..."
+        case "$OS" in
+            macos) brew install ripgrep ;;
+            *)     sudo apt install ripgrep -y ;;
+        esac
+        ok "ripgrep installed."
+    fi
+}
+
+# -- bat
+
+setup_bat() {
+    section "Utilities — bat"
+
+    # On Ubuntu/Debian, bat is installed as 'batcat' due to a naming conflict
+    local _bat_cmd
+    case "$OS" in
+        macos) _bat_cmd="bat" ;;
+        *)     _bat_cmd="batcat" ;;
+    esac
+
+    if command -v "$_bat_cmd" >/dev/null 2>&1; then
+        skip "bat is already installed."
+    else
+        step "Installing bat..."
+        case "$OS" in
+            macos) brew install bat ;;
+            *)     sudo apt install bat -y ;;
+        esac
+        ok "bat installed."
+    fi
+}
+
+# -- lazygit
+
+setup_lazygit() {
+    section "Utilities — lazygit"
+
+    if command -v lazygit >/dev/null 2>&1; then
+        skip "lazygit is already installed."
+    else
+        step "Installing lazygit..."
+        case "$OS" in
+            macos)
+                brew install lazygit
+                ;;
+            *)
+                # lazygit not available in Ubuntu 22.04 apt repos; pull latest from GitHub
+                local _arch _version
+                case "$(uname -m)" in
+                    aarch64) _arch="arm64" ;;
+                    *)       _arch="x86_64" ;;
+                esac
+                _version="$(curl -fsSL https://api.github.com/repos/jesseduffield/lazygit/releases/latest \
+                    | grep '"tag_name"' | sed 's/.*"v\([^"]*\)".*/\1/')"
+                curl -fLo /tmp/lazygit.tar.gz \
+                    "https://github.com/jesseduffield/lazygit/releases/download/v${_version}/lazygit_${_version}_Linux_${_arch}.tar.gz"
+                tar -xzf /tmp/lazygit.tar.gz -C "${HOME}/.local/bin/" lazygit
+                rm -f /tmp/lazygit.tar.gz
+                ;;
+        esac
+        ok "lazygit installed."
+    fi
+}
+
+# -- gh (GitHub CLI)
+
+setup_gh() {
+    section "Utilities — gh (GitHub CLI)"
+
+    if command -v gh >/dev/null 2>&1; then
+        skip "gh is already installed."
+    else
+        step "Installing gh (GitHub CLI)..."
+        case "$OS" in
+            macos)
+                brew install gh
+                ;;
+            *)
+                # apt ships an older gh; pull latest from GitHub releases
+                local _arch _version
+                case "$(uname -m)" in
+                    aarch64) _arch="arm64" ;;
+                    *)       _arch="amd64" ;;
+                esac
+                _version="$(curl -fsSL https://api.github.com/repos/cli/cli/releases/latest \
+                    | grep '"tag_name"' | sed 's/.*"v\([^"]*\)".*/\1/')"
+                curl -fLo /tmp/gh.tar.gz \
+                    "https://github.com/cli/cli/releases/download/v${_version}/gh_${_version}_linux_${_arch}.tar.gz"
+                tar -xzf /tmp/gh.tar.gz --strip-components=2 -C "${HOME}/.local/bin/" \
+                    "gh_${_version}_linux_${_arch}/bin/gh"
+                rm -f /tmp/gh.tar.gz
+                ;;
+        esac
+        ok "gh installed."
+    fi
+}

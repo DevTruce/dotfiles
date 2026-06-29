@@ -44,9 +44,14 @@ setup_macos() {
     setup_git_lfs
     setup_zsh_plugins
     setup_nvm
+    setup_pnpm
     setup_tree
     setup_fzf
     setup_zoxide
+    setup_ripgrep
+    setup_bat
+    setup_lazygit
+    setup_gh
     setup_dotfiles
     if [ "$PERSONAL_MACHINE" = "y" ]; then
         setup_gpg_agent_conf
@@ -65,9 +70,14 @@ setup_linux() {
     setup_git_lfs
     setup_zsh_plugins
     setup_nvm
+    setup_pnpm
     setup_tree
     setup_fzf
     setup_zoxide
+    setup_ripgrep
+    setup_bat
+    setup_lazygit
+    setup_gh
     setup_dotfiles
     if [ "$PERSONAL_MACHINE" = "y" ]; then
         setup_gpg_agent_conf

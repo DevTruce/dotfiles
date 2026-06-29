@@ -57,6 +57,20 @@ setup_nvm() {
     set -u
 }
 
+# -- pnpm
+
+setup_pnpm() {
+    section "Dev Environment — pnpm"
+
+    if command -v pnpm >/dev/null 2>&1; then
+        skip "pnpm is already installed."
+    else
+        step "Installing pnpm..."
+        npm install -g pnpm
+        ok "pnpm installed."
+    fi
+}
+
 # -- Claude Code CLI
 
 setup_claude() {

@@ -60,6 +60,11 @@ The installer is fully **idempotent**: every step checks whether a tool or confi
 | tree                           | Directory tree display utility                                           |
 | fzf                            | Fuzzy finder — CTRL-R history, CTRL-T file picker, ALT-C cd             |
 | zoxide                         | Smart `cd` — jump to frecent dirs with `z`, interactive with `zi`       |
+| ripgrep (rg)                   | Fast grep replacement with better defaults                               |
+| bat                            | `cat` with syntax highlighting and git integration                       |
+| lazygit                        | Terminal UI for git                                                      |
+| gh (GitHub CLI)                | GitHub operations (PRs, issues, repos) from the terminal                 |
+| pnpm                           | Fast, disk-efficient Node.js package manager                             |
 | SSH key (ed25519)              | _(personal)_ Generated and printed for adding to GitHub                  |
 | GPG key + gpg-agent            | _(personal)_ Commit signing key, agent configured for passphrase caching |
 | pinentry-mac / pinentry-curses | _(personal)_ GPG passphrase prompt (GUI on macOS, terminal on Linux)     |

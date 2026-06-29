@@ -111,6 +111,10 @@ alias dcl="docker compose logs -f"
 # -- npm
 alias nrd="npm run dev"
 
+# -- bat (installed as batcat on Ubuntu/Debian)
+alias bat="batcat"
+alias cat="batcat"
+
 # ─────────────────────────────────────────
 # fzf
 # ─────────────────────────────────────────

@@ -93,6 +93,9 @@ alias dcl="docker compose logs -f"
 # -- npm
 alias nrd="npm run dev"
 
+# -- bat
+alias cat="bat"
+
 # ─────────────────────────────────────────
 # fzf
 # ─────────────────────────────────────────
