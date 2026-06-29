@@ -103,6 +103,21 @@ _brew() {
     fi
 }
 
+_npm() {
+    local _log _pid
+    _log="$(mktemp)"
+    npm "$@" > "$_log" 2>&1 &
+    _pid=$!
+    _spinner "$_pid"
+    if wait "$_pid"; then
+        rm -f "$_log"
+    else
+        cat "$_log"
+        rm -f "$_log"
+        return 1
+    fi
+}
+
 # -- OS Detection
 
 detect_os() {

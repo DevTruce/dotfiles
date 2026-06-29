@@ -80,7 +80,7 @@ setup_pnpm() {
         skip "pnpm is already installed."
     else
         step "Installing pnpm"
-        npm install -g pnpm
+        _npm install -g pnpm
         ok "pnpm installed."
     fi
 }
@@ -98,8 +98,7 @@ setup_claude() {
         skip "Claude Code is already installed."
     else
         step "Installing Claude Code CLI"
-        npm install -g @anthropic-ai/claude-code
-        echo ""
+        _npm install -g @anthropic-ai/claude-code
         ok "Claude Code installed."
     fi
 }

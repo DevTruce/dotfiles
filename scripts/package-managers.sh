@@ -34,6 +34,7 @@ setup_homebrew() {
 
     step "Fetching latest Homebrew updates"
     _brew update
+    ok "Homebrew updated."
 
     step "Upgrading outdated packages"
     # || true prevents a single failed formula from aborting the installer
@@ -55,6 +56,7 @@ setup_apt() {
 
     step "Refreshing package lists"
     _apt update
+    ok "Package lists refreshed."
 
     if ! command -v curl >/dev/null 2>&1; then
         step "Installing curl"
