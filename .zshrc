@@ -91,15 +91,14 @@ load-nvmrc
 # ─────────────────────────────────────────
 
 if [[ "$OSTYPE" != "darwin"* ]]; then
-  # -- SSH via GPG Agent
-  # gpg-agent caches the SSH key passphrase — only prompted on first use or after TTL expiry
+  # -- gpg-agent handles both SSH and GPG passphrase caching on Linux
   if command -v gpgconf >/dev/null 2>&1; then
     export SSH_AUTH_SOCK="$(gpgconf --list-dirs agent-ssh-socket)"
     gpgconf --launch gpg-agent 2>/dev/null
   fi
-
-  # tells pinentry-curses which terminal to render the passphrase prompt into
   export GPG_TTY=$TTY
+  # push the current terminal into the running daemon so pinentry-curses can find it
+  gpg-connect-agent updatestartuptty /bye >/dev/null 2>&1
 fi
 
 # ─────────────────────────────────────────

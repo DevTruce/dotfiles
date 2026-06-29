@@ -51,13 +51,21 @@ setup_ssh_key() {
     if [ "$OS" != "macos" ] && command -v gpgconf >/dev/null 2>&1; then
         local _agent_sock
         _agent_sock="$(gpgconf --list-dirs agent-ssh-socket)"
+        export GPG_TTY="$(tty)"
+        gpgconf --launch gpg-agent 2>/dev/null
+        gpg-connect-agent updatestartuptty /bye >/dev/null 2>&1
+
         if SSH_AUTH_SOCK="$_agent_sock" ssh-add -l 2>/dev/null | grep -qF "$SSH_KEY"; then
             skip "SSH key already registered with gpg-agent."
         else
             step "Registering SSH key with gpg-agent for passphrase caching..."
             note "You will be prompted for the key passphrase via pinentry."
-            SSH_AUTH_SOCK="$_agent_sock" ssh-add "$SSH_KEY"
-            ok "SSH key registered. Passphrase cached for 8 hours."
+            if SSH_AUTH_SOCK="$_agent_sock" ssh-add "$SSH_KEY"; then
+                ok "SSH key registered. Passphrase cached for 8 hours."
+            else
+                warn "Could not register SSH key with gpg-agent automatically."
+                note "Open a new terminal and run: ssh-add ~/.ssh/id_ed25519"
+            fi
         fi
     fi
 }
@@ -182,6 +190,7 @@ EOF
         esac
         step "Restarting gpg-agent to apply new configuration..."
         gpgconf --kill gpg-agent 2>/dev/null || true
+        gpgconf --launch gpg-agent 2>/dev/null
         ok "gpg-agent configured and restarted."
     fi
 }
