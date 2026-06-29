@@ -62,6 +62,10 @@ setup_nvm() {
 setup_pnpm() {
     section "Dev Environment — pnpm"
 
+    set +u
+    [ -s "${NVM_DIR:-$HOME/.nvm}/nvm.sh" ] && \. "${NVM_DIR:-$HOME/.nvm}/nvm.sh"
+    set -u
+
     if command -v pnpm >/dev/null 2>&1; then
         skip "pnpm is already installed."
     else
@@ -75,6 +79,10 @@ setup_pnpm() {
 
 setup_claude() {
     section "Dev Environment — Claude Code CLI"
+
+    set +u
+    [ -s "${NVM_DIR:-$HOME/.nvm}/nvm.sh" ] && \. "${NVM_DIR:-$HOME/.nvm}/nvm.sh"
+    set -u
 
     if command -v claude >/dev/null 2>&1; then
         skip "Claude Code is already installed."
