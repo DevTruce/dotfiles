@@ -30,11 +30,11 @@ setup_homebrew() {
     fi
 
     step "Fetching latest Homebrew updates..."
-    brew update --quiet
+    _brew update
 
     step "Upgrading outdated packages..."
     # || true prevents a single failed formula from aborting the installer
-    brew upgrade --quiet || true
+    _brew upgrade || true
     ok "Packages up to date."
 }
 
@@ -49,15 +49,15 @@ setup_apt() {
     fi
 
     step "Refreshing package lists..."
-    DEBIAN_FRONTEND=noninteractive sudo apt-get update -qq
+    _apt update
 
     if ! command -v curl >/dev/null 2>&1; then
         step "Installing curl..."
-        DEBIAN_FRONTEND=noninteractive sudo apt-get install -y -qq curl
+        _apt install -y curl
         ok "curl installed."
     fi
 
     step "Upgrading outdated packages..."
-    DEBIAN_FRONTEND=noninteractive sudo apt-get upgrade -y -qq
+    _apt upgrade -y
     ok "Packages up to date."
 }

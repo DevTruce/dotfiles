@@ -52,6 +52,32 @@ link() {
     printf "  ${CYAN}%-28s${RESET}${DIM} → ${RESET}%s\n" "$1" "$2"
 }
 
+# -- Silent package manager wrappers: capture all output, surface it only on failure
+
+_apt() {
+    local _log
+    _log="$(mktemp)"
+    if DEBIAN_FRONTEND=noninteractive sudo apt-get "$@" > "$_log" 2>&1; then
+        rm -f "$_log"
+    else
+        cat "$_log"
+        rm -f "$_log"
+        return 1
+    fi
+}
+
+_brew() {
+    local _log
+    _log="$(mktemp)"
+    if brew "$@" > "$_log" 2>&1; then
+        rm -f "$_log"
+    else
+        cat "$_log"
+        rm -f "$_log"
+        return 1
+    fi
+}
+
 # -- OS Detection
 
 detect_os() {

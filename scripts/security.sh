@@ -12,8 +12,8 @@ setup_gpg_tools() {
     else
         step "Installing gpg..."
         case "$OS" in
-            macos) brew install --quiet gnupg ;;
-            *)     DEBIAN_FRONTEND=noninteractive sudo apt-get install -y -qq gnupg ;;
+            macos) _brew install gnupg ;;
+            *)     _apt install -y gnupg ;;
         esac
         ok "gpg installed."
     fi
@@ -143,7 +143,7 @@ setup_gpg_agent_conf() {
         macos)
             if ! command -v pinentry-mac >/dev/null 2>&1; then
                 step "Installing pinentry-mac..."
-                brew install --quiet pinentry-mac
+                _brew install pinentry-mac
                 ok "pinentry-mac installed."
             fi
             PINENTRY_PATH="$(command -v pinentry-mac)"
@@ -151,7 +151,7 @@ setup_gpg_agent_conf() {
         *)
             if ! command -v pinentry-curses >/dev/null 2>&1; then
                 step "Installing pinentry-curses..."
-                DEBIAN_FRONTEND=noninteractive sudo apt-get install -y -qq pinentry-curses
+                _apt install -y pinentry-curses
                 ok "pinentry-curses installed."
             fi
             PINENTRY_PATH="$(command -v pinentry-curses)"

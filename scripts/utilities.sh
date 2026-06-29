@@ -12,8 +12,8 @@ setup_tree() {
     else
         step "Installing tree..."
         case "$OS" in
-            macos) brew install --quiet tree ;;
-            *)     DEBIAN_FRONTEND=noninteractive sudo apt-get install -y -qq tree ;;
+            macos) _brew install tree ;;
+            *)     _apt install -y tree ;;
         esac
         ok "tree installed."
     fi
@@ -30,7 +30,7 @@ setup_fzf() {
         step "Installing fzf..."
         case "$OS" in
             macos)
-                brew install fzf
+                _brew install fzf
                 ;;
             *)
                 # apt ships fzf 0.29–0.44 which predates `fzf --zsh`; pull latest from GitHub
@@ -63,7 +63,7 @@ setup_zoxide() {
         step "Installing zoxide..."
         case "$OS" in
             macos)
-                brew install zoxide
+                _brew install zoxide
                 ;;
             *)
                 # zoxide not available in Ubuntu 22.04 apt repos; pull latest from GitHub
@@ -95,8 +95,8 @@ setup_ripgrep() {
     else
         step "Installing ripgrep..."
         case "$OS" in
-            macos) brew install --quiet ripgrep ;;
-            *)     DEBIAN_FRONTEND=noninteractive sudo apt-get install -y -qq ripgrep ;;
+            macos) _brew install ripgrep ;;
+            *)     _apt install -y ripgrep ;;
         esac
         ok "ripgrep installed."
     fi
@@ -119,8 +119,8 @@ setup_bat() {
     else
         step "Installing bat..."
         case "$OS" in
-            macos) brew install --quiet bat ;;
-            *)     DEBIAN_FRONTEND=noninteractive sudo apt-get install -y -qq bat ;;
+            macos) _brew install bat ;;
+            *)     _apt install -y bat ;;
         esac
         ok "bat installed."
     fi
@@ -137,7 +137,7 @@ setup_lazygit() {
         step "Installing lazygit..."
         case "$OS" in
             macos)
-                brew install --quiet lazygit
+                _brew install lazygit
                 ;;
             *)
                 # lazygit not available in Ubuntu 22.04 apt repos; pull latest from GitHub
@@ -170,7 +170,7 @@ setup_gh() {
         step "Installing gh (GitHub CLI)..."
         case "$OS" in
             macos)
-                brew install --quiet gh
+                _brew install gh
                 ;;
             *)
                 # apt ships an older gh; pull latest from GitHub releases

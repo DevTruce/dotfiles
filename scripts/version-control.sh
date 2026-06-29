@@ -12,8 +12,8 @@ setup_git() {
     else
         step "Installing git..."
         case "$OS" in
-            macos) brew install --quiet git ;;
-            *)     DEBIAN_FRONTEND=noninteractive sudo apt-get install -y -qq git ;;
+            macos) _brew install git ;;
+            *)     _apt install -y git ;;
         esac
         ok "git installed."
     fi
@@ -89,8 +89,8 @@ setup_git_lfs() {
     else
         step "Installing git-lfs..."
         case "$OS" in
-            macos) brew install --quiet git-lfs ;;
-            *)     DEBIAN_FRONTEND=noninteractive sudo apt-get install -y -qq git-lfs ;;
+            macos) _brew install git-lfs ;;
+            *)     _apt install -y git-lfs ;;
         esac
         ok "git-lfs installed."
     fi

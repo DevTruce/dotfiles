@@ -15,7 +15,7 @@ setup_zsh() {
                 skip "zsh is already installed via Homebrew."
             else
                 step "Installing zsh via Homebrew..."
-                brew install --quiet zsh
+                _brew install zsh
                 ok "zsh installed."
             fi
 
@@ -33,7 +33,7 @@ setup_zsh() {
                 skip "zsh is already installed."
             else
                 step "Installing zsh..."
-                DEBIAN_FRONTEND=noninteractive sudo apt-get install -y -qq zsh
+                _apt install -y zsh
                 ok "zsh installed."
             fi
 
