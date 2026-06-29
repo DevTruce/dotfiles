@@ -55,7 +55,9 @@ setup_ssh_key() {
         gpgconf --launch gpg-agent 2>/dev/null
         gpg-connect-agent updatestartuptty /bye >/dev/null 2>&1
 
-        if SSH_AUTH_SOCK="$_agent_sock" ssh-add -l 2>/dev/null | grep -qF "$SSH_KEY"; then
+        local _fingerprint
+        _fingerprint="$(ssh-keygen -lf "${SSH_KEY}.pub" 2>/dev/null | awk '{print $2}')"
+        if [ -n "$_fingerprint" ] && SSH_AUTH_SOCK="$_agent_sock" ssh-add -l 2>/dev/null | grep -qF "$_fingerprint"; then
             skip "SSH key already registered with gpg-agent."
         else
             step "Registering SSH key with gpg-agent for passphrase caching..."
