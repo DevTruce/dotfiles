@@ -49,6 +49,11 @@ note() {
     printf "       ${DIM}%s${RESET}\n" "$1"
 }
 
+# interactive password/passphrase prompt incoming
+prompt() {
+    printf "  ${CYAN}🔒${RESET}  %s\n" "$1"
+}
+
 # symlink row: cyan source → dim arrow → default destination
 link() {
     printf "  ${CYAN}%-28s${RESET}${DIM} → ${RESET}%s\n" "$1" "$2"

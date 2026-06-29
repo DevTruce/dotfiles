@@ -30,12 +30,19 @@ setup_ssh_key() {
         skip "SSH key already exists at ${SSH_KEY}.pub — skipping generation."
     else
         step "Generating a new ed25519 SSH key"
-        note "You will be prompted to set a passphrase to protect your private key."
+        prompt "Enter a passphrase to protect your private key."
         mkdir -p "${HOME}/.ssh"
         chmod 700 "${HOME}/.ssh"
-        ssh-keygen -t ed25519 -f "$SSH_KEY" -C "$(git config --global user.email 2>/dev/null || echo "$(whoami)@$(hostname)")"
-        echo ""
-        ok "SSH key generated."
+        local _keygen_log
+        _keygen_log="$(mktemp)"
+        if ssh-keygen -t ed25519 -f "$SSH_KEY" -C "$(git config --global user.email 2>/dev/null || echo "$(whoami)@$(hostname)")" > "$_keygen_log" 2>&1; then
+            rm -f "$_keygen_log"
+            ok "SSH key generated."
+        else
+            cat "$_keygen_log"
+            rm -f "$_keygen_log"
+            return 1
+        fi
 
         echo ""
         note "Fingerprint (for your records):"
@@ -61,7 +68,6 @@ setup_ssh_key() {
             skip "SSH key already registered with gpg-agent."
         else
             step "Registering SSH key with gpg-agent for passphrase caching"
-            note "You will be prompted for the key passphrase via pinentry."
             if SSH_AUTH_SOCK="$_agent_sock" ssh-add "$SSH_KEY"; then
                 ok "SSH key registered. Passphrase cached for 8 hours."
             else
@@ -91,12 +97,18 @@ setup_gpg_key() {
         fi
 
         step "Generating a GPG key for ${GIT_NAME} <${GIT_EMAIL}>"
-        note "You will be prompted to enter a passphrase to protect your private key."
-        echo ""
+        local _gpg_log
+        _gpg_log="$(mktemp)"
         # passphrase is entered interactively via pinentry — never stored in the script,
         # shell history, or the process list
-        gpg --quick-gen-key "${GIT_NAME} <${GIT_EMAIL}>" default default
-        ok "GPG key generated."
+        if gpg --quick-gen-key "${GIT_NAME} <${GIT_EMAIL}>" default default > "$_gpg_log" 2>&1; then
+            rm -f "$_gpg_log"
+            ok "GPG key generated."
+        else
+            cat "$_gpg_log"
+            rm -f "$_gpg_log"
+            return 1
+        fi
     fi
 
     local key_id
