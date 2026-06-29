@@ -7,6 +7,11 @@
 setup_homebrew() {
     section "Package Manager — Homebrew"
 
+    if [ "$OS" != "macos" ]; then
+        warn "setup_homebrew is only supported on macOS."
+        return 1
+    fi
+
     if command -v brew >/dev/null 2>&1; then
         skip "Homebrew is already installed."
     else
@@ -28,6 +33,11 @@ setup_homebrew() {
 
 setup_apt() {
     section "Package Manager — apt"
+
+    if [ "$OS" = "macos" ]; then
+        warn "setup_apt is only supported on Linux."
+        return 1
+    fi
 
     step "Refreshing package lists..."
     sudo apt update
