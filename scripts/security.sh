@@ -2,6 +2,23 @@
 # Security
 # ─────────────────────────────────────────
 
+# -- GPG Tools
+
+setup_gpg_tools() {
+    section "Security — GPG Tools"
+
+    if command -v gpg >/dev/null 2>&1; then
+        skip "gpg is already installed."
+    else
+        step "Installing gpg..."
+        case "$OS" in
+            macos) brew install gnupg ;;
+            *)     sudo apt install gnupg -y ;;
+        esac
+        ok "gpg installed."
+    fi
+}
+
 # -- SSH Key
 
 setup_ssh_key() {

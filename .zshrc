@@ -9,6 +9,12 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
 fi
 
 # ─────────────────────────────────────────
+# Path
+# ─────────────────────────────────────────
+
+export PATH="$HOME/.local/bin:$PATH"
+
+# ─────────────────────────────────────────
 # Plugin Manager (zinit)
 # ─────────────────────────────────────────
 
@@ -134,10 +140,3 @@ fi
 if command -v zoxide >/dev/null 2>&1; then
   eval "$(zoxide init zsh)"
 fi
-
-# ─────────────────────────────────────────
-# Path
-# ─────────────────────────────────────────
-
-# -- Claude Code CLI
-export PATH="$HOME/.local/bin:$PATH"

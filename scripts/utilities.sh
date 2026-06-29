@@ -43,6 +43,7 @@ setup_fzf() {
                     | grep '"tag_name"' | sed 's/.*"v\([^"]*\)".*/\1/')"
                 curl -fLo /tmp/fzf.tar.gz \
                     "https://github.com/junegunn/fzf/releases/download/v${_version}/fzf-${_version}-linux_${_arch}.tar.gz"
+                mkdir -p "${HOME}/.local/bin"
                 tar -xzf /tmp/fzf.tar.gz -C "${HOME}/.local/bin/" fzf
                 rm -f /tmp/fzf.tar.gz
                 ;;
@@ -75,6 +76,7 @@ setup_zoxide() {
                     | grep '"tag_name"' | sed 's/.*"v\([^"]*\)".*/\1/')"
                 curl -fLo /tmp/zoxide.tar.gz \
                     "https://github.com/ajeetdsouza/zoxide/releases/download/v${_version}/zoxide-${_version}-${_arch}.tar.gz"
+                mkdir -p "${HOME}/.local/bin"
                 tar -xzf /tmp/zoxide.tar.gz -C "${HOME}/.local/bin/" zoxide
                 rm -f /tmp/zoxide.tar.gz
                 ;;
@@ -148,6 +150,7 @@ setup_lazygit() {
                     | grep '"tag_name"' | sed 's/.*"v\([^"]*\)".*/\1/')"
                 curl -fLo /tmp/lazygit.tar.gz \
                     "https://github.com/jesseduffield/lazygit/releases/download/v${_version}/lazygit_${_version}_Linux_${_arch}.tar.gz"
+                mkdir -p "${HOME}/.local/bin"
                 tar -xzf /tmp/lazygit.tar.gz -C "${HOME}/.local/bin/" lazygit
                 rm -f /tmp/lazygit.tar.gz
                 ;;
@@ -180,6 +183,7 @@ setup_gh() {
                     | grep '"tag_name"' | sed 's/.*"v\([^"]*\)".*/\1/')"
                 curl -fLo /tmp/gh.tar.gz \
                     "https://github.com/cli/cli/releases/download/v${_version}/gh_${_version}_linux_${_arch}.tar.gz"
+                mkdir -p "${HOME}/.local/bin"
                 tar -xzf /tmp/gh.tar.gz --strip-components=2 -C "${HOME}/.local/bin/" \
                     "gh_${_version}_linux_${_arch}/bin/gh"
                 rm -f /tmp/gh.tar.gz

@@ -54,6 +54,7 @@ setup_macos() {
     setup_gh
     setup_dotfiles
     if [ "$PERSONAL_MACHINE" = "y" ]; then
+        setup_gpg_tools
         setup_gpg_agent_conf
         setup_ssh_key
         setup_gpg_key
@@ -80,6 +81,7 @@ setup_linux() {
     setup_gh
     setup_dotfiles
     if [ "$PERSONAL_MACHINE" = "y" ]; then
+        setup_gpg_tools
         setup_gpg_agent_conf
         setup_ssh_key
         setup_gpg_key
