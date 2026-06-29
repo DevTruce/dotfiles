@@ -10,7 +10,7 @@ setup_tree() {
     if command -v tree >/dev/null 2>&1; then
         skip "tree is already installed."
     else
-        step "Installing tree..."
+        step "Installing tree"
         case "$OS" in
             macos) _brew install tree ;;
             *)     _apt install -y tree ;;
@@ -27,7 +27,7 @@ setup_fzf() {
     if command -v fzf >/dev/null 2>&1; then
         skip "fzf is already installed."
     else
-        step "Installing fzf..."
+        step "Installing fzf"
         case "$OS" in
             macos)
                 _brew install fzf
@@ -60,7 +60,7 @@ setup_zoxide() {
     if command -v zoxide >/dev/null 2>&1; then
         skip "zoxide is already installed."
     else
-        step "Installing zoxide..."
+        step "Installing zoxide"
         case "$OS" in
             macos)
                 _brew install zoxide
@@ -93,7 +93,7 @@ setup_ripgrep() {
     if command -v rg >/dev/null 2>&1; then
         skip "ripgrep is already installed."
     else
-        step "Installing ripgrep..."
+        step "Installing ripgrep"
         case "$OS" in
             macos) _brew install ripgrep ;;
             *)     _apt install -y ripgrep ;;
@@ -117,7 +117,7 @@ setup_bat() {
     if command -v "$_bat_cmd" >/dev/null 2>&1; then
         skip "bat is already installed."
     else
-        step "Installing bat..."
+        step "Installing bat"
         case "$OS" in
             macos) _brew install bat ;;
             *)     _apt install -y bat ;;
@@ -134,7 +134,7 @@ setup_lazygit() {
     if command -v lazygit >/dev/null 2>&1; then
         skip "lazygit is already installed."
     else
-        step "Installing lazygit..."
+        step "Installing lazygit"
         case "$OS" in
             macos)
                 _brew install lazygit
@@ -167,7 +167,7 @@ setup_gh() {
     if command -v gh >/dev/null 2>&1; then
         skip "gh is already installed."
     else
-        step "Installing gh (GitHub CLI)..."
+        step "Installing gh (GitHub CLI)"
         case "$OS" in
             macos)
                 _brew install gh

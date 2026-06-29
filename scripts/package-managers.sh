@@ -15,7 +15,7 @@ setup_homebrew() {
     if command -v brew >/dev/null 2>&1; then
         skip "Homebrew is already installed."
     else
-        step "Installing Homebrew..."
+        step "Installing Homebrew"
         local _brew_log _brew_pid
         _brew_log="$(mktemp)"
         /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)" > "$_brew_log" 2>&1 &
@@ -32,10 +32,10 @@ setup_homebrew() {
         fi
     fi
 
-    step "Fetching latest Homebrew updates..."
+    step "Fetching latest Homebrew updates"
     _brew update
 
-    step "Upgrading outdated packages..."
+    step "Upgrading outdated packages"
     # || true prevents a single failed formula from aborting the installer
     _brew upgrade || true
     ok "Packages up to date."
@@ -51,16 +51,18 @@ setup_apt() {
         return 1
     fi
 
-    step "Refreshing package lists..."
+    sudo -v
+
+    step "Refreshing package lists"
     _apt update
 
     if ! command -v curl >/dev/null 2>&1; then
-        step "Installing curl..."
+        step "Installing curl"
         _apt install -y curl
         ok "curl installed."
     fi
 
-    step "Upgrading outdated packages..."
+    step "Upgrading outdated packages"
     _apt upgrade -y
     ok "Packages up to date."
 }

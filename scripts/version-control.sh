@@ -10,7 +10,7 @@ setup_git() {
     if command -v git >/dev/null 2>&1; then
         skip "git is already installed."
     else
-        step "Installing git..."
+        step "Installing git"
         case "$OS" in
             macos) _brew install git ;;
             *)     _apt install -y git ;;
@@ -30,7 +30,7 @@ setup_git() {
         skip "Git identity already configured (${existing_name} <${existing_email}>)."
     else
         echo ""
-        step "Setting up git identity in ~/.gitconfig.local..."
+        step "Setting up git identity in ~/.gitconfig.local"
         note "This file is not tracked in the repo."
         echo ""
 
@@ -87,7 +87,7 @@ setup_git_lfs() {
     if command -v git-lfs >/dev/null 2>&1; then
         skip "git-lfs is already installed."
     else
-        step "Installing git-lfs..."
+        step "Installing git-lfs"
         case "$OS" in
             macos) _brew install git-lfs ;;
             *)     _apt install -y git-lfs ;;
@@ -98,7 +98,7 @@ setup_git_lfs() {
     if git config --global --get filter.lfs.process >/dev/null 2>&1; then
         skip "git-lfs hooks are already registered globally."
     else
-        step "Registering git-lfs hooks globally..."
+        step "Registering git-lfs hooks globally"
         git lfs install
         ok "git-lfs hooks registered."
     fi

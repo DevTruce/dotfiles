@@ -10,7 +10,7 @@ setup_gpg_tools() {
     if command -v gpg >/dev/null 2>&1; then
         skip "gpg is already installed."
     else
-        step "Installing gpg..."
+        step "Installing gpg"
         case "$OS" in
             macos) _brew install gnupg ;;
             *)     _apt install -y gnupg ;;
@@ -29,7 +29,7 @@ setup_ssh_key() {
     if [ -f "${SSH_KEY}.pub" ]; then
         skip "SSH key already exists at ${SSH_KEY}.pub — skipping generation."
     else
-        step "Generating a new ed25519 SSH key..."
+        step "Generating a new ed25519 SSH key"
         note "You will be prompted to set a passphrase to protect your private key."
         mkdir -p "${HOME}/.ssh"
         chmod 700 "${HOME}/.ssh"
@@ -60,7 +60,7 @@ setup_ssh_key() {
         if [ -n "$_fingerprint" ] && SSH_AUTH_SOCK="$_agent_sock" ssh-add -l 2>/dev/null | grep -qF "$_fingerprint"; then
             skip "SSH key already registered with gpg-agent."
         else
-            step "Registering SSH key with gpg-agent for passphrase caching..."
+            step "Registering SSH key with gpg-agent for passphrase caching"
             note "You will be prompted for the key passphrase via pinentry."
             if SSH_AUTH_SOCK="$_agent_sock" ssh-add "$SSH_KEY"; then
                 ok "SSH key registered. Passphrase cached for 8 hours."
@@ -90,7 +90,7 @@ setup_gpg_key() {
             return
         fi
 
-        step "Generating a GPG key for ${GIT_NAME} <${GIT_EMAIL}>..."
+        step "Generating a GPG key for ${GIT_NAME} <${GIT_EMAIL}>"
         note "You will be prompted to enter a passphrase to protect your private key."
         echo ""
         # passphrase is entered interactively via pinentry — never stored in the script,
@@ -142,7 +142,7 @@ setup_gpg_agent_conf() {
     case "$OS" in
         macos)
             if ! command -v pinentry-mac >/dev/null 2>&1; then
-                step "Installing pinentry-mac..."
+                step "Installing pinentry-mac"
                 _brew install pinentry-mac
                 ok "pinentry-mac installed."
             fi
@@ -150,7 +150,7 @@ setup_gpg_agent_conf() {
             ;;
         *)
             if ! command -v pinentry-curses >/dev/null 2>&1; then
-                step "Installing pinentry-curses..."
+                step "Installing pinentry-curses"
                 _apt install -y pinentry-curses
                 ok "pinentry-curses installed."
             fi
@@ -171,7 +171,7 @@ setup_gpg_agent_conf() {
     if [ "$_skip_check" = "yes" ]; then
         skip "gpg-agent.conf is already configured (pinentry: ${PINENTRY_PATH})."
     else
-        step "Writing gpg-agent.conf..."
+        step "Writing gpg-agent.conf"
         note "Pinentry: ${PINENTRY_PATH}"
         case "$OS" in
             macos)
@@ -190,7 +190,7 @@ enable-ssh-support
 EOF
                 ;;
         esac
-        step "Restarting gpg-agent to apply new configuration..."
+        step "Restarting gpg-agent to apply new configuration"
         gpgconf --kill gpg-agent 2>/dev/null || true
         gpgconf --launch gpg-agent 2>/dev/null
         ok "gpg-agent configured and restarted."

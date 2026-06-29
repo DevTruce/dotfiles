@@ -12,7 +12,7 @@ setup_zsh_plugins() {
     if [ -d "$ZINIT_HOME" ]; then
         skip "zinit is already installed."
     else
-        step "Installing zinit plugin manager..."
+        step "Installing zinit plugin manager"
         mkdir -p "$(dirname "$ZINIT_HOME")"
         git clone --depth 1 --quiet https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME"
         echo ""
@@ -32,7 +32,7 @@ setup_nvm() {
         skip "nvm is already installed."
     else
         note "Skipping shell profile changes — your .zshrc already includes the nvm loader."
-        step "Installing nvm (Node Version Manager)..."
+        step "Installing nvm (Node Version Manager)"
         # PROFILE=/dev/null prevents nvm's installer from modifying .zshrc,
         # since the nvm loader is already maintained in dotfiles
         local _nvm_log _nvm_pid
@@ -57,7 +57,7 @@ setup_nvm() {
     if nvm ls --no-colors 2>/dev/null | grep -q 'lts/\*'; then
         skip "Node.js LTS is already installed."
     else
-        step "Installing the latest Node.js LTS release..."
+        step "Installing the latest Node.js LTS release"
         nvm install --lts
         ok "Node.js LTS installed."
     fi
@@ -79,7 +79,7 @@ setup_pnpm() {
     if command -v pnpm >/dev/null 2>&1; then
         skip "pnpm is already installed."
     else
-        step "Installing pnpm..."
+        step "Installing pnpm"
         npm install -g pnpm
         ok "pnpm installed."
     fi
@@ -97,7 +97,7 @@ setup_claude() {
     if command -v claude >/dev/null 2>&1; then
         skip "Claude Code is already installed."
     else
-        step "Installing Claude Code CLI..."
+        step "Installing Claude Code CLI"
         npm install -g @anthropic-ai/claude-code
         echo ""
         ok "Claude Code installed."
