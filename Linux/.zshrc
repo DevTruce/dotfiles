@@ -84,10 +84,11 @@ load-nvmrc
 # SSH Agent
 # ─────────────────────────────────────────
 
-# -- Keychain
-# reuses one ssh-agent across all terminal sessions — avoids passphrase prompts on every new tab
-if command -v keychain >/dev/null 2>&1 && [ -f "${HOME}/.ssh/id_ed25519" ]; then
-  eval "$(keychain --eval --quiet ~/.ssh/id_ed25519)"
+# -- SSH via GPG Agent
+# gpg-agent handles SSH key caching with pinentry-curses — no passphrase per terminal
+if command -v gpgconf >/dev/null 2>&1; then
+  export SSH_AUTH_SOCK="$(gpgconf --list-dirs agent-ssh-socket)"
+  gpgconf --launch gpg-agent 2>/dev/null
 fi
 
 # ─────────────────────────────────────────

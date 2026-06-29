@@ -67,7 +67,6 @@ setup_linux() {
     setup_dotfiles
     if [ "$PERSONAL_MACHINE" = "y" ]; then
         setup_gpg_agent_conf
-        setup_keychain
         setup_ssh_key
         setup_gpg_key
         setup_claude

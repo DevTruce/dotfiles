@@ -30,6 +30,19 @@ setup_ssh_key() {
     echo ""
     cat "${SSH_KEY}.pub"
     echo ""
+
+    if [ "$OS" != "macos" ] && command -v gpgconf >/dev/null 2>&1; then
+        local _agent_sock
+        _agent_sock="$(gpgconf --list-dirs agent-ssh-socket)"
+        if SSH_AUTH_SOCK="$_agent_sock" ssh-add -l 2>/dev/null | grep -qF "$SSH_KEY"; then
+            skip "SSH key already registered with gpg-agent."
+        else
+            step "Registering SSH key with gpg-agent for passphrase caching..."
+            note "You will be prompted for the key passphrase via pinentry."
+            SSH_AUTH_SOCK="$_agent_sock" ssh-add "$SSH_KEY"
+            ok "SSH key registered. Passphrase cached for 8 hours."
+        fi
+    fi
 }
 
 # -- GPG Key
@@ -106,36 +119,41 @@ setup_gpg_agent_conf() {
             ;;
     esac
 
-    if grep -q "pinentry-program ${PINENTRY_PATH}" "$GPG_AGENT_CONF" 2>/dev/null; then
+    local _skip_check
+    case "$OS" in
+        macos)
+            _skip_check="$(grep -q "pinentry-program ${PINENTRY_PATH}" "$GPG_AGENT_CONF" 2>/dev/null && echo yes || echo no)"
+            ;;
+        *)
+            _skip_check="$(grep -q "enable-ssh-support" "$GPG_AGENT_CONF" 2>/dev/null && grep -q "pinentry-program ${PINENTRY_PATH}" "$GPG_AGENT_CONF" 2>/dev/null && echo yes || echo no)"
+            ;;
+    esac
+
+    if [ "$_skip_check" = "yes" ]; then
         skip "gpg-agent.conf is already configured (pinentry: ${PINENTRY_PATH})."
     else
         step "Writing gpg-agent.conf..."
         note "Pinentry: ${PINENTRY_PATH}"
-        cat > "$GPG_AGENT_CONF" <<EOF
+        case "$OS" in
+            macos)
+                cat > "$GPG_AGENT_CONF" <<EOF
 default-cache-ttl 28800
 max-cache-ttl 86400
 pinentry-program ${PINENTRY_PATH}
 EOF
+                ;;
+            *)
+                cat > "$GPG_AGENT_CONF" <<EOF
+default-cache-ttl 28800
+max-cache-ttl 86400
+pinentry-program ${PINENTRY_PATH}
+enable-ssh-support
+EOF
+                ;;
+        esac
         step "Restarting gpg-agent to apply new configuration..."
         gpgconf --kill gpg-agent 2>/dev/null || true
         ok "gpg-agent configured and restarted."
     fi
 }
 
-# -- Keychain
-
-setup_keychain() {
-    section "Security — Keychain (ssh-agent persistence)"
-
-    note "keychain keeps your SSH key loaded across terminal sessions,"
-    note "so you are not prompted for your passphrase on every new tab."
-    echo ""
-
-    if command -v keychain >/dev/null 2>&1; then
-        skip "keychain is already installed."
-    else
-        step "Installing keychain..."
-        sudo apt install keychain -y
-        ok "keychain installed."
-    fi
-}
