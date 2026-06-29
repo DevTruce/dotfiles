@@ -1,8 +1,7 @@
 # ─────────────────────────────────────────
-# Powerlevel10k
+# Instant Prompt
 # ─────────────────────────────────────────
 
-# -- Instant Prompt
 # must stay near the top — nothing requiring console input above this block
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
@@ -12,6 +11,7 @@ fi
 # Path
 # ─────────────────────────────────────────
 
+# -- prepend ~/.local/bin so user-installed binaries take precedence over system paths
 export PATH="$HOME/.local/bin:$PATH"
 
 # ─────────────────────────────────────────
@@ -31,29 +31,36 @@ autoload -Uz _zinit
 (( ${+_comps} )) && _comps[zinit]=_zinit
 
 # ─────────────────────────────────────────
-# Plugins
+# Shell Setup
 # ─────────────────────────────────────────
 
-# -- Community Plugins
+# -- Community
 zinit light zsh-users/zsh-syntax-highlighting
 zinit light zsh-users/zsh-autosuggestions
 zinit light zsh-users/zsh-completions
 zinit ice as"completion"; zinit snippet "https://raw.githubusercontent.com/docker/cli/master/contrib/completion/zsh/_docker"
 
-# -- Completions
-autoload -Uz compinit && compinit
-zinit cdreplay -q
-
 # -- Theme
 zinit ice depth=1
 zinit light romkatv/powerlevel10k
 
-# ─────────────────────────────────────────
-# Prompt
-# ─────────────────────────────────────────
+# -- Completions
+autoload -Uz compinit && compinit
+zinit cdreplay -q
 
+# -- Prompt
 # run `p10k configure` or edit ~/.p10k.zsh to customise
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+
+# -- fzf (CTRL-R, CTRL-T, ALT-C)
+if command -v fzf >/dev/null 2>&1; then
+  eval "$(fzf --zsh)"
+fi
+
+# -- zoxide (z, zi)
+if command -v zoxide >/dev/null 2>&1; then
+  eval "$(zoxide init zsh)"
+fi
 
 # ─────────────────────────────────────────
 # NVM
@@ -87,18 +94,18 @@ add-zsh-hook chpwd load-nvmrc
 load-nvmrc
 
 # ─────────────────────────────────────────
-# Platform
+# GPG Agent
 # ─────────────────────────────────────────
 
 if [[ "$OSTYPE" != "darwin"* ]]; then
-  # -- gpg-agent handles both SSH and GPG passphrase caching on Linux
+  # -- SSH + GPG passphrase caching on Linux
   if command -v gpgconf >/dev/null 2>&1; then
     export SSH_AUTH_SOCK="$(gpgconf --list-dirs agent-ssh-socket)"
     gpgconf --launch gpg-agent 2>/dev/null
+    # push the current terminal into the running daemon so pinentry-curses can find it
+    gpg-connect-agent updatestartuptty /bye >/dev/null 2>&1
   fi
   export GPG_TTY=$TTY
-  # push the current terminal into the running daemon so pinentry-curses can find it
-  gpg-connect-agent updatestartuptty /bye >/dev/null 2>&1
 fi
 
 # ─────────────────────────────────────────
@@ -122,22 +129,4 @@ else
     alias bat="batcat"
     alias cat="batcat"
   fi
-fi
-
-# ─────────────────────────────────────────
-# fzf
-# ─────────────────────────────────────────
-
-# -- Shell integration (CTRL-R, CTRL-T, ALT-C)
-if command -v fzf >/dev/null 2>&1; then
-  eval "$(fzf --zsh)"
-fi
-
-# ─────────────────────────────────────────
-# zoxide
-# ─────────────────────────────────────────
-
-# -- Smart cd (z, zi)
-if command -v zoxide >/dev/null 2>&1; then
-  eval "$(zoxide init zsh)"
 fi
