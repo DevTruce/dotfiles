@@ -50,3 +50,35 @@ setup_fzf() {
         ok "fzf installed."
     fi
 }
+
+# -- zoxide
+
+setup_zoxide() {
+    section "Utilities — zoxide"
+
+    if command -v zoxide >/dev/null 2>&1; then
+        skip "zoxide is already installed."
+    else
+        step "Installing zoxide..."
+        case "$OS" in
+            macos)
+                brew install zoxide
+                ;;
+            *)
+                # zoxide not available in Ubuntu 22.04 apt repos; pull latest from GitHub
+                local _arch _version
+                case "$(uname -m)" in
+                    aarch64) _arch="aarch64-unknown-linux-musl" ;;
+                    *)       _arch="x86_64-unknown-linux-musl" ;;
+                esac
+                _version="$(curl -fsSL https://api.github.com/repos/ajeetdsouza/zoxide/releases/latest \
+                    | grep '"tag_name"' | sed 's/.*"v\([^"]*\)".*/\1/')"
+                curl -fLo /tmp/zoxide.tar.gz \
+                    "https://github.com/ajeetdsouza/zoxide/releases/download/v${_version}/zoxide-${_version}-${_arch}.tar.gz"
+                tar -xzf /tmp/zoxide.tar.gz -C "${HOME}/.local/bin/" zoxide
+                rm -f /tmp/zoxide.tar.gz
+                ;;
+        esac
+        ok "zoxide installed."
+    fi
+}

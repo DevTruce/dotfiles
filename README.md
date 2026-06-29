@@ -59,6 +59,7 @@ The installer is fully **idempotent**: every step checks whether a tool or confi
 | Node.js LTS                    | Latest long-term support release of Node.js                              |
 | tree                           | Directory tree display utility                                           |
 | fzf                            | Fuzzy finder — CTRL-R history, CTRL-T file picker, ALT-C cd             |
+| zoxide                         | Smart `cd` — jump to frecent dirs with `z`, interactive with `zi`       |
 | SSH key (ed25519)              | _(personal)_ Generated and printed for adding to GitHub                  |
 | GPG key + gpg-agent            | _(personal)_ Commit signing key, agent configured for passphrase caching |
 | pinentry-mac / pinentry-curses | _(personal)_ GPG passphrase prompt (GUI on macOS, terminal on Linux)     |
