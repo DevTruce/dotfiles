@@ -35,16 +35,18 @@ setup_nvm() {
         note "Skipping shell profile changes — your .zshrc already includes the nvm loader."
         # PROFILE=/dev/null prevents nvm's installer from modifying .zshrc,
         # since the nvm loader is already maintained in dotfiles
-        local _nvm_log
+        local _nvm_log _nvm_pid
         _nvm_log="$(mktemp)"
-        if curl -fsSL "https://raw.githubusercontent.com/nvm-sh/nvm/HEAD/install.sh" | PROFILE=/dev/null bash > "$_nvm_log" 2>&1; then
+        (curl -fsSL "https://raw.githubusercontent.com/nvm-sh/nvm/HEAD/install.sh" | PROFILE=/dev/null bash) > "$_nvm_log" 2>&1 &
+        _nvm_pid=$!
+        _spinner "$_nvm_pid"
+        if wait "$_nvm_pid"; then
             rm -f "$_nvm_log"
         else
             cat "$_nvm_log"
             rm -f "$_nvm_log"
             return 1
         fi
-        echo ""
         ok "nvm installed."
     fi
 

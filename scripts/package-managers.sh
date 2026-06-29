@@ -16,9 +16,12 @@ setup_homebrew() {
         skip "Homebrew is already installed."
     else
         step "Installing Homebrew..."
-        local _brew_log
+        local _brew_log _brew_pid
         _brew_log="$(mktemp)"
-        if /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)" > "$_brew_log" 2>&1; then
+        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)" > "$_brew_log" 2>&1 &
+        _brew_pid=$!
+        _spinner "$_brew_pid"
+        if wait "$_brew_pid"; then
             rm -f "$_brew_log"
             ok "Homebrew installed."
         else

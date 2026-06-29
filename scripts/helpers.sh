@@ -52,12 +52,30 @@ link() {
     printf "  ${CYAN}%-28s${RESET}${DIM} → ${RESET}%s\n" "$1" "$2"
 }
 
-# -- Silent package manager wrappers: capture all output, surface it only on failure
+# -- Spinner: shows a braille spinner while a background PID is running, then erases itself
+# Usage: background your command first, capture $!, then call _spinner $pid
+
+_spinner() {
+    local pid=$1
+    local frames='⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏'
+    local i=0
+    while kill -0 "$pid" 2>/dev/null; do
+        printf "\r  ${CYAN}%s${RESET}" "${frames:$i:1}"
+        i=$(( (i + 1) % 10 ))
+        sleep 0.1
+    done
+    printf "\r\033[K"  # erase spinner line so ok/warn prints in its place
+}
+
+# -- Silent package manager wrappers: run in background with spinner, surface output only on failure
 
 _apt() {
-    local _log
+    local _log _pid
     _log="$(mktemp)"
-    if DEBIAN_FRONTEND=noninteractive sudo apt-get "$@" > "$_log" 2>&1; then
+    DEBIAN_FRONTEND=noninteractive sudo apt-get "$@" > "$_log" 2>&1 &
+    _pid=$!
+    _spinner "$_pid"
+    if wait "$_pid"; then
         rm -f "$_log"
     else
         cat "$_log"
@@ -67,9 +85,12 @@ _apt() {
 }
 
 _brew() {
-    local _log
+    local _log _pid
     _log="$(mktemp)"
-    if brew "$@" > "$_log" 2>&1; then
+    brew "$@" > "$_log" 2>&1 &
+    _pid=$!
+    _spinner "$_pid"
+    if wait "$_pid"; then
         rm -f "$_log"
     else
         cat "$_log"
