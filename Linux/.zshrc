@@ -112,6 +112,15 @@ alias dcl="docker compose logs -f"
 alias nrd="npm run dev"
 
 # ─────────────────────────────────────────
+# fzf
+# ─────────────────────────────────────────
+
+# -- Shell integration (CTRL-R, CTRL-T, ALT-C)
+if command -v fzf >/dev/null 2>&1; then
+  eval "$(fzf --zsh)"
+fi
+
+# ─────────────────────────────────────────
 # Path
 # ─────────────────────────────────────────
 

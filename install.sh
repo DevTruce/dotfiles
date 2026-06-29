@@ -45,6 +45,7 @@ setup_macos() {
     setup_zsh_plugins
     setup_nvm
     setup_tree
+    setup_fzf
     setup_dotfiles
     if [ "$PERSONAL_MACHINE" = "y" ]; then
         setup_gpg_agent_conf
@@ -64,6 +65,7 @@ setup_linux() {
     setup_zsh_plugins
     setup_nvm
     setup_tree
+    setup_fzf
     setup_dotfiles
     if [ "$PERSONAL_MACHINE" = "y" ]; then
         setup_gpg_agent_conf
