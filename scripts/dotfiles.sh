@@ -5,21 +5,14 @@
 setup_dotfiles() {
     section "Dotfiles — Symlinking"
 
-    local os_dir
-    case "$OS" in
-        macos) os_dir="MacOS" ;;
-        *)     os_dir="Linux" ;;
-    esac
-
     step "Symlinking dotfiles into home directory..."
     note "Existing regular files at these paths will be replaced by symlinks."
     echo ""
 
-    # -- OS-specific
-    ln -sf "${DOTFILES_DIR}/${os_dir}/.zshrc"              "${HOME}/.zshrc"
-    link "~/.zshrc" "${DOTFILES_DIR}/${os_dir}/.zshrc"
-
     # -- Common
+    ln -sf "${DOTFILES_DIR}/Common/.zshrc"                 "${HOME}/.zshrc"
+    link "~/.zshrc" "${DOTFILES_DIR}/Common/.zshrc"
+
     ln -sf "${DOTFILES_DIR}/Common/.gitconfig"             "${HOME}/.gitconfig"
     link "~/.gitconfig" "${DOTFILES_DIR}/Common/.gitconfig"
 

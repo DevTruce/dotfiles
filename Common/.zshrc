@@ -81,22 +81,20 @@ add-zsh-hook chpwd load-nvmrc
 load-nvmrc
 
 # ─────────────────────────────────────────
-# SSH Agent
+# Platform
 # ─────────────────────────────────────────
 
-# -- SSH via GPG Agent
-# gpg-agent handles SSH key caching with pinentry-curses — no passphrase per terminal
-if command -v gpgconf >/dev/null 2>&1; then
-  export SSH_AUTH_SOCK="$(gpgconf --list-dirs agent-ssh-socket)"
-  gpgconf --launch gpg-agent 2>/dev/null
+if [[ "$OSTYPE" != "darwin"* ]]; then
+  # -- SSH via GPG Agent
+  # gpg-agent handles SSH key caching with pinentry-curses — no passphrase per terminal
+  if command -v gpgconf >/dev/null 2>&1; then
+    export SSH_AUTH_SOCK="$(gpgconf --list-dirs agent-ssh-socket)"
+    gpgconf --launch gpg-agent 2>/dev/null
+  fi
+
+  # tells pinentry-curses which terminal to render the passphrase prompt into
+  export GPG_TTY=$TTY
 fi
-
-# ─────────────────────────────────────────
-# GPG
-# ─────────────────────────────────────────
-
-# tells pinentry-curses which terminal to render the passphrase prompt into
-export GPG_TTY=$TTY
 
 # ─────────────────────────────────────────
 # Aliases
@@ -111,9 +109,13 @@ alias dcl="docker compose logs -f"
 # -- npm
 alias nrd="npm run dev"
 
-# -- bat (installed as batcat on Ubuntu/Debian)
-alias bat="batcat"
-alias cat="batcat"
+# -- bat
+if [[ "$OSTYPE" == "darwin"* ]]; then
+  alias cat="bat"
+else
+  alias bat="batcat"
+  alias cat="batcat"
+fi
 
 # ─────────────────────────────────────────
 # fzf

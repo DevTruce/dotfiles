@@ -79,8 +79,7 @@ The installer is fully **idempotent**: every step checks whether a tool or confi
 
 | File                 | Repo Path                     | Destination                                                 |
 | -------------------- | ----------------------------- | ----------------------------------------------------------- |
-| zshrc (Linux / WSL2) | `Linux/.zshrc`                | `~/.zshrc`                                                  |
-| zshrc (macOS)        | `MacOS/.zshrc`                | `~/.zshrc`                                                  |
+| zshrc                | `Common/.zshrc`               | `~/.zshrc`                                                  |
 | git config           | `Common/.gitconfig`           | `~/.gitconfig`                                              |
 | git local identity   | _(not tracked)_               | `~/.gitconfig.local` (built by installer)                   |
 | Powerlevel10k config | `Common/.p10k.zsh`            | `~/.p10k.zsh`                                               |
@@ -187,12 +186,9 @@ dotfiles/
 ├── Common/                     # dotfiles shared across all platforms
 │   ├── .gitconfig              # git aliases, LFS config, and default settings (identity in ~/.gitconfig.local)
 │   ├── .p10k.zsh               # Powerlevel10k prompt configuration
+│   ├── .zshrc                  # zsh config for all platforms (uses $OSTYPE for platform-specific blocks)
 │   └── claude/
 │       └── settings.json       # Claude Code settings
-├── Linux/
-│   └── .zshrc                  # zsh config for Linux / WSL2
-├── MacOS/
-│   └── .zshrc                  # zsh config for macOS
 ├── scripts/                    # modular installer components
 │   ├── helpers.sh              # section() output helper and detect_os()
 │   ├── package-managers.sh     # setup_homebrew, setup_apt
