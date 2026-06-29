@@ -13,7 +13,7 @@ setup_git() {
         step "Installing git..."
         case "$OS" in
             macos) brew install git ;;
-            *)     sudo apt install git -y ;;
+            *)     sudo apt-get install git -y ;;
         esac
         ok "git installed."
     fi
@@ -90,7 +90,7 @@ setup_git_lfs() {
         step "Installing git-lfs..."
         case "$OS" in
             macos) brew install git-lfs ;;
-            *)     sudo apt install git-lfs -y ;;
+            *)     sudo apt-get install git-lfs -y ;;
         esac
         ok "git-lfs installed."
     fi

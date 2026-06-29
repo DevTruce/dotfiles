@@ -21,7 +21,7 @@ export PATH="$HOME/.local/bin:$PATH"
 if [[ ! -f $HOME/.local/share/zinit/zinit.git/zinit.zsh ]]; then
     print -P "%F{33} %F{220}Installing %F{33}ZDHARMA-CONTINUUM%F{220} Initiative Plugin Manager (%F{33}zdharma-continuum/zinit%F{220})…%f"
     command mkdir -p "$HOME/.local/share/zinit" && command chmod g-rwX "$HOME/.local/share/zinit"
-    command git clone https://github.com/zdharma-continuum/zinit "$HOME/.local/share/zinit/zinit.git" && \
+    command git clone --depth 1 https://github.com/zdharma-continuum/zinit "$HOME/.local/share/zinit/zinit.git" && \
         print -P "%F{33} %F{34}Installation successful.%f%b" || \
         print -P "%F{160} The clone has failed.%f%b"
 fi
@@ -92,7 +92,7 @@ load-nvmrc
 
 if [[ "$OSTYPE" != "darwin"* ]]; then
   # -- SSH via GPG Agent
-  # gpg-agent handles SSH key caching with pinentry-curses — no passphrase per terminal
+  # gpg-agent caches the SSH key passphrase — only prompted on first use or after TTL expiry
   if command -v gpgconf >/dev/null 2>&1; then
     export SSH_AUTH_SOCK="$(gpgconf --list-dirs agent-ssh-socket)"
     gpgconf --launch gpg-agent 2>/dev/null
@@ -117,10 +117,12 @@ alias nrd="npm run dev"
 
 # -- bat
 if [[ "$OSTYPE" == "darwin"* ]]; then
-  alias cat="bat"
+  command -v bat >/dev/null 2>&1 && alias cat="bat"
 else
-  alias bat="batcat"
-  alias cat="batcat"
+  if command -v batcat >/dev/null 2>&1; then
+    alias bat="batcat"
+    alias cat="batcat"
+  fi
 fi
 
 # ─────────────────────────────────────────

@@ -13,7 +13,7 @@ setup_tree() {
         step "Installing tree..."
         case "$OS" in
             macos) brew install tree ;;
-            *)     sudo apt install tree -y ;;
+            *)     sudo apt-get install tree -y ;;
         esac
         ok "tree installed."
     fi
@@ -96,7 +96,7 @@ setup_ripgrep() {
         step "Installing ripgrep..."
         case "$OS" in
             macos) brew install ripgrep ;;
-            *)     sudo apt install ripgrep -y ;;
+            *)     sudo apt-get install ripgrep -y ;;
         esac
         ok "ripgrep installed."
     fi
@@ -120,7 +120,7 @@ setup_bat() {
         step "Installing bat..."
         case "$OS" in
             macos) brew install bat ;;
-            *)     sudo apt install bat -y ;;
+            *)     sudo apt-get install bat -y ;;
         esac
         ok "bat installed."
     fi

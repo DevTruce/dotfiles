@@ -40,9 +40,15 @@ setup_apt() {
     fi
 
     step "Refreshing package lists..."
-    sudo apt update
+    sudo apt-get update
+
+    if ! command -v curl >/dev/null 2>&1; then
+        step "Installing curl..."
+        sudo apt-get install curl -y
+        ok "curl installed."
+    fi
 
     step "Upgrading outdated packages..."
-    sudo apt upgrade -y
+    sudo apt-get upgrade -y
     ok "Packages up to date."
 }

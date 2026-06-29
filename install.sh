@@ -2,6 +2,7 @@
 set -euo pipefail
 
 DOTFILES_DIR="$(cd "$(dirname "$0")" && pwd)"
+export PATH="${HOME}/.local/bin:${PATH}"
 
 # ─────────────────────────────────────────
 # Bootstrap

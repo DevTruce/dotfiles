@@ -33,7 +33,7 @@
 # ─────────────────────────────────────────
 # Git LFS
 # ─────────────────────────────────────────
-# pre-set to prevent git lfs install from writing into this file on re-runs
+# pre-set so the idempotency check in setup_git_lfs always finds these values here
 [filter "lfs"]
 	smudge  = git-lfs smudge -- %f
 	process = git-lfs filter-process

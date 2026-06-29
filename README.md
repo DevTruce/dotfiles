@@ -49,7 +49,7 @@ The installer is fully **idempotent**: every step checks whether a tool or confi
 | zsh                            | Shell - set as the default login shell                                   |
 | git                            | Version control                                                          |
 | git-lfs                        | Git extension for large file storage                                     |
-| zinit                          | Zsh plugin manager                                                       |
+| zinit                          | Zsh plugin manager (plugins download on first shell launch)              |
 | zsh-syntax-highlighting        | Command syntax highlighting in the shell                                 |
 | zsh-autosuggestions            | Fish-style inline command suggestions                                    |
 | zsh-completions                | Extended zsh completion definitions                                      |
@@ -97,7 +97,7 @@ The installer is fully **idempotent**: every step checks whether a tool or confi
   ```bash
   xcode-select --install
   ```
-- **Linux / WSL2** - No extra prerequisites
+- **Linux / WSL2** - `curl` must be available (`sudo apt-get install curl` if not present — the installer also installs it as its first step)
 
 ### 1. Clone the Repo
 
@@ -112,7 +112,7 @@ cd ~/dotfiles
 bash install.sh
 ```
 
-The installer detects your OS, symlinks your dotfiles, and prompts whether this is a personal machine. Answering **y** adds SSH/GPG key setup, keychain, GPG agent configuration, and Claude Code CLI. Answering **n** skips those and installs only the core tooling. It then prints a todo list of any remaining manual steps when it finishes.
+The installer detects your OS, symlinks your dotfiles, and prompts whether this is a personal machine. Answering **y** adds SSH/GPG key setup, GPG agent configuration, and Claude Code CLI. Answering **n** skips those and installs only the core tooling. It then prints a todo list of any remaining manual steps when it finishes.
 
 ---
 
@@ -188,15 +188,20 @@ dotfiles/
 ├── .zshrc                      # zsh config for all platforms (uses $OSTYPE for platform-specific blocks)
 ├── claude/
 │   └── settings.json           # Claude Code settings
+├── fonts/                      # MesloLGS NF font files (install manually — see Manual Steps)
+│   ├── MesloLGS NF Regular.ttf
+│   ├── MesloLGS NF Bold.ttf
+│   ├── MesloLGS NF Italic.ttf
+│   └── MesloLGS NF Bold Italic.ttf
 ├── scripts/                    # modular installer components
 │   ├── helpers.sh              # section() output helper and detect_os()
 │   ├── package-managers.sh     # setup_homebrew, setup_apt
 │   ├── shell.sh                # setup_zsh
 │   ├── version-control.sh      # setup_git, setup_git_lfs
-│   ├── security.sh             # setup_ssh_key, setup_gpg_key, setup_gpg_agent_conf, setup_keychain
-│   ├── dev-environment.sh      # setup_zsh_plugins, setup_nvm, setup_claude
+│   ├── security.sh             # setup_gpg_tools, setup_ssh_key, setup_gpg_key, setup_gpg_agent_conf
+│   ├── dev-environment.sh      # setup_zsh_plugins, setup_nvm, setup_pnpm, setup_claude
 │   ├── dotfiles.sh             # setup_dotfiles - symlinks all dotfiles into home directory
-│   ├── utilities.sh            # setup_tree
+│   ├── utilities.sh            # setup_tree, setup_fzf, setup_zoxide, setup_ripgrep, setup_bat, setup_lazygit, setup_gh
 │   └── finish.sh               # completion banner and manual todo list
 ├── install.sh                  # entry point: loads scripts, detects OS, dispatches
 └── run.sh                      # run a single setup function without the full install

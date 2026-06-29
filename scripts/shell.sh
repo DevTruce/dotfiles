@@ -33,7 +33,7 @@ setup_zsh() {
                 skip "zsh is already installed."
             else
                 step "Installing zsh..."
-                sudo apt install zsh -y
+                sudo apt-get install zsh -y
                 ok "zsh installed."
             fi
 

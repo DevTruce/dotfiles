@@ -35,7 +35,7 @@ setup_nvm() {
         note "Skipping shell profile changes — your .zshrc already includes the nvm loader."
         # PROFILE=/dev/null prevents nvm's installer from modifying .zshrc,
         # since the nvm loader is already maintained in dotfiles
-        PROFILE=/dev/null bash -c "$(curl -fsSL https://raw.githubusercontent.com/nvm-sh/nvm/HEAD/install.sh)"
+        curl -fsSL "https://raw.githubusercontent.com/nvm-sh/nvm/HEAD/install.sh" | PROFILE=/dev/null bash
         echo ""
         ok "nvm installed."
     fi

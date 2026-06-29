@@ -13,7 +13,7 @@ setup_gpg_tools() {
         step "Installing gpg..."
         case "$OS" in
             macos) brew install gnupg ;;
-            *)     sudo apt install gnupg -y ;;
+            *)     sudo apt-get install gnupg -y ;;
         esac
         ok "gpg installed."
     fi
@@ -92,6 +92,11 @@ setup_gpg_key() {
     local key_id
     key_id="$(gpg --list-secret-keys --keyid-format=long | awk -F'/' '/^sec/{print $2}' | awk '{print $1}' | head -1)"
 
+    if [ -z "$key_id" ]; then
+        warn "Could not extract GPG key ID — skipping signing config."
+        return 1
+    fi
+
     git config --file "${HOME}/.gitconfig.local" user.signingkey "${key_id}"
     git config --file "${HOME}/.gitconfig.local" commit.gpgsign true
     git config --file "${HOME}/.gitconfig.local" tag.gpgsign true
@@ -129,7 +134,7 @@ setup_gpg_agent_conf() {
         *)
             if ! command -v pinentry-curses >/dev/null 2>&1; then
                 step "Installing pinentry-curses..."
-                sudo apt install pinentry-curses -y
+                sudo apt-get install pinentry-curses -y
                 ok "pinentry-curses installed."
             fi
             PINENTRY_PATH="$(command -v pinentry-curses)"
