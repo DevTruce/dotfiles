@@ -53,7 +53,7 @@ The installer is fully **idempotent**: every step checks whether a tool or confi
 | zsh-syntax-highlighting        | Command syntax highlighting in the shell                                 |
 | zsh-autosuggestions            | Fish-style inline command suggestions                                    |
 | zsh-completions                | Extended zsh completion definitions                                      |
-| OMZ docker / docker-compose    | Oh My Zsh Docker and Docker Compose plugins                              |
+| docker completion              | Direct `_docker` completion from the official `docker/cli` repo          |
 | Powerlevel10k                  | Fast, highly configurable zsh prompt theme                               |
 | nvm                            | Node Version Manager                                                     |
 | Node.js LTS                    | Latest long-term support release of Node.js                              |
@@ -61,7 +61,7 @@ The installer is fully **idempotent**: every step checks whether a tool or confi
 | SSH key (ed25519)              | _(personal)_ Generated and printed for adding to GitHub                  |
 | GPG key + gpg-agent            | _(personal)_ Commit signing key, agent configured for passphrase caching |
 | pinentry-mac / pinentry-curses | _(personal)_ GPG passphrase prompt (GUI on macOS, terminal on Linux)     |
-| keychain                       | _(personal)_ SSH agent persistence across terminal sessions (Linux only) |
+| gpg-agent (SSH support)        | _(personal)_ SSH key caching via gpg-agent — no passphrase per terminal  |
 | Claude Code CLI                | _(personal)_ Terminal AI coding assistant                                |
 
 > Items marked _(personal)_ are only installed when you answer **y** to the personal machine prompt.
@@ -147,9 +147,12 @@ Then add it to GitHub:
 
 ### 3. Install MesloLGS NF Fonts
 
-MesloLGS NF is required for Powerlevel10k to render correctly. Download all four font variants:
+MesloLGS NF is required for Powerlevel10k to render correctly. Click each link to download the file directly:
 
-**[romkatv/powerlevel10k - MesloLGS NF download](https://github.com/romkatv/powerlevel10k#meslo-nerd-font-patched-for-powerlevel10k)**
+- [MesloLGS NF Regular.ttf](https://github.com/DevTruce/dotfiles/raw/main/fonts/MesloLGS%20NF%20Regular.ttf)
+- [MesloLGS NF Bold.ttf](https://github.com/DevTruce/dotfiles/raw/main/fonts/MesloLGS%20NF%20Bold.ttf)
+- [MesloLGS NF Italic.ttf](https://github.com/DevTruce/dotfiles/raw/main/fonts/MesloLGS%20NF%20Italic.ttf)
+- [MesloLGS NF Bold Italic.ttf](https://github.com/DevTruce/dotfiles/raw/main/fonts/MesloLGS%20NF%20Bold%20Italic.ttf)
 
 **macOS**
 

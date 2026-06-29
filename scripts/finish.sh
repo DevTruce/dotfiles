@@ -34,8 +34,8 @@ finish() {
 
     printf "  ${BOLD_WHITE}[ %s ]${RESET}  ${BOLD}Install the MesloLGS NF fonts (required for Powerlevel10k)${RESET}\n" "${n}"
     echo ""
-    note "Download all four fonts from:"
-    note "https://github.com/romkatv/powerlevel10k#meslo-nerd-font-patched-for-powerlevel10k"
+    note "Download all four fonts from the dotfiles repo (click each link to download):"
+    note "https://github.com/DevTruce/dotfiles/tree/main/fonts"
     echo ""
     case "$OS" in
         macos)
