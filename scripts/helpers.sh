@@ -22,8 +22,10 @@ section() {
     printf "  ${DIM}──────────────────────────────────────────────────────${RESET}\n"
 }
 
-# actively happening right now
+# actively happening right now — also stores message for _spinner to animate inline
+_LAST_STEP=""
 step() {
+    _LAST_STEP="$1"
     printf "  ${CYAN}→${RESET}  %s\n" "$1"
 }
 
@@ -52,19 +54,21 @@ link() {
     printf "  ${CYAN}%-28s${RESET}${DIM} → ${RESET}%s\n" "$1" "$2"
 }
 
-# -- Spinner: shows a braille spinner while a background PID is running, then erases itself
-# Usage: background your command first, capture $!, then call _spinner $pid
+# -- Spinner: goes up to the step line and animates the spinner inline after the message.
+# Erases that line when done so ok/warn prints in its place.
+# Usage: call step() first, then background your command, then call _spinner $pid
 
 _spinner() {
     local pid=$1
     local frames='⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏'
     local i=0
+    printf "\033[1A"  # cursor up to the step line
     while kill -0 "$pid" 2>/dev/null; do
-        printf "\r  ${CYAN}%s${RESET}" "${frames:$i:1}"
+        printf "\r  ${CYAN}→${RESET}  %s ${CYAN}%s${RESET}" "$_LAST_STEP" "${frames:$i:1}"
         i=$(( (i + 1) % 10 ))
         sleep 0.1
     done
-    printf "\r\033[K"  # erase spinner line so ok/warn prints in its place
+    printf "\r\033[K"  # erase the step+spinner line so ok/warn prints in its place
 }
 
 # -- Silent package manager wrappers: run in background with spinner, surface output only on failure

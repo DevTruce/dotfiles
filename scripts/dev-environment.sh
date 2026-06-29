@@ -31,8 +31,8 @@ setup_nvm() {
     if [ -s "${NVM_DIR}/nvm.sh" ]; then
         skip "nvm is already installed."
     else
-        step "Installing nvm (Node Version Manager)..."
         note "Skipping shell profile changes — your .zshrc already includes the nvm loader."
+        step "Installing nvm (Node Version Manager)..."
         # PROFILE=/dev/null prevents nvm's installer from modifying .zshrc,
         # since the nvm loader is already maintained in dotfiles
         local _nvm_log _nvm_pid
