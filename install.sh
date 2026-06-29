@@ -19,7 +19,7 @@ OS="$(detect_os)"
 
 echo ""
 printf "  ${BOLD_CYAN}┌──────────────────────────────────────────────────────┐${RESET}\n"
-printf "  ${BOLD_CYAN}│${RESET}  ${BOLD_WHITE}%-52s${RESET}${BOLD_CYAN}│${RESET}\n" "dotfiles installer"
+printf "  ${BOLD_CYAN}│${RESET}  ${BOLD_WHITE}%-52s${RESET}${BOLD_CYAN}│${RESET}\n" "Dev Environment Setup"
 printf "  ${BOLD_CYAN}│${RESET}  ${DIM}%-52s${RESET}${BOLD_CYAN}│${RESET}\n" "OS: ${OS}"
 printf "  ${BOLD_CYAN}└──────────────────────────────────────────────────────┘${RESET}\n"
 echo ""

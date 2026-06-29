@@ -12,8 +12,8 @@ setup_tree() {
     else
         step "Installing tree..."
         case "$OS" in
-            macos) brew install tree ;;
-            *)     sudo apt-get install tree -y ;;
+            macos) brew install --quiet tree ;;
+            *)     DEBIAN_FRONTEND=noninteractive sudo apt-get install -y -qq tree ;;
         esac
         ok "tree installed."
     fi
@@ -95,8 +95,8 @@ setup_ripgrep() {
     else
         step "Installing ripgrep..."
         case "$OS" in
-            macos) brew install ripgrep ;;
-            *)     sudo apt-get install ripgrep -y ;;
+            macos) brew install --quiet ripgrep ;;
+            *)     DEBIAN_FRONTEND=noninteractive sudo apt-get install -y -qq ripgrep ;;
         esac
         ok "ripgrep installed."
     fi
@@ -119,8 +119,8 @@ setup_bat() {
     else
         step "Installing bat..."
         case "$OS" in
-            macos) brew install bat ;;
-            *)     sudo apt-get install bat -y ;;
+            macos) brew install --quiet bat ;;
+            *)     DEBIAN_FRONTEND=noninteractive sudo apt-get install -y -qq bat ;;
         esac
         ok "bat installed."
     fi
@@ -137,7 +137,7 @@ setup_lazygit() {
         step "Installing lazygit..."
         case "$OS" in
             macos)
-                brew install lazygit
+                brew install --quiet lazygit
                 ;;
             *)
                 # lazygit not available in Ubuntu 22.04 apt repos; pull latest from GitHub
@@ -170,7 +170,7 @@ setup_gh() {
         step "Installing gh (GitHub CLI)..."
         case "$OS" in
             macos)
-                brew install gh
+                brew install --quiet gh
                 ;;
             *)
                 # apt ships an older gh; pull latest from GitHub releases
