@@ -37,9 +37,7 @@ echo ""
 # OS Orchestrators
 # ─────────────────────────────────────────
 
-setup_macos() {
-    step "Starting macOS setup..."
-    setup_homebrew
+setup_core() {
     setup_zsh
     setup_git
     setup_git_lfs
@@ -54,12 +52,22 @@ setup_macos() {
     setup_lazygit
     setup_gh
     setup_dotfiles
+}
+
+setup_personal() {
+    setup_gpg_tools
+    setup_gpg_agent_conf
+    setup_ssh_key
+    setup_gpg_key
+    setup_claude
+}
+
+setup_macos() {
+    step "Starting macOS setup..."
+    setup_homebrew
+    setup_core
     if [ "$PERSONAL_MACHINE" = "y" ]; then
-        setup_gpg_tools
-        setup_gpg_agent_conf
-        setup_ssh_key
-        setup_gpg_key
-        setup_claude
+        setup_personal
     fi
     finish
 }
@@ -67,26 +75,9 @@ setup_macos() {
 setup_linux() {
     step "Starting Linux setup..."
     setup_apt
-    setup_zsh
-    setup_git
-    setup_git_lfs
-    setup_zsh_plugins
-    setup_nvm
-    setup_pnpm
-    setup_tree
-    setup_fzf
-    setup_zoxide
-    setup_ripgrep
-    setup_bat
-    setup_lazygit
-    setup_gh
-    setup_dotfiles
+    setup_core
     if [ "$PERSONAL_MACHINE" = "y" ]; then
-        setup_gpg_tools
-        setup_gpg_agent_conf
-        setup_ssh_key
-        setup_gpg_key
-        setup_claude
+        setup_personal
     fi
     finish
 }
