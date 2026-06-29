@@ -5,26 +5,26 @@
 setup_dotfiles() {
     section "Dotfiles — Symlinking"
 
-    step "Symlinking dotfiles into home directory..."
-    note "Existing regular files at these paths will be replaced by symlinks."
-    echo ""
+    _symlink() {
+        local src="$1" dest="$2" label="$3"
+        if [ -L "$dest" ] && [ "$(readlink "$dest")" = "$src" ]; then
+            skip "$(printf '%-24s already linked' "$label")"
+        else
+            ln -sf "$src" "$dest"
+            link "$label" "$src"
+        fi
+    }
 
-    ln -sf "${DOTFILES_DIR}/.zshrc"                 "${HOME}/.zshrc"
-    link "~/.zshrc" "${DOTFILES_DIR}/.zshrc"
-
-    ln -sf "${DOTFILES_DIR}/.gitconfig"             "${HOME}/.gitconfig"
-    link "~/.gitconfig" "${DOTFILES_DIR}/.gitconfig"
-
-    ln -sf "${DOTFILES_DIR}/.p10k.zsh"              "${HOME}/.p10k.zsh"
-    link "~/.p10k.zsh" "${DOTFILES_DIR}/.p10k.zsh"
+    _symlink "${DOTFILES_DIR}/.zshrc"              "${HOME}/.zshrc"              "~/.zshrc"
+    _symlink "${DOTFILES_DIR}/.gitconfig"          "${HOME}/.gitconfig"          "~/.gitconfig"
+    _symlink "${DOTFILES_DIR}/.p10k.zsh"           "${HOME}/.p10k.zsh"           "~/.p10k.zsh"
 
     if [ "${PERSONAL_MACHINE:-n}" = "y" ]; then
         mkdir -p "${HOME}/.claude"
-        ln -sf "${DOTFILES_DIR}/claude/settings.json"   "${HOME}/.claude/settings.json"
-        link "~/.claude/settings.json" "${DOTFILES_DIR}/claude/settings.json"
+        _symlink "${DOTFILES_DIR}/claude/settings.json" "${HOME}/.claude/settings.json" "~/.claude/settings.json"
     fi
 
     echo ""
-    ok "All dotfiles symlinked."
+    ok "Dotfiles check complete."
     # gpg-agent.conf is generated dynamically by setup_gpg_agent_conf — not symlinked
 }

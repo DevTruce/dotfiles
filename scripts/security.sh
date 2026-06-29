@@ -36,17 +36,17 @@ setup_ssh_key() {
         ssh-keygen -t ed25519 -f "$SSH_KEY" -C "$(git config --global user.email 2>/dev/null || echo "$(whoami)@$(hostname)")"
         echo ""
         ok "SSH key generated."
-    fi
 
-    echo ""
-    note "Fingerprint (for your records):"
-    echo ""
-    ssh-keygen -lf "${SSH_KEY}.pub"
-    echo ""
-    note "Public key (copy this to GitHub → Settings → SSH and GPG Keys → New SSH key):"
-    echo ""
-    cat "${SSH_KEY}.pub"
-    echo ""
+        echo ""
+        note "Fingerprint (for your records):"
+        echo ""
+        ssh-keygen -lf "${SSH_KEY}.pub"
+        echo ""
+        note "Public key (copy this to GitHub → Settings → SSH and GPG Keys → New SSH key):"
+        echo ""
+        cat "${SSH_KEY}.pub"
+        echo ""
+    fi
 
     if [ "$OS" != "macos" ] && command -v gpgconf >/dev/null 2>&1; then
         local _agent_sock
@@ -97,19 +97,26 @@ setup_gpg_key() {
         return 1
     fi
 
-    git config --file "${HOME}/.gitconfig.local" user.signingkey "${key_id}"
-    git config --file "${HOME}/.gitconfig.local" commit.gpgsign true
-    git config --file "${HOME}/.gitconfig.local" tag.gpgsign true
+    local existing_signingkey
+    existing_signingkey="$(git config --file "${HOME}/.gitconfig.local" user.signingkey 2>/dev/null || true)"
 
-    echo ""
-    note "Key ID (written to ~/.gitconfig.local):"
-    echo ""
-    echo "  ${key_id}"
-    echo ""
-    note "Public key (copy this to GitHub → Settings → SSH and GPG Keys → New GPG key):"
-    echo ""
-    gpg --armor --export "${key_id}"
-    echo ""
+    if [ "$existing_signingkey" = "$key_id" ]; then
+        skip "GPG signing config already set in ~/.gitconfig.local (key: ${key_id})."
+    else
+        git config --file "${HOME}/.gitconfig.local" user.signingkey "${key_id}"
+        git config --file "${HOME}/.gitconfig.local" commit.gpgsign true
+        git config --file "${HOME}/.gitconfig.local" tag.gpgsign true
+
+        echo ""
+        note "Key ID (written to ~/.gitconfig.local):"
+        echo ""
+        echo "  ${key_id}"
+        echo ""
+        note "Public key (copy this to GitHub → Settings → SSH and GPG Keys → New GPG key):"
+        echo ""
+        gpg --armor --export "${key_id}"
+        echo ""
+    fi
 }
 
 # -- GPG Agent
