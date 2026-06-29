@@ -79,11 +79,11 @@ The installer is fully **idempotent**: every step checks whether a tool or confi
 
 | File                 | Repo Path                     | Destination                                                 |
 | -------------------- | ----------------------------- | ----------------------------------------------------------- |
-| zshrc                | `Common/.zshrc`               | `~/.zshrc`                                                  |
-| git config           | `Common/.gitconfig`           | `~/.gitconfig`                                              |
+| zshrc                | `.zshrc`                      | `~/.zshrc`                                                  |
+| git config           | `.gitconfig`                  | `~/.gitconfig`                                              |
 | git local identity   | _(not tracked)_               | `~/.gitconfig.local` (built by installer)                   |
-| Powerlevel10k config | `Common/.p10k.zsh`            | `~/.p10k.zsh`                                               |
-| Claude Code settings | `Common/claude/settings.json` | `~/.claude/settings.json` _(personal)_                      |
+| Powerlevel10k config | `.p10k.zsh`                   | `~/.p10k.zsh`                                               |
+| Claude Code settings | `claude/settings.json`        | `~/.claude/settings.json` _(personal)_                      |
 | GPG agent config     | _(not tracked)_               | `~/.gnupg/gpg-agent.conf` (built by installer) _(personal)_ |
 
 ---
@@ -183,12 +183,11 @@ Open a fresh terminal session for all changes (default shell, plugins, PATH) to 
 
 ```
 dotfiles/
-├── Common/                     # dotfiles shared across all platforms
-│   ├── .gitconfig              # git aliases, LFS config, and default settings (identity in ~/.gitconfig.local)
-│   ├── .p10k.zsh               # Powerlevel10k prompt configuration
-│   ├── .zshrc                  # zsh config for all platforms (uses $OSTYPE for platform-specific blocks)
-│   └── claude/
-│       └── settings.json       # Claude Code settings
+├── .gitconfig                  # git aliases, LFS config, and default settings (identity in ~/.gitconfig.local)
+├── .p10k.zsh                   # Powerlevel10k prompt configuration
+├── .zshrc                      # zsh config for all platforms (uses $OSTYPE for platform-specific blocks)
+├── claude/
+│   └── settings.json           # Claude Code settings
 ├── scripts/                    # modular installer components
 │   ├── helpers.sh              # section() output helper and detect_os()
 │   ├── package-managers.sh     # setup_homebrew, setup_apt
