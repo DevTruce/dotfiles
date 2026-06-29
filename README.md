@@ -65,10 +65,9 @@ The installer is fully **idempotent**: every step checks whether a tool or confi
 | lazygit                        | Terminal UI for git                                                      |
 | gh (GitHub CLI)                | GitHub operations (PRs, issues, repos) from the terminal                 |
 | pnpm                           | Fast, disk-efficient Node.js package manager                             |
-| SSH key (ed25519)              | _(personal)_ Generated and printed for adding to GitHub                  |
-| GPG key + gpg-agent            | _(personal)_ Commit signing key, agent configured for passphrase caching |
+| SSH + GPG keys | _(personal)_ SSH key for GitHub auth; GPG key for commit and tag signing |
 | pinentry-mac / pinentry-curses | _(personal)_ GPG passphrase prompt (GUI on macOS, terminal on Linux)     |
-| gpg-agent (SSH support)        | _(personal)_ SSH key caching via gpg-agent — no passphrase per terminal  |
+| gpg-agent                      | _(personal)_ Passphrase caching for GPG and SSH keys (SSH support: Linux only) |
 | Claude Code CLI                | _(personal)_ Terminal AI coding assistant                                |
 
 > Items marked _(personal)_ are only installed when you answer **y** to the personal machine prompt.
