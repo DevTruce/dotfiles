@@ -59,11 +59,15 @@ _run_interactive() {
     local _names=()
     local _entry _category _name _desc _i
 
-    while true; do
-        printf "  ${BOLD_CYAN}┌──────────────────────────────────────────────────────┐${RESET}\n"
-        printf "  ${BOLD_CYAN}│${RESET}  ${BOLD_WHITE}%-52s${RESET}${BOLD_CYAN}│${RESET}\n" "Run a setup function"
-        printf "  ${BOLD_CYAN}└──────────────────────────────────────────────────────┘${RESET}\n"
+    # banner printed once (matches install.sh/check.sh's header convention), not
+    # reprinted every loop iteration like the function list below is
+    printf "  ${BOLD_CYAN}┌──────────────────────────────────────────────────────┐${RESET}\n"
+    printf "  ${BOLD_CYAN}│${RESET}  ${BOLD_WHITE}%-52s${RESET}${BOLD_CYAN}│${RESET}\n" "Setup Menu"
+    printf "  ${BOLD_CYAN}│${RESET}  ${DIM}%-52s${RESET}${BOLD_CYAN}│${RESET}\n" "OS: ${OS}"
+    printf "  ${BOLD_CYAN}└──────────────────────────────────────────────────────┘${RESET}\n"
+    note "Every step is idempotent - safe to pick something you've already run."
 
+    while true; do
         _names=()
         _i=1
         local _last_category=""
