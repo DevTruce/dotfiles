@@ -337,6 +337,11 @@ fi
 
 if [ -f "${HOME}/.gnupg/gpg-agent.conf" ]; then
     _pass "gpg-agent.conf configured"
+    if grep -q "default-cache-ttl-ssh" "${HOME}/.gnupg/gpg-agent.conf" 2>/dev/null; then
+        _pass "gpg-agent SSH cache TTL configured"
+    else
+        _warn "gpg-agent SSH cache TTL not set  (fix: bash run.sh setup_gpg_agent_conf)"
+    fi
 else
     _warn "gpg-agent.conf not found  (personal machine only)"
 fi

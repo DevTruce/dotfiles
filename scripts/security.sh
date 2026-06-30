@@ -195,10 +195,10 @@ setup_gpg_agent_conf() {
     local _skip_check
     case "$OS" in
         macos)
-            _skip_check="$(grep -q "pinentry-program ${PINENTRY_PATH}" "$GPG_AGENT_CONF" 2>/dev/null && echo yes || echo no)"
+            _skip_check="$(grep -q "pinentry-program ${PINENTRY_PATH}" "$GPG_AGENT_CONF" 2>/dev/null && grep -q "default-cache-ttl-ssh" "$GPG_AGENT_CONF" 2>/dev/null && echo yes || echo no)"
             ;;
         *)
-            _skip_check="$(grep -q "enable-ssh-support" "$GPG_AGENT_CONF" 2>/dev/null && grep -q "pinentry-program ${PINENTRY_PATH}" "$GPG_AGENT_CONF" 2>/dev/null && echo yes || echo no)"
+            _skip_check="$(grep -q "enable-ssh-support" "$GPG_AGENT_CONF" 2>/dev/null && grep -q "pinentry-program ${PINENTRY_PATH}" "$GPG_AGENT_CONF" 2>/dev/null && grep -q "default-cache-ttl-ssh" "$GPG_AGENT_CONF" 2>/dev/null && echo yes || echo no)"
             ;;
     esac
 
@@ -212,6 +212,8 @@ setup_gpg_agent_conf() {
                 cat > "$GPG_AGENT_CONF" <<EOF
 default-cache-ttl 28800
 max-cache-ttl 86400
+default-cache-ttl-ssh 28800
+max-cache-ttl-ssh 86400
 pinentry-program ${PINENTRY_PATH}
 EOF
                 ;;
@@ -219,6 +221,8 @@ EOF
                 cat > "$GPG_AGENT_CONF" <<EOF
 default-cache-ttl 28800
 max-cache-ttl 86400
+default-cache-ttl-ssh 28800
+max-cache-ttl-ssh 86400
 pinentry-program ${PINENTRY_PATH}
 enable-ssh-support
 EOF
