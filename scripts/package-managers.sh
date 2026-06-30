@@ -73,6 +73,9 @@ setup_apt() {
     fi
 
     step "Upgrading outdated packages"
-    _apt upgrade -y
-    ok "Packages up to date."
+    # if-wrapped so a single held-back/broken package doesn't abort the whole installer
+    # (matches the _brew upgrade guard above); _apt already prints fail() on error
+    if _apt upgrade -y; then
+        ok "Packages up to date."
+    fi
 }
