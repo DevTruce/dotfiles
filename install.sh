@@ -1,6 +1,16 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+_on_exit() {
+    local _rc=$?
+    if [ "$_rc" -ne 0 ]; then
+        echo ""
+        warn "Setup aborted — resolve the error above and re-run."
+        echo ""
+    fi
+}
+trap '_on_exit' EXIT
+
 DOTFILES_DIR="$(cd "$(dirname "$0")" && pwd)"
 export PATH="${HOME}/.local/bin:${PATH}"
 

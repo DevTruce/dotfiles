@@ -92,6 +92,8 @@ _apt() {
     if wait "$_pid"; then
         rm -f "$_log"
     else
+        warn "${_LAST_STEP} failed."
+        echo ""
         cat "$_log"
         rm -f "$_log"
         return 1
@@ -107,6 +109,8 @@ _brew() {
     if wait "$_pid"; then
         rm -f "$_log"
     else
+        warn "${_LAST_STEP} failed."
+        echo ""
         cat "$_log"
         rm -f "$_log"
         return 1
@@ -122,6 +126,8 @@ _npm() {
     if wait "$_pid"; then
         rm -f "$_log"
     else
+        warn "${_LAST_STEP} failed."
+        echo ""
         cat "$_log"
         rm -f "$_log"
         return 1

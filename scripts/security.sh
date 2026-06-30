@@ -40,6 +40,8 @@ setup_ssh_key() {
             ok "SSH key generated."
             _key_newly_generated=true
         else
+            warn "${_LAST_STEP} failed."
+            echo ""
             cat "$_keygen_log"
             rm -f "$_keygen_log"
             return 1
@@ -109,6 +111,8 @@ setup_gpg_key() {
             rm -f "$_gpg_log"
             ok "GPG key generated."
         else
+            warn "${_LAST_STEP} failed."
+            echo ""
             cat "$_gpg_log"
             rm -f "$_gpg_log"
             return 1
