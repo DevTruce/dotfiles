@@ -36,6 +36,7 @@ setup_git() {
 
         if [ -z "$existing_name" ]; then
             local _attempts=0
+            git_name=""
             while [ -z "$git_name" ] && [ "$_attempts" -lt 3 ]; do
                 printf "  Enter your git name:  "
                 read -r git_name
@@ -50,6 +51,7 @@ setup_git() {
 
         if [ -z "$existing_email" ]; then
             local _attempts=0
+            git_email=""
             while [ -z "$git_email" ] && [ "$_attempts" -lt 3 ]; do
                 printf "  Enter your git email ${DIM}(tip: use your GitHub no-reply - github.com/settings/emails)${RESET}: "
                 read -r git_email
