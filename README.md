@@ -247,7 +247,8 @@ dev-bootstrap/
 │   └── finish.sh               # completion banner and manual todo list
 ├── install.sh                  # entry point: loads scripts, detects OS, dispatches
 ├── check.sh                    # post-install verification: checks all tools, symlinks, PATH, git identity, and security
-└── run.sh                      # run a single setup function without the full install
+├── run.sh                      # run a single setup function without the full install
+└── LICENSE                     # MIT
 ```
 
 ---
@@ -267,3 +268,9 @@ bash ~/dev-bootstrap/run.sh setup_gpg_key
 ```
 
 Replace `setup_gpg_key` with any function name from the `scripts/` directory.
+
+---
+
+## License
+
+[MIT](LICENSE)
