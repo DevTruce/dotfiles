@@ -59,7 +59,7 @@ _run_interactive() {
     local _names=()
     local _entry _category _name _desc _i
 
-    # banner printed once (matches install.sh/check.sh's header convention), not
+    # banner printed once (matches install.sh/doctor.sh's header convention), not
     # reprinted every loop iteration like the function list below is
     printf "  ${BOLD_CYAN}┌──────────────────────────────────────────────────────┐${RESET}\n"
     printf "  ${BOLD_CYAN}│${RESET}  ${BOLD_WHITE}%-52s${RESET}${BOLD_CYAN}│${RESET}\n" "Setup Menu"
@@ -89,7 +89,7 @@ _run_interactive() {
             _i=$((_i + 1))
         done
 
-        printf "\n  ${CYAN} c)${RESET}  Run check.sh ${DIM}(verify current setup)${RESET}\n"
+        printf "\n  ${CYAN} c)${RESET}  Run doctor.sh ${DIM}(verify current setup)${RESET}\n"
         printf "  ${CYAN} q)${RESET}  Quit\n\n"
         printf "  ${DIM}Select one or more, e.g. 3 | 1,4,7 | 1-6${RESET}\n"
         printf "  Select: "
@@ -98,7 +98,7 @@ _run_interactive() {
 
         case "$_choice" in
             q|Q) break ;;
-            c|C) bash "${DOTFILES_DIR}/check.sh" || true ;;
+            c|C) bash "${DOTFILES_DIR}/doctor.sh" || true ;;
             *) _run_selection "$_choice" ;;
         esac
         echo ""

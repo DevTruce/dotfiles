@@ -208,10 +208,10 @@ Fonts must be installed on the Windows side for Windows Terminal to use them:
 ### 4. Open a New Terminal and Verify
 
 Open a fresh terminal session for all changes (default shell, plugins, PATH) to take effect.
-Then run the system check to confirm everything is wired up correctly:
+Then run the doctor to confirm everything is wired up correctly:
 
 ```bash
-bash ~/dev-bootstrap/check.sh
+bash ~/dev-bootstrap/doctor.sh
 ```
 
 All items should show a green checkmark. Zinit plugins and shell init caches that haven't
@@ -246,7 +246,7 @@ dev-bootstrap/
 │   ├── utilities.sh            # setup_tree, setup_fzf, setup_zoxide, setup_ripgrep, setup_bat, setup_lazygit, setup_gh
 │   └── finish.sh               # completion banner and manual todo list
 ├── install.sh                  # entry point: loads scripts, detects OS, dispatches
-├── check.sh                    # post-install verification: checks all tools, symlinks, PATH, git identity, and security
+├── doctor.sh                   # post-install verification: checks all tools, symlinks, PATH, git identity, and security
 ├── run.sh                      # run a single setup function without the full install
 └── LICENSE                     # MIT
 ```
