@@ -81,10 +81,15 @@ else
 fi
 
 if command -v git-lfs >/dev/null 2>&1; then
-    if git config --global filter.lfs.required 2>/dev/null | grep -q "true"; then
+    # filter.lfs.required is pre-seeded in the tracked .gitconfig and always reads true,
+    # so it can't tell us whether hooks are actually registered - check core.hooksPath is
+    # set in .gitconfig.local (never --global; that would write into the tracked .gitconfig)
+    # and that the hook file actually exists there
+    _git_hooks_dir="$(git config --file "${HOME}/.gitconfig.local" core.hooksPath 2>/dev/null || true)"
+    if [ -n "$_git_hooks_dir" ] && [ -f "${_git_hooks_dir}/pre-push" ]; then
         _pass "git-lfs hooks registered"
     else
-        _fail "git-lfs hooks not registered  (run: git lfs install)"
+        _fail "git-lfs hooks not registered  (fix: bash run.sh setup_git_lfs)"
     fi
 fi
 

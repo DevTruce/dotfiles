@@ -113,13 +113,20 @@ setup_git_lfs() {
         ok "git-lfs installed."
     fi
 
-    # check for the actual pre-push hook rather than the filter config (which is pre-seeded
-    # in the tracked .gitconfig and would always match, skipping hook registration forever)
+    # check for the actual pre-push hook file rather than `git lfs env`'s LocalGitStorageDir
+    # (always present regardless of hook state) or the filter config (pre-seeded in the
+    # tracked .gitconfig and would always match) - both would skip registration forever
     local _git_hooks_dir="${HOME}/.config/git/hooks"
-    if git lfs env 2>/dev/null | grep -q "LocalGitStorageDir"; then
+    local _configured_hooks_dir
+    _configured_hooks_dir="$(git config --file "${HOME}/.gitconfig.local" core.hooksPath 2>/dev/null || true)"
+    if [ -f "${_git_hooks_dir}/pre-push" ] && [ "$_configured_hooks_dir" = "$_git_hooks_dir" ]; then
         skip "git-lfs hooks are already registered globally."
     else
         step "Registering git-lfs hooks globally"
+        mkdir -p "$_git_hooks_dir"
+        # written to ~/.gitconfig.local, not --global: ~/.gitconfig is the tracked,
+        # symlinked dotfile, and --global would bake this machine's absolute path into it
+        git config --file "${HOME}/.gitconfig.local" core.hooksPath "$_git_hooks_dir"
         local _log
         _log="$(mktemp)"
         if git lfs install > "$_log" 2>&1; then
