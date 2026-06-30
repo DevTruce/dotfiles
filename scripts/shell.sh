@@ -23,9 +23,12 @@ setup_zsh() {
                 fail "brew not found - cannot determine zsh path."
                 return 1
             fi
+            # use brew's path explicitly rather than `command -v zsh`, which could
+            # resolve to /bin/zsh (the older system zsh) if it comes first in PATH
             ZSH_PATH="$(brew --prefix zsh)/bin/zsh"
 
-            # register Homebrew zsh as a valid login shell
+            # chsh only accepts shells listed in /etc/shells - Homebrew's zsh isn't
+            # there by default, so it has to be registered before setting it below
             if ! grep -qxF "$ZSH_PATH" /etc/shells; then
                 step "Registering ${ZSH_PATH} in /etc/shells"
                 echo "$ZSH_PATH" | sudo tee -a /etc/shells >/dev/null

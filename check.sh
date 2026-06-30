@@ -46,12 +46,16 @@ else
     _fail "zsh  not found"
 fi
 
+# reads the OS-level login shell directly (dscl/getent), not $SHELL, since $SHELL only
+# reflects the shell the current session happens to be running, not what's configured
 _configured_shell=""
 case "$OS" in
     macos) _configured_shell="$(dscl . -read "/Users/$USER" UserShell 2>/dev/null | awk '{print $2}')" ;;
     *)     _configured_shell="$(getent passwd "$USER" 2>/dev/null | cut -d: -f7)" ;;
 esac
 _zsh_path="$(command -v zsh 2>/dev/null || true)"
+# resolved through realpath before comparing - /etc/shells or chsh may record a
+# symlinked path (e.g. /usr/bin/zsh -> zsh-5.9) that wouldn't string-match $_zsh_path
 _configured_real="$(realpath "$_configured_shell" 2>/dev/null || echo "$_configured_shell")"
 _zsh_real="$(realpath "$_zsh_path" 2>/dev/null || echo "$_zsh_path")"
 if [ -n "$_zsh_path" ] && [ "$_configured_real" = "$_zsh_real" ]; then
