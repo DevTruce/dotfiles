@@ -128,7 +128,10 @@ setup_git_lfs() {
         git config --file "${HOME}/.gitconfig.local" core.hooksPath "$_git_hooks_dir"
         local _log
         _log="$(mktemp)"
-        if git lfs install > "$_log" 2>&1; then
+        # -c forces core.hooksPath for this invocation, independent of whether
+        # ~/.gitconfig is symlinked yet (which is what normally makes the
+        # ~/.gitconfig.local write above visible) - safe to run in any call order
+        if git -c core.hooksPath="$_git_hooks_dir" lfs install > "$_log" 2>&1; then
             rm -f "$_log"
         else
             fail "${_LAST_STEP} failed."
