@@ -46,11 +46,22 @@ setup_nvm() {
     else
         note "Skipping shell profile changes - your .zshrc already includes the nvm loader."
         step "Installing nvm (Node Version Manager)"
-        # PROFILE=/dev/null prevents nvm's installer from modifying .zshrc,
-        # since the nvm loader is already maintained in dotfiles
+        # cloned at the latest release tag instead of piping nvm's install.sh through bash -
+        # nvm.sh is just a shell function library and never touches shell profiles on its
+        # own (only install.sh does that, which we no longer run), so this is both safer
+        # (no remote script execution, just a tagged git checkout) and makes PROFILE=/dev/null
+        # unnecessary
         local _nvm_log _nvm_pid
         _nvm_log="$(mktemp)"
-        (curl -fsSL "https://raw.githubusercontent.com/nvm-sh/nvm/HEAD/install.sh" | PROFILE=/dev/null bash) > "$_nvm_log" 2>&1 &
+        (
+            _nvm_tag="$(curl -fsSL https://api.github.com/repos/nvm-sh/nvm/releases/latest \
+                | grep '"tag_name"' | sed 's/.*"\(v[^"]*\)".*/\1/')"
+            if [ -z "$_nvm_tag" ]; then
+                echo "ERROR: could not determine nvm version (GitHub API rate limit?)" >&2
+                exit 1
+            fi
+            git clone --depth 1 --branch "$_nvm_tag" --quiet https://github.com/nvm-sh/nvm.git "$NVM_DIR"
+        ) > "$_nvm_log" 2>&1 &
         _nvm_pid=$!
         _spinner "$_nvm_pid"
         if wait "$_nvm_pid"; then
