@@ -1,6 +1,6 @@
-# DOTFILES
+# Dev Environment Setup
 
-Personal dotfiles and automated installer for macOS and Linux / WSL2.
+My personal dev environment setup - automated, idempotent installer for shell, tooling, security, and dotfiles on macOS and Ubuntu / Debian (including WSL2).
 
 ---
 
@@ -9,7 +9,7 @@ Personal dotfiles and automated installer for macOS and Linux / WSL2.
 - [Overview](#overview)
 - [Supported Systems](#supported-systems)
 - [What Gets Installed](#what-gets-installed)
-- [Files Deployed to Your System](#files-deployed-to-your-system)
+- [Symlinked Dotfiles](#symlinked-dotfiles)
 - [Installation](#installation)
   - [Prerequisites](#prerequisites)
   - [1. Clone the Repo](#1-clone-the-repo)
@@ -26,7 +26,7 @@ Personal dotfiles and automated installer for macOS and Linux / WSL2.
 
 ## Overview
 
-This repo contains dotfiles and a modular installer that sets up a consistent development environment from scratch. It handles package manager setup, shell configuration, version control, SSH/GPG security, and the Node.js dev environment - with OS-specific logic for macOS and Linux/WSL2 handled transparently.
+This repo contains dotfiles and a modular installer that sets up a consistent development environment from scratch. It handles package manager setup, shell configuration, version control, SSH/GPG security, and the Node.js dev environment - with OS-specific logic for macOS and Ubuntu / Debian / WSL2 handled transparently.
 
 The installer is fully **idempotent**: every step checks whether a tool or config is already in place before doing anything, so it is safe to re-run at any time.
 
@@ -43,47 +43,47 @@ The installer is fully **idempotent**: every step checks whether a tool or confi
 
 ## What Gets Installed
 
-| Tool                           | Description                                                              |
-| ------------------------------ | ------------------------------------------------------------------------ |
-| Homebrew / apt                 | Package manager for the platform                                         |
-| zsh                            | Shell - set as the default login shell                                   |
-| git                            | Version control                                                          |
-| git-lfs                        | Git extension for large file storage                                     |
-| zinit                          | Zsh plugin manager (plugins download on first shell launch)              |
-| zsh-syntax-highlighting        | Command syntax highlighting in the shell                                 |
-| zsh-autosuggestions            | Fish-style inline command suggestions                                    |
-| zsh-completions                | Extended zsh completion definitions                                      |
-| docker completion              | Direct `_docker` completion from the official `docker/cli` repo          |
-| Powerlevel10k                  | Fast, highly configurable zsh prompt theme                               |
-| nvm                            | Node Version Manager                                                     |
-| Node.js LTS                    | Latest long-term support release of Node.js                              |
-| tree                           | Directory tree display utility                                           |
-| fzf                            | Fuzzy finder - CTRL-R history, CTRL-T file picker, ALT-C cd             |
-| zoxide                         | Smart `cd` - jump to frecent dirs with `z`, interactive with `zi`       |
-| ripgrep (rg)                   | Fast grep replacement with better defaults                               |
-| bat                            | `cat` with syntax highlighting and git integration                       |
-| lazygit                        | Terminal UI for git                                                      |
-| gh (GitHub CLI)                | GitHub operations (PRs, issues, repos) from the terminal                 |
-| pnpm                           | Fast, disk-efficient Node.js package manager                             |
-| SSH + GPG keys (ed25519 / GPG) | _(personal)_ SSH key for GitHub auth; GPG key for commit and tag signing |
-| pinentry-mac / pinentry-curses | _(personal)_ GPG passphrase prompt (GUI on macOS, terminal on Linux)     |
+| Tool                           | Description                                                                    |
+| ------------------------------ | ------------------------------------------------------------------------------ |
+| Homebrew / apt                 | Package manager for the platform                                               |
+| zsh                            | Shell - set as the default login shell                                         |
+| git                            | Version control                                                                |
+| git-lfs                        | Git extension for large file storage                                           |
+| zinit                          | Zsh plugin manager (plugins download on first shell launch)                    |
+| zsh-syntax-highlighting        | Command syntax highlighting in the shell                                       |
+| zsh-autosuggestions            | Fish-style inline command suggestions                                          |
+| zsh-completions                | Extended zsh completion definitions                                            |
+| docker completion              | Direct `_docker` completion from the official `docker/cli` repo                |
+| Powerlevel10k                  | Fast, highly configurable zsh prompt theme                                     |
+| nvm                            | Node Version Manager                                                           |
+| Node.js LTS                    | Latest long-term support release of Node.js                                    |
+| tree                           | Directory tree display utility                                                 |
+| fzf                            | Fuzzy finder - CTRL-R history, CTRL-T file picker, ALT-C cd                    |
+| zoxide                         | Smart `cd` - jump to frecent dirs with `z`, interactive with `zi`              |
+| ripgrep (rg)                   | Fast grep replacement with better defaults                                     |
+| bat                            | `cat` with syntax highlighting and git integration                             |
+| lazygit                        | Terminal UI for git                                                            |
+| gh (GitHub CLI)                | GitHub operations (PRs, issues, repos) from the terminal                       |
+| pnpm                           | Fast, disk-efficient Node.js package manager                                   |
+| SSH + GPG keys (ed25519 / GPG) | _(personal)_ SSH key for GitHub auth; GPG key for commit and tag signing       |
+| pinentry-mac / pinentry-curses | _(personal)_ GPG passphrase prompt (GUI on macOS, terminal on Linux)           |
 | gpg-agent                      | _(personal)_ Passphrase caching for GPG and SSH keys (SSH support: Linux only) |
-| Claude Code CLI                | _(personal)_ Terminal AI coding assistant                                |
+| Claude Code CLI                | _(personal)_ Terminal AI coding assistant                                      |
 
 > Items marked _(personal)_ are only installed when you answer **y** to the personal machine prompt.
 
 ---
 
-## Files Deployed to Your System
+## Symlinked Dotfiles
 
-| File                 | Repo Path                     | Destination                                                 |
-| -------------------- | ----------------------------- | ----------------------------------------------------------- |
-| zshrc                | `.zshrc`                      | `~/.zshrc`                                                  |
-| git config           | `.gitconfig`                  | `~/.gitconfig`                                              |
-| git local identity   | _(not tracked)_               | `~/.gitconfig.local` (built by installer)                   |
-| Powerlevel10k config | `.p10k.zsh`                   | `~/.p10k.zsh`                                               |
-| Claude Code settings | `claude/settings.json`        | `~/.claude/settings.json` _(personal)_                      |
-| GPG agent config     | _(not tracked)_               | `~/.gnupg/gpg-agent.conf` (built by installer) _(personal)_ |
+| File                 | Repo Path              | Destination                                                 |
+| -------------------- | ---------------------- | ----------------------------------------------------------- |
+| zshrc                | `.zshrc`               | `~/.zshrc`                                                  |
+| git config           | `.gitconfig`           | `~/.gitconfig`                                              |
+| git local identity   | _(not tracked)_        | `~/.gitconfig.local` (built by installer)                   |
+| Powerlevel10k config | `.p10k.zsh`            | `~/.p10k.zsh`                                               |
+| Claude Code settings | `claude/settings.json` | `~/.claude/settings.json` _(personal)_                      |
+| GPG agent config     | _(not tracked)_        | `~/.gnupg/gpg-agent.conf` (built by installer) _(personal)_ |
 
 ---
 
@@ -96,7 +96,7 @@ The installer is fully **idempotent**: every step checks whether a tool or confi
   ```bash
   xcode-select --install
   ```
-- **Linux / WSL2** - `curl` must be available (`sudo apt-get install curl` if not present - the installer also installs it as its first step)
+- **Ubuntu / Debian / WSL2** - no additional prerequisites
 
 ### 1. Clone the Repo
 
@@ -164,13 +164,19 @@ MesloLGS NF is required for Powerlevel10k to render correctly. Click each link t
 1. Double-click each `.ttf` file to install via Font Book
 2. Open your terminal preferences and set the font to `MesloLGS NF Regular`
 
-**Linux / WSL2**
+**WSL2**
 
 Fonts must be installed on the Windows side for Windows Terminal to use them:
 
 1. Double-click each `.ttf` file → **Install for all users**
 2. Open **Windows Terminal** → **Settings** → select your profile → **Appearance**
 3. Set **Font face** to `MesloLGS NF`
+
+**Ubuntu / Debian**
+
+1. Install the fonts with your system font manager
+2. Run `fc-cache -fv` to rebuild the font cache
+3. Set `MesloLGS NF` in your terminal emulator preferences
 
 ### 4. Open a New Terminal and Verify
 
