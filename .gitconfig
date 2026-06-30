@@ -19,7 +19,7 @@
 # ─────────────────────────────────────────
 [alias]
 	# -- History
-	hist = log --all --graph --decorate --oneline
+	hist = log --all --graph --decorate --date=short --pretty=format:"%C(yellow)%h%Creset %C(cyan)%ad%Creset%C(red)%d%Creset %s%C(dim blue) [%an]%Creset"
 	lo   = log --oneline
 	l    = log --pretty=format:"%C(yellow)%h\\ %ad%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate --date=short
 	ld   = log --pretty=format:"%C(yellow)%h\\ %ad%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate --date=relative
