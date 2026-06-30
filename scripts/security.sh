@@ -53,6 +53,12 @@ setup_ssh_key() {
         _agent_sock="$(gpgconf --list-dirs agent-ssh-socket)"
         export GPG_TTY="$(tty 2>/dev/null || true)"
         gpgconf --launch gpg-agent 2>/dev/null
+        local _gpg_sock _gpg_retries=0
+        _gpg_sock="$(gpgconf --list-dirs agent-socket 2>/dev/null)"
+        until [ -S "$_gpg_sock" ] || [ "$_gpg_retries" -ge 10 ]; do
+            _gpg_retries=$((_gpg_retries + 1))
+            sleep 0.1
+        done
         gpg-connect-agent updatestartuptty /bye >/dev/null 2>&1
 
         local _fingerprint

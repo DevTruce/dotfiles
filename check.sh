@@ -341,6 +341,28 @@ else
     _warn "gpg-agent.conf not found  (personal machine only)"
 fi
 
+if [ "$OS" != "macos" ] && command -v gpgconf >/dev/null 2>&1; then
+    if [ -f "${HOME}/.gnupg/gpg-agent.conf" ] && grep -q "enable-ssh-support" "${HOME}/.gnupg/gpg-agent.conf" 2>/dev/null; then
+        _gpg_ssh_sock="$(gpgconf --list-dirs agent-ssh-socket 2>/dev/null)"
+        # ssh-add -l exit code 2 = cannot connect; 0 = keys present; 1 = agent alive, no keys
+        _gpg_keys="$(SSH_AUTH_SOCK="$_gpg_ssh_sock" ssh-add -l 2>&1)"
+        _gpg_exit=$?
+        if [ "$_gpg_exit" -ne 2 ]; then
+            _pass "gpg-agent SSH socket active"
+            if [ -f "${HOME}/.ssh/id_ed25519.pub" ]; then
+                _ssh_fp="$(ssh-keygen -lf "${HOME}/.ssh/id_ed25519.pub" 2>/dev/null | awk '{print $2}')"
+                if echo "$_gpg_keys" | grep -qF "$_ssh_fp"; then
+                    _pass "SSH key loaded in gpg-agent"
+                else
+                    _warn "SSH key not loaded in gpg-agent  (fix: ssh-add ~/.ssh/id_ed25519)"
+                fi
+            fi
+        else
+            _fail "gpg-agent not responding  (fix: open a new terminal, or run: source ~/.zshrc)"
+        fi
+    fi
+fi
+
 # ─────────────────────────────────────────
 # Summary
 # ─────────────────────────────────────────

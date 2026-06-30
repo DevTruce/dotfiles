@@ -163,6 +163,12 @@ if [[ "$OSTYPE" != "darwin"* ]]; then
       export SSH_AUTH_SOCK="$(gpgconf --list-dirs agent-ssh-socket)"
     fi
     gpgconf --launch gpg-agent 2>/dev/null
+    _gpg_sock="$(gpgconf --list-dirs agent-socket 2>/dev/null)"
+    _gpg_retries=0
+    until [[ -S "$_gpg_sock" ]] || (( _gpg_retries++ >= 10 )); do
+      sleep 0.1
+    done
+    unset _gpg_sock _gpg_retries
     gpg-connect-agent updatestartuptty /bye >/dev/null 2>&1
   fi
 fi
