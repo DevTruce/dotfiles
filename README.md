@@ -20,7 +20,7 @@ own setup and preferences rather than a general-purpose, everyone's-preferences 
 - [Manual Steps](#manual-steps)
   - [1. Add Your SSH Key to GitHub](#1-add-your-ssh-key-to-github)
   - [2. Add Your GPG Key to GitHub](#2-add-your-gpg-key-to-github)
-  - [3. Install MesloLGS NF Fonts](#3-install-meslogls-nf-fonts)
+  - [3. Install MesloLGS NF Fonts](#3-install-meslolgs-nf-fonts)
   - [4. Open a New Terminal and Verify](#4-open-a-new-terminal-and-verify)
 - [File Structure](#file-structure)
 - [Re-running the Installer](#re-running-the-installer)
@@ -268,6 +268,10 @@ entries like `setup_homebrew` on Linux are hidden automatically):
 ```bash
 bash ~/dev-bootstrap/run.sh
 ```
+
+Pick one or more steps at the `Select:` prompt - a single number (`3`), a comma/space-separated
+list (`1,4,7`), or a range (`1-6`) all work, run in sequence, then loop back to the menu. `c`
+runs `doctor.sh` to verify your setup without leaving the menu, and `q` quits.
 
 Or invoke a function directly if you already know its name:
 
