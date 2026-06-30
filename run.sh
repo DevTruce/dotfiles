@@ -87,6 +87,7 @@ _run_interactive() {
 
         printf "\n  ${CYAN} c)${RESET}  Run check.sh ${DIM}(verify current setup)${RESET}\n"
         printf "  ${CYAN} q)${RESET}  Quit\n\n"
+        printf "  ${DIM}Select one or more, e.g. 3 | 1,4,7 | 1-6${RESET}\n"
         printf "  Select: "
         read -r _choice || break
         echo ""
@@ -94,16 +95,58 @@ _run_interactive() {
         case "$_choice" in
             q|Q) break ;;
             c|C) bash "${DOTFILES_DIR}/check.sh" || true ;;
-            ''|*[!0-9]*) warn "Invalid selection: ${_choice}" ;;
-            *)
-                if [ -n "${_names[$_choice]:-}" ]; then
-                    "${_names[$_choice]}" || warn "${_names[$_choice]} exited with an error - see output above."
-                else
-                    warn "Invalid selection: ${_choice}"
-                fi
-                ;;
+            *) _run_selection "$_choice" ;;
         esac
         echo ""
+    done
+}
+
+# parses a multi-select list - comma/space separated numbers and/or N-M ranges
+# (e.g. "3", "1,4,7", "1 4 7", "1-6", "1-3,7,10-12") - against the menu's _names array.
+# functions are idempotent, so a duplicate selection just re-runs harmlessly rather than
+# needing to be deduped. Validates the whole list before running anything, so a typo
+# can't trigger a partial run of only the tokens that happened to parse.
+_run_selection() {
+    local _input="$1"
+    local _selected=() _valid=true _token _range_start _range_end _n
+
+    for _token in $(echo "$_input" | tr ',' ' '); do
+        case "$_token" in
+            *-*)
+                _range_start="${_token%%-*}"
+                _range_end="${_token##*-}"
+                case "$_range_start" in ''|*[!0-9]*) _valid=false ;; esac
+                case "$_range_end" in ''|*[!0-9]*) _valid=false ;; esac
+                # reject out-of-range bounds here rather than expanding a huge range
+                # and spamming one "invalid" warning per out-of-bounds number below
+                if [ "$_valid" = true ] && [ "$_range_end" -gt "${#_names[@]}" ]; then
+                    _valid=false
+                fi
+                if [ "$_valid" = true ] && [ "$_range_start" -le "$_range_end" ]; then
+                    for ((_n = _range_start; _n <= _range_end; _n++)); do
+                        _selected+=("$_n")
+                    done
+                else
+                    _valid=false
+                fi
+                ;;
+            ''|*[!0-9]*) _valid=false ;;
+            *) _selected+=("$_token") ;;
+        esac
+        [ "$_valid" = true ] || break
+    done
+
+    if [ "$_valid" != true ] || [ "${#_selected[@]}" -eq 0 ]; then
+        warn "Invalid selection: ${_input}"
+        return
+    fi
+
+    for _n in "${_selected[@]}"; do
+        if [ -n "${_names[$_n]:-}" ]; then
+            "${_names[$_n]}" || warn "${_names[$_n]} exited with an error - see output above."
+        else
+            warn "Invalid selection: ${_n}"
+        fi
     done
 }
 
