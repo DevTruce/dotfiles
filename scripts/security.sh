@@ -95,19 +95,22 @@ setup_ssh_key() {
 setup_gpg_key() {
     section "Security - GPG Key"
 
-    if gpg --list-secret-keys --keyid-format=long 2>/dev/null | grep -q '^sec'; then
-        skip "A GPG secret key already exists - skipping generation."
+    local GIT_NAME GIT_EMAIL
+    GIT_NAME="$(git config --file "${HOME}/.gitconfig.local" user.name 2>/dev/null || true)"
+    GIT_EMAIL="$(git config --file "${HOME}/.gitconfig.local" user.email 2>/dev/null || true)"
+
+    if [ -z "$GIT_NAME" ] || [ -z "$GIT_EMAIL" ]; then
+        warn "git user.name/user.email are not configured yet."
+        note "Re-run the installer so setup_git can prompt for your identity first."
+        return 1
+    fi
+
+    # filter by GIT_EMAIL rather than "any secret key exists" - on a reused machine
+    # with unrelated pre-existing keys, the broader check would skip generation
+    # entirely and the unfiltered key_id lookup below would grab the wrong key
+    if gpg --list-secret-keys --keyid-format=long "$GIT_EMAIL" 2>/dev/null | grep -q '^sec'; then
+        skip "A GPG secret key for ${GIT_EMAIL} already exists - skipping generation."
     else
-        local GIT_NAME GIT_EMAIL
-        GIT_NAME="$(git config --file "${HOME}/.gitconfig.local" user.name 2>/dev/null || true)"
-        GIT_EMAIL="$(git config --file "${HOME}/.gitconfig.local" user.email 2>/dev/null || true)"
-
-        if [ -z "$GIT_NAME" ] || [ -z "$GIT_EMAIL" ]; then
-            warn "git user.name/user.email are not configured yet."
-            note "Re-run the installer so setup_git can prompt for your identity first."
-            return 1
-        fi
-
         step "Generating a GPG key for ${GIT_NAME} <${GIT_EMAIL}>"
         local _gpg_log
         _gpg_log="$(mktemp)"
@@ -135,7 +138,12 @@ setup_gpg_key() {
     fi
 
     local key_id
-    key_id="$(gpg --list-secret-keys --keyid-format=long 2>/dev/null | awk -F'/' '/^sec/{print $2}' | awk '{print $1}' | head -1)"
+    key_id="$(gpg --list-secret-keys --keyid-format=long "$GIT_EMAIL" 2>/dev/null | awk -F'/' '/^sec/{print $2}' | awk '{print $1}' | head -1)"
+
+    if [ -z "$key_id" ]; then
+        warn "No GPG key found matching ${GIT_EMAIL} - falling back to the first available secret key."
+        key_id="$(gpg --list-secret-keys --keyid-format=long 2>/dev/null | awk -F'/' '/^sec/{print $2}' | awk '{print $1}' | head -1)"
+    fi
 
     if [ -z "$key_id" ]; then
         warn "Could not extract GPG key ID - skipping signing config."
