@@ -9,6 +9,14 @@ setup_zsh_plugins() {
 
     local ZINIT_HOME="${HOME}/.local/share/zinit/zinit.git"
 
+    # directory existence alone doesn't prove a complete clone - an interrupted install
+    # (network drop, Ctrl-C) can leave a partial .git dir that would otherwise be treated
+    # as "already installed" forever; verify HEAD actually resolves and clean up if not
+    if [ -d "$ZINIT_HOME" ] && ! git -C "$ZINIT_HOME" rev-parse HEAD >/dev/null 2>&1; then
+        warn "Found an incomplete zinit install - removing it to retry."
+        rm -rf "$ZINIT_HOME"
+    fi
+
     if [ -d "$ZINIT_HOME" ]; then
         skip "zinit is already installed."
     else
