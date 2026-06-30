@@ -7,6 +7,9 @@
 setup_homebrew() {
     section "Package Manager - Homebrew"
 
+    # install.sh only ever calls this from setup_macos, where OS is already guaranteed
+    # correct - this guard only matters if someone runs `bash run.sh setup_homebrew`
+    # directly on Linux
     if [ "$OS" != "macos" ]; then
         warn "setup_homebrew is only supported on macOS."
         return 1
@@ -60,6 +63,9 @@ setup_homebrew() {
 setup_apt() {
     section "Package Manager - apt"
 
+    # install.sh only ever calls this from setup_linux, where OS is already guaranteed
+    # correct - this guard only matters if someone runs `bash run.sh setup_apt`
+    # directly on macOS
     if [ "$OS" = "macos" ]; then
         warn "setup_apt is only supported on Linux."
         return 1
