@@ -100,7 +100,7 @@ setup_gpg_key() {
         _gpg_log="$(mktemp)"
         # passphrase is entered interactively via pinentry — never stored in the script,
         # shell history, or the process list
-        if gpg --quiet --quick-gen-key "${GIT_NAME} <${GIT_EMAIL}>" default default > "$_gpg_log" 2>&1; then
+        if gpg --quiet --no-tty --quick-gen-key "${GIT_NAME} <${GIT_EMAIL}>" ed25519 default > "$_gpg_log" 2>&1; then
             rm -f "$_gpg_log"
             ok "GPG key generated."
         else
