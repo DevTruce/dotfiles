@@ -61,7 +61,7 @@ finish() {
     printf "  ${BOLD_WHITE}[ %s ]${RESET}  ${BOLD}Open a new terminal for all changes to take effect.${RESET}\n" "${n}"
     echo ""
     note "Then verify your setup:"
-    note "  bash ~/dotfiles/check.sh"
+    note "  bash ${DOTFILES_DIR}/check.sh"
     echo ""
     printf "  ${BOLD_CYAN}════════════════════════════════════════════════════${RESET}\n"
     echo ""
