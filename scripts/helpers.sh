@@ -54,6 +54,11 @@ prompt() {
     printf "  ${CYAN}🔒${RESET}  %s\n" "$1"
 }
 
+# something the user needs to copy (SSH key, GPG key, etc.)
+copy() {
+    printf "  ${CYAN}📋${RESET}  %s\n" "$1"
+}
+
 # symlink row: cyan source → dim arrow → default destination
 link() {
     printf "  ${CYAN}%-28s${RESET}${DIM} → ${RESET}%s\n" "$1" "$2"
