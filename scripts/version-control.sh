@@ -59,7 +59,7 @@ setup_git() {
         note "3) Vim      (vim)"
         note "4) Nano     (nano)"
         note "5) Use system default (\$EDITOR)"
-        printf "  Enter number ${DIM}[1]${RESET}: "
+        printf "  Enter number: "
         read -r editor_choice
         case "${editor_choice:-1}" in
             2) git_editor="nvim" ;;
