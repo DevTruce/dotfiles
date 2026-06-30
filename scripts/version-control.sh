@@ -99,7 +99,7 @@ setup_git_lfs() {
         skip "git-lfs hooks are already registered globally."
     else
         step "Registering git-lfs hooks globally"
-        git lfs install
+        git lfs install >/dev/null 2>&1
         ok "git-lfs hooks registered."
     fi
 }
