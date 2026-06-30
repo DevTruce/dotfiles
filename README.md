@@ -101,13 +101,13 @@ The installer is fully **idempotent**: every step checks whether a tool or confi
 ### 1. Clone the Repo
 
 ```bash
-git clone https://github.com/DevTruce/dotfiles.git ~/dotfiles
+git clone https://github.com/DevTruce/dotfiles.git ~/.dotfiles
 ```
 
 ### 2. Run the Installer
 
 ```bash
-cd ~/dotfiles
+cd ~/.dotfiles
 bash install.sh
 ```
 
