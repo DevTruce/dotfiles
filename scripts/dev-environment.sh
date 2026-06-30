@@ -76,15 +76,16 @@ setup_nvm() {
         ok "nvm installed."
     fi
 
-    # nvm references unbound variables internally, which trips set -u
+    # nvm references unbound variables internally, which trips set -u - every nvm
+    # call below is bracketed in set +u/set -u for that reason, not just this source
     set +u
     \. "${NVM_DIR}/nvm.sh"
     set -u
 
-    local _node_already_installed=false
+    # nvm ls lists the lts/* alias once Node has actually been installed against it,
+    # not just when the alias file exists - this is the real "is LTS present" check
     if nvm ls --no-colors 2>/dev/null | grep -q 'lts/\*'; then
         skip "Node.js LTS is already installed."
-        _node_already_installed=true
     else
         step "Installing the latest Node.js LTS release"
         local _node_log _node_pid
@@ -103,6 +104,7 @@ setup_nvm() {
             set -u
             return 1
         fi
+        # nvm install --lts doesn't switch the active version on its own
         if ! nvm use lts/* >/dev/null 2>&1; then
             fail "Failed to activate Node.js LTS after install."
             set -u
