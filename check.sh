@@ -15,9 +15,10 @@ _PASS=0
 _FAIL=0
 _WARN=0
 
-_pass() { ok   "$1"; _PASS=$((_PASS + 1)); }
-_fail() { fail "$1"; _FAIL=$((_FAIL + 1)); }
-_warn() { warn "$1"; _WARN=$((_WARN + 1)); }
+_pass()    { ok   "$1"; _PASS=$((_PASS + 1)); }
+_fail()    { fail "$1"; _FAIL=$((_FAIL + 1)); }
+_warn()    { warn "$1"; _WARN=$((_WARN + 1)); }
+_pending() { skip "$1"; }  # dim ✓ — will materialize on first shell launch, not a problem
 
 # ─────────────────────────────────────────
 # Header
@@ -28,6 +29,8 @@ printf "  ${BOLD_CYAN}┌──────────────────�
 printf "  ${BOLD_CYAN}│${RESET}  ${BOLD_WHITE}%-52s${RESET}${BOLD_CYAN}│${RESET}\n" "System Check"
 printf "  ${BOLD_CYAN}│${RESET}  ${DIM}%-52s${RESET}${BOLD_CYAN}│${RESET}\n" "OS: ${OS}"
 printf "  ${BOLD_CYAN}└──────────────────────────────────────────────────────┘${RESET}\n"
+echo ""
+note "Tip: open a new terminal after install.sh before running this check for full accuracy"
 echo ""
 
 # ─────────────────────────────────────────
@@ -111,7 +114,6 @@ else
 fi
 
 _zinit_plugins="${HOME}/.local/share/zinit/plugins"
-_plugins_missing=0
 for _plugin in \
     "zsh-users---zsh-completions" \
     "zsh-users---zsh-autosuggestions" \
@@ -121,13 +123,9 @@ do
     if [ -d "${_zinit_plugins}/${_plugin}" ]; then
         _pass "zinit plugin: ${_plugin}"
     else
-        _warn "zinit plugin not yet downloaded: ${_plugin}"
-        _plugins_missing=$((_plugins_missing + 1))
+        _pending "zinit plugin pending: ${_plugin}  (downloads on first shell launch)"
     fi
 done
-if [ "$_plugins_missing" -gt 0 ]; then
-    note "Open a new terminal to trigger first-run plugin download"
-fi
 
 # ─────────────────────────────────────────
 # Node.js
@@ -298,14 +296,14 @@ _fzf_cache="${XDG_CACHE_HOME:-${HOME}/.cache}/fzf.zsh"
 if [ -f "$_fzf_cache" ]; then
     _pass "fzf init cache  (${_fzf_cache})"
 else
-    _warn "fzf init cache missing  (${_fzf_cache})  - open a new terminal to generate"
+    _pending "fzf init cache  (generated on first shell launch)"
 fi
 
 _zoxide_cache="${XDG_CACHE_HOME:-${HOME}/.cache}/zoxide.zsh"
 if [ -f "$_zoxide_cache" ]; then
     _pass "zoxide init cache  (${_zoxide_cache})"
 else
-    _warn "zoxide init cache missing  (${_zoxide_cache})  - open a new terminal to generate"
+    _pending "zoxide init cache  (generated on first shell launch)"
 fi
 
 # ─────────────────────────────────────────
