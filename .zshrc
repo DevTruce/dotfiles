@@ -64,7 +64,12 @@ if [[ -f "$ZINIT_HOME/zinit.zsh" ]]; then
   # -- Completions (skip security audit when dump is less than 24 hours old)
   autoload -Uz compinit
   if [[ -n ${HOME}/.zcompdump(#qN.mh+24) ]]; then
-    compinit
+    # Docker Desktop's WSL integration leaves a symlink at
+    # /usr/share/zsh/vendor-completions/_docker pointing into a mount that
+    # isn't always attached yet at shell startup; when dangling, compinit's
+    # full-rebuild scan fails to read it and prints a harmless warning -
+    # filter just that line, let any other compinit output through untouched.
+    compinit 2> >(grep -v 'no such file or directory:.*vendor-completions/_docker$')
   else
     compinit -C
   fi
