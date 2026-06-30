@@ -66,7 +66,7 @@ link() {
 }
 
 # -- Spinner: goes up to the step line and animates the spinner inline after the message.
-# Erases that line when done so ok/warn prints in its place.
+# Erases that line when done so ok/fail/warn prints in its place.
 # Usage: call step() first, then background your command, then call _spinner $pid
 
 _spinner() {

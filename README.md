@@ -18,7 +18,7 @@ Personal dotfiles and automated installer for macOS and Linux / WSL2.
   - [1. Add Your SSH Key to GitHub](#1-add-your-ssh-key-to-github)
   - [2. Add Your GPG Key to GitHub](#2-add-your-gpg-key-to-github)
   - [3. Install MesloLGS NF Fonts](#3-install-meslogls-nf-fonts)
-  - [4. Open a New Terminal](#4-open-a-new-terminal)
+  - [4. Open a New Terminal and Verify](#4-open-a-new-terminal-and-verify)
 - [File Structure](#file-structure)
 - [Re-running the Installer](#re-running-the-installer)
 
@@ -172,9 +172,18 @@ Fonts must be installed on the Windows side for Windows Terminal to use them:
 2. Open **Windows Terminal** → **Settings** → select your profile → **Appearance**
 3. Set **Font face** to `MesloLGS NF`
 
-### 4. Open a New Terminal
+### 4. Open a New Terminal and Verify
 
 Open a fresh terminal session for all changes (default shell, plugins, PATH) to take effect.
+Then run the system check to confirm everything is wired up correctly:
+
+```bash
+bash ~/dotfiles/check.sh
+```
+
+All items should show a green checkmark. Zinit plugins and shell init caches that haven't
+downloaded yet will show a dim checkmark - they are guaranteed to materialize the moment you
+opened the new terminal.
 
 ---
 
@@ -204,6 +213,7 @@ dotfiles/
 │   ├── utilities.sh            # setup_tree, setup_fzf, setup_zoxide, setup_ripgrep, setup_bat, setup_lazygit, setup_gh
 │   └── finish.sh               # completion banner and manual todo list
 ├── install.sh                  # entry point: loads scripts, detects OS, dispatches
+├── check.sh                    # post-install verification: checks all tools, symlinks, PATH, git identity, and security
 └── run.sh                      # run a single setup function without the full install
 ```
 

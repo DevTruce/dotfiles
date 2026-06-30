@@ -44,7 +44,7 @@
 # ─────────────────────────────────────────
 # Git LFS
 # ─────────────────────────────────────────
-# pre-set so the idempotency check in setup_git_lfs always finds these values here
+# required for LFS smudge/clean filters to work; hooks are registered separately by setup_git_lfs
 [filter "lfs"]
 	smudge  = git-lfs smudge -- %f
 	process = git-lfs filter-process
