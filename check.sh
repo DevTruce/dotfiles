@@ -52,7 +52,9 @@ case "$OS" in
     *)     _configured_shell="$(getent passwd "$USER" 2>/dev/null | cut -d: -f7)" ;;
 esac
 _zsh_path="$(command -v zsh 2>/dev/null || true)"
-if [ -n "$_zsh_path" ] && [ "$_configured_shell" = "$_zsh_path" ]; then
+_configured_real="$(realpath "$_configured_shell" 2>/dev/null || echo "$_configured_shell")"
+_zsh_real="$(realpath "$_zsh_path" 2>/dev/null || echo "$_zsh_path")"
+if [ -n "$_zsh_path" ] && [ "$_configured_real" = "$_zsh_real" ]; then
     _pass "zsh is the default shell  (${_zsh_path})"
 else
     _fail "zsh is not the default shell  (current: ${_configured_shell:-unknown})"
@@ -79,7 +81,7 @@ else
 fi
 
 if command -v git-lfs >/dev/null 2>&1; then
-    if git lfs env 2>/dev/null | grep -q "LocalGitStorageDir"; then
+    if git config --global filter.lfs.required 2>/dev/null | grep -q "true"; then
         _pass "git-lfs hooks registered"
     else
         _fail "git-lfs hooks not registered  (run: git lfs install)"
