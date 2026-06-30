@@ -137,6 +137,27 @@ _npm() {
     fi
 }
 
+# -- Checksum verification
+
+# Verifies a downloaded file's sha256 against a project-published checksums file.
+# Usage: _verify_sha256 <downloaded_file> <checksums_url> <expected_filename_in_checksums>
+_verify_sha256() {
+    local _file="$1" _checksums_url="$2" _expected_name="$3"
+    local _checksums _expected_hash _actual_hash
+
+    _checksums="$(curl -fsSL "$_checksums_url")" || { echo "ERROR: could not download checksums file (${_checksums_url})" >&2; return 1; }
+    _expected_hash="$(echo "$_checksums" | grep "  ${_expected_name}\$" | awk '{print $1}')"
+    if [ -z "$_expected_hash" ]; then
+        echo "ERROR: no checksum entry found for ${_expected_name} in ${_checksums_url}" >&2
+        return 1
+    fi
+    _actual_hash="$(sha256sum "$_file" | awk '{print $1}')"
+    if [ "$_actual_hash" != "$_expected_hash" ]; then
+        echo "ERROR: checksum mismatch for ${_expected_name} (expected ${_expected_hash}, got ${_actual_hash})" >&2
+        return 1
+    fi
+}
+
 # -- OS Detection
 
 detect_os() {

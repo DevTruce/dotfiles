@@ -47,9 +47,13 @@ setup_fzf() {
                         echo "ERROR: could not determine fzf version (GitHub API rate limit?)" >&2
                         exit 1
                     fi
+                    _asset="fzf-${_version}-linux_${_arch}.tar.gz"
                     _dl="$(mktemp)"
                     curl -fsSLo "$_dl" \
-                        "https://github.com/junegunn/fzf/releases/download/v${_version}/fzf-${_version}-linux_${_arch}.tar.gz"
+                        "https://github.com/junegunn/fzf/releases/download/v${_version}/${_asset}"
+                    _verify_sha256 "$_dl" \
+                        "https://github.com/junegunn/fzf/releases/download/v${_version}/fzf_${_version}_checksums.txt" \
+                        "$_asset" || { rm -f "$_dl"; exit 1; }
                     mkdir -p "${HOME}/.local/bin"
                     tar -xzf "$_dl" -C "${HOME}/.local/bin/" fzf
                     rm -f "$_dl"
@@ -95,6 +99,15 @@ setup_zoxide() {
                     _dl="$(mktemp)"
                     curl -fsSLo "$_dl" \
                         "https://github.com/ajeetdsouza/zoxide/releases/download/v${_version}/zoxide-${_version}-${_arch}.tar.gz"
+                    # zoxide does not publish a checksums file in its GitHub releases (unlike
+                    # fzf/lazygit/gh, verified via the API), so sha256 verification isn't
+                    # possible here; at minimum confirm the download is a valid archive
+                    # containing the expected binary before extracting it onto $PATH
+                    if ! tar -tzf "$_dl" zoxide >/dev/null 2>&1; then
+                        echo "ERROR: downloaded zoxide archive is invalid or missing the zoxide binary" >&2
+                        rm -f "$_dl"
+                        exit 1
+                    fi
                     mkdir -p "${HOME}/.local/bin"
                     tar -xzf "$_dl" -C "${HOME}/.local/bin/" zoxide
                     rm -f "$_dl"
@@ -178,9 +191,13 @@ setup_lazygit() {
                         echo "ERROR: could not determine lazygit version (GitHub API rate limit?)" >&2
                         exit 1
                     fi
+                    _asset="lazygit_${_version}_linux_${_arch}.tar.gz"
                     _dl="$(mktemp)"
                     curl -fsSLo "$_dl" \
-                        "https://github.com/jesseduffield/lazygit/releases/download/v${_version}/lazygit_${_version}_Linux_${_arch}.tar.gz"
+                        "https://github.com/jesseduffield/lazygit/releases/download/v${_version}/${_asset}"
+                    _verify_sha256 "$_dl" \
+                        "https://github.com/jesseduffield/lazygit/releases/download/v${_version}/checksums.txt" \
+                        "$_asset" || { rm -f "$_dl"; exit 1; }
                     mkdir -p "${HOME}/.local/bin"
                     tar -xzf "$_dl" -C "${HOME}/.local/bin/" lazygit
                     rm -f "$_dl"
@@ -223,9 +240,13 @@ setup_gh() {
                         echo "ERROR: could not determine gh version (GitHub API rate limit?)" >&2
                         exit 1
                     fi
+                    _asset="gh_${_version}_linux_${_arch}.tar.gz"
                     _dl="$(mktemp)"
                     curl -fsSLo "$_dl" \
-                        "https://github.com/cli/cli/releases/download/v${_version}/gh_${_version}_linux_${_arch}.tar.gz"
+                        "https://github.com/cli/cli/releases/download/v${_version}/${_asset}"
+                    _verify_sha256 "$_dl" \
+                        "https://github.com/cli/cli/releases/download/v${_version}/gh_${_version}_checksums.txt" \
+                        "$_asset" || { rm -f "$_dl"; exit 1; }
                     mkdir -p "${HOME}/.local/bin"
                     tar -xzf "$_dl" --strip-components=2 -C "${HOME}/.local/bin/" \
                         "gh_${_version}_linux_${_arch}/bin/gh"
