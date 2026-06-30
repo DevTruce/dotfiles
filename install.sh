@@ -5,7 +5,7 @@ _on_exit() {
     local _rc=$?
     if [ "$_rc" -ne 0 ]; then
         echo ""
-        fail "Setup aborted — resolve the error above and re-run."
+        fail "Setup aborted - resolve the error above and re-run."
         echo ""
     fi
 }
@@ -19,7 +19,7 @@ export PATH="${HOME}/.local/bin:${PATH}"
 # ─────────────────────────────────────────
 
 # -- Load all setup functions (alphabetical order: helpers.sh loads 4th after
-#    dev-environment.sh, dotfiles.sh, finish.sh — those files must not execute
+#    dev-environment.sh, dotfiles.sh, finish.sh - those files must not execute
 #    any top-level code that references helpers or color variables)
 for f in "${DOTFILES_DIR}/scripts/"*.sh; do
     # shellcheck source=/dev/null

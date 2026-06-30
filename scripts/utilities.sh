@@ -5,7 +5,7 @@
 # -- tree
 
 setup_tree() {
-    section "Utilities — tree"
+    section "Utilities - tree"
 
     if command -v tree >/dev/null 2>&1; then
         skip "tree is already installed."
@@ -22,7 +22,7 @@ setup_tree() {
 # -- fzf
 
 setup_fzf() {
-    section "Utilities — fzf"
+    section "Utilities - fzf"
 
     if command -v fzf >/dev/null 2>&1; then
         skip "fzf is already installed."
@@ -33,7 +33,7 @@ setup_fzf() {
                 _brew install fzf
                 ;;
             *)
-                # apt ships fzf 0.29–0.44 which predates `fzf --zsh`; pull latest from GitHub
+                # apt ships fzf 0.29-0.44 which predates `fzf --zsh`; pull latest from GitHub
                 local _log _pid
                 _log="$(mktemp)"
                 (
@@ -67,7 +67,7 @@ setup_fzf() {
 # -- zoxide
 
 setup_zoxide() {
-    section "Utilities — zoxide"
+    section "Utilities - zoxide"
 
     if command -v zoxide >/dev/null 2>&1; then
         skip "zoxide is already installed."
@@ -112,7 +112,7 @@ setup_zoxide() {
 # -- ripgrep
 
 setup_ripgrep() {
-    section "Utilities — ripgrep"
+    section "Utilities - ripgrep"
 
     if command -v rg >/dev/null 2>&1; then
         skip "ripgrep is already installed."
@@ -129,7 +129,7 @@ setup_ripgrep() {
 # -- bat
 
 setup_bat() {
-    section "Utilities — bat"
+    section "Utilities - bat"
 
     # On Ubuntu/Debian, bat is installed as 'batcat' due to a naming conflict
     local _bat_cmd
@@ -153,7 +153,7 @@ setup_bat() {
 # -- lazygit
 
 setup_lazygit() {
-    section "Utilities — lazygit"
+    section "Utilities - lazygit"
 
     if command -v lazygit >/dev/null 2>&1; then
         skip "lazygit is already installed."
@@ -198,7 +198,7 @@ setup_lazygit() {
 # -- gh (GitHub CLI)
 
 setup_gh() {
-    section "Utilities — gh (GitHub CLI)"
+    section "Utilities - gh (GitHub CLI)"
 
     if command -v gh >/dev/null 2>&1; then
         skip "gh is already installed."

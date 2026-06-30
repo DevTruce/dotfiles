@@ -5,7 +5,7 @@
 # -- Zsh Plugins (zinit)
 
 setup_zsh_plugins() {
-    section "Dev Environment — Zsh Plugins (zinit)"
+    section "Dev Environment - Zsh Plugins (zinit)"
 
     local ZINIT_HOME="${HOME}/.local/share/zinit/zinit.git"
 
@@ -29,14 +29,14 @@ setup_zsh_plugins() {
 # -- Node.js (nvm)
 
 setup_nvm() {
-    section "Dev Environment — Node.js (nvm)"
+    section "Dev Environment - Node.js (nvm)"
 
     NVM_DIR="${HOME}/.nvm"
 
     if [ -s "${NVM_DIR}/nvm.sh" ]; then
         skip "nvm is already installed."
     else
-        note "Skipping shell profile changes — your .zshrc already includes the nvm loader."
+        note "Skipping shell profile changes - your .zshrc already includes the nvm loader."
         step "Installing nvm (Node Version Manager)"
         # PROFILE=/dev/null prevents nvm's installer from modifying .zshrc,
         # since the nvm loader is already maintained in dotfiles
@@ -106,7 +106,7 @@ setup_nvm() {
 # -- pnpm
 
 setup_pnpm() {
-    section "Dev Environment — pnpm"
+    section "Dev Environment - pnpm"
 
     set +u
     [ -s "${NVM_DIR:-$HOME/.nvm}/nvm.sh" ] && \. "${NVM_DIR:-$HOME/.nvm}/nvm.sh"
@@ -124,7 +124,7 @@ setup_pnpm() {
 # -- Claude Code CLI
 
 setup_claude() {
-    section "Dev Environment — Claude Code CLI"
+    section "Dev Environment - Claude Code CLI"
 
     set +u
     [ -s "${NVM_DIR:-$HOME/.nvm}/nvm.sh" ] && \. "${NVM_DIR:-$HOME/.nvm}/nvm.sh"

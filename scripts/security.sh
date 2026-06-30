@@ -5,7 +5,7 @@
 # -- GPG Tools
 
 setup_gpg_tools() {
-    section "Security — GPG Tools"
+    section "Security - GPG Tools"
 
     if command -v gpg >/dev/null 2>&1; then
         skip "gpg is already installed."
@@ -22,13 +22,13 @@ setup_gpg_tools() {
 # -- SSH Key
 
 setup_ssh_key() {
-    section "Security — SSH Key"
+    section "Security - SSH Key"
 
     local SSH_KEY="${HOME}/.ssh/id_ed25519"
     local _key_newly_generated=false
 
     if [ -f "${SSH_KEY}.pub" ]; then
-        skip "SSH key already exists at ${SSH_KEY}.pub — skipping generation."
+        skip "SSH key already exists at ${SSH_KEY}.pub - skipping generation."
     else
         step "Generating a new ed25519 SSH key"
         mkdir -p "${HOME}/.ssh"
@@ -75,7 +75,7 @@ setup_ssh_key() {
         _pub_key="$(cat "${SSH_KEY}.pub")"
         _fp="$(ssh-keygen -lf "${SSH_KEY}.pub" 2>/dev/null | awk '{print $2}')"
         echo ""
-        copy "SSH public key — add to GitHub → Settings → SSH and GPG Keys → New SSH key"
+        copy "SSH public key - add to GitHub → Settings → SSH and GPG Keys → New SSH key"
         echo ""
         printf "  %s\n" "$_pub_key"
         echo ""
@@ -87,10 +87,10 @@ setup_ssh_key() {
 # -- GPG Key
 
 setup_gpg_key() {
-    section "Security — GPG Key"
+    section "Security - GPG Key"
 
     if gpg --list-secret-keys --keyid-format=long 2>/dev/null | grep -q '^sec'; then
-        skip "A GPG secret key already exists — skipping generation."
+        skip "A GPG secret key already exists - skipping generation."
     else
         local GIT_NAME GIT_EMAIL
         GIT_NAME="$(git config --file "${HOME}/.gitconfig.local" user.name 2>/dev/null || true)"
@@ -113,7 +113,7 @@ setup_gpg_key() {
             sleep 0.5
         done
 
-        # passphrase is entered interactively via pinentry — never stored in the script,
+        # passphrase is entered interactively via pinentry - never stored in the script,
         # shell history, or the process list.
         # ed25519 key has no expiry by default; add an expiry (e.g. 1y) if preferred.
         if gpg --quiet --no-tty --quick-gen-key "${GIT_NAME} <${GIT_EMAIL}>" ed25519 default > "$_gpg_log" 2>&1; then
@@ -132,7 +132,7 @@ setup_gpg_key() {
     key_id="$(gpg --list-secret-keys --keyid-format=long 2>/dev/null | awk -F'/' '/^sec/{print $2}' | awk '{print $1}' | head -1)"
 
     if [ -z "$key_id" ]; then
-        warn "Could not extract GPG key ID — skipping signing config."
+        warn "Could not extract GPG key ID - skipping signing config."
         return 1
     fi
 
@@ -148,7 +148,7 @@ setup_gpg_key() {
         git config --file "${HOME}/.gitconfig.local" tag.gpgsign true
 
         echo ""
-        copy "GPG public key — add to GitHub → Settings → SSH and GPG Keys → New GPG key"
+        copy "GPG public key - add to GitHub → Settings → SSH and GPG Keys → New GPG key"
         note "Key ID: ${key_id}"
         echo ""
         gpg --armor --export "${key_id}" 2>/dev/null
@@ -159,7 +159,7 @@ setup_gpg_key() {
 # -- GPG Agent
 
 setup_gpg_agent_conf() {
-    section "Security — GPG Agent"
+    section "Security - GPG Agent"
 
     mkdir -p "${HOME}/.gnupg"
     chmod 700 "${HOME}/.gnupg"

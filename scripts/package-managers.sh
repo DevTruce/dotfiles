@@ -5,7 +5,7 @@
 # -- Homebrew (macOS)
 
 setup_homebrew() {
-    section "Package Manager — Homebrew"
+    section "Package Manager - Homebrew"
 
     if [ "$OS" != "macos" ]; then
         warn "setup_homebrew is only supported on macOS."
@@ -53,7 +53,7 @@ setup_homebrew() {
 # -- apt (Linux)
 
 setup_apt() {
-    section "Package Manager — apt"
+    section "Package Manager - apt"
 
     if [ "$OS" = "macos" ]; then
         warn "setup_apt is only supported on Linux."

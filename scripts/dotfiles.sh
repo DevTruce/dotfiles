@@ -3,7 +3,7 @@
 # ─────────────────────────────────────────
 
 setup_dotfiles() {
-    section "Dotfiles — Symlinking"
+    section "Dotfiles - Symlinking"
 
     _symlink() {
         local src="$1" dest="$2" label="$3"
@@ -12,7 +12,7 @@ setup_dotfiles() {
         else
             # back up any existing regular file so we don't silently destroy it
             if [ -e "$dest" ] && [ ! -L "$dest" ]; then
-                warn "${label} already exists as a regular file — backing up to ${dest}.bak"
+                warn "${label} already exists as a regular file - backing up to ${dest}.bak"
                 mv "$dest" "${dest}.bak"
             fi
             ln -sf "$src" "$dest"
@@ -31,5 +31,5 @@ setup_dotfiles() {
 
     echo ""
     ok "Dotfiles check complete."
-    # gpg-agent.conf is generated dynamically by setup_gpg_agent_conf — not symlinked
+    # gpg-agent.conf is generated dynamically by setup_gpg_agent_conf - not symlinked
 }

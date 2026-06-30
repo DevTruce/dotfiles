@@ -5,7 +5,7 @@
 # -- git
 
 setup_git() {
-    section "Version Control — git"
+    section "Version Control - git"
 
     if command -v git >/dev/null 2>&1; then
         skip "git is already installed."
@@ -51,7 +51,7 @@ setup_git() {
         if [ -z "$existing_email" ]; then
             local _attempts=0
             while [ -z "$git_email" ] && [ "$_attempts" -lt 3 ]; do
-                printf "  Enter your git email ${DIM}(tip: use your GitHub no-reply — github.com/settings/emails)${RESET}: "
+                printf "  Enter your git email ${DIM}(tip: use your GitHub no-reply - github.com/settings/emails)${RESET}: "
                 read -r git_email
                 _attempts=$(( _attempts + 1 ))
             done
@@ -98,7 +98,7 @@ setup_git() {
 # -- git-lfs
 
 setup_git_lfs() {
-    section "Version Control — git-lfs"
+    section "Version Control - git-lfs"
 
     if command -v git-lfs >/dev/null 2>&1; then
         skip "git-lfs is already installed."

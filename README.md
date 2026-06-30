@@ -58,8 +58,8 @@ The installer is fully **idempotent**: every step checks whether a tool or confi
 | nvm                            | Node Version Manager                                                     |
 | Node.js LTS                    | Latest long-term support release of Node.js                              |
 | tree                           | Directory tree display utility                                           |
-| fzf                            | Fuzzy finder — CTRL-R history, CTRL-T file picker, ALT-C cd             |
-| zoxide                         | Smart `cd` — jump to frecent dirs with `z`, interactive with `zi`       |
+| fzf                            | Fuzzy finder - CTRL-R history, CTRL-T file picker, ALT-C cd             |
+| zoxide                         | Smart `cd` - jump to frecent dirs with `z`, interactive with `zi`       |
 | ripgrep (rg)                   | Fast grep replacement with better defaults                               |
 | bat                            | `cat` with syntax highlighting and git integration                       |
 | lazygit                        | Terminal UI for git                                                      |
@@ -96,7 +96,7 @@ The installer is fully **idempotent**: every step checks whether a tool or confi
   ```bash
   xcode-select --install
   ```
-- **Linux / WSL2** - `curl` must be available (`sudo apt-get install curl` if not present — the installer also installs it as its first step)
+- **Linux / WSL2** - `curl` must be available (`sudo apt-get install curl` if not present - the installer also installs it as its first step)
 
 ### 1. Clone the Repo
 
@@ -119,7 +119,7 @@ The installer detects your OS, symlinks your dotfiles, and prompts whether this 
 
 The installer handles everything it can automatically, including symlinking all dotfiles into your home directory. On personal machines it also generates SSH/GPG keys and prints them ready to paste. The steps below require manual action and are also printed at the end of every install run as a reminder.
 
-> Steps 1–2 apply to personal machine installs only.
+> Steps 1-2 apply to personal machine installs only.
 
 ### 1. Add Your SSH Key to GitHub
 
@@ -137,7 +137,7 @@ Then add it to GitHub:
 
 ### 2. Add Your GPG Key to GitHub
 
-The installer prints your full armored public key during setup — copy it directly from the terminal output. To export it again at any time:
+The installer prints your full armored public key during setup - copy it directly from the terminal output. To export it again at any time:
 
 ```bash
 gpg --armor --export YOUR_KEY_ID_HERE
@@ -188,7 +188,7 @@ dotfiles/
 ├── .zshrc                      # zsh config for all platforms (uses $OSTYPE for platform-specific blocks)
 ├── claude/
 │   └── settings.json           # Claude Code settings
-├── fonts/                      # MesloLGS NF font files (install manually — see Manual Steps)
+├── fonts/                      # MesloLGS NF font files (install manually - see Manual Steps)
 │   ├── MesloLGS NF Regular.ttf
 │   ├── MesloLGS NF Bold.ttf
 │   ├── MesloLGS NF Italic.ttf

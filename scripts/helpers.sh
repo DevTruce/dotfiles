@@ -24,7 +24,7 @@ section() {
     printf "  ${DIM}──────────────────────────────────────────────────────${RESET}\n"
 }
 
-# actively happening right now — also stores message for _spinner to animate inline
+# actively happening right now - also stores message for _spinner to animate inline
 _LAST_STEP=""
 step() {
     _LAST_STEP="$1"
@@ -36,7 +36,7 @@ ok() {
     printf "  ${BOLD_GREEN}✓${RESET}  %s\n" "$1"
 }
 
-# already done — nothing to do
+# already done - nothing to do
 skip() {
     printf "  ${DIM}✓  %s${RESET}\n" "$1"
 }

@@ -5,7 +5,7 @@
 # -- zsh
 
 setup_zsh() {
-    section "Shell — zsh"
+    section "Shell - zsh"
 
     local ZSH_PATH
 
@@ -20,7 +20,7 @@ setup_zsh() {
             fi
 
             if ! command -v brew >/dev/null 2>&1; then
-                fail "brew not found — cannot determine zsh path."
+                fail "brew not found - cannot determine zsh path."
                 return 1
             fi
             ZSH_PATH="$(brew --prefix zsh)/bin/zsh"

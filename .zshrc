@@ -2,7 +2,7 @@
 # Instant Prompt
 # ─────────────────────────────────────────
 
-# must stay near the top — nothing requiring console input above this block
+# must stay near the top - nothing requiring console input above this block
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
@@ -74,7 +74,7 @@ if [[ -f "$ZINIT_HOME/zinit.zsh" ]]; then
   [[ -f ~/.p10k.zsh ]] && source ~/.p10k.zsh
 fi
 
-# -- fzf (CTRL-R, CTRL-T, ALT-C) — cache init output to avoid forking every startup
+# -- fzf (CTRL-R, CTRL-T, ALT-C) - cache init output to avoid forking every startup
 if command -v fzf >/dev/null 2>&1; then
   _fzf_cache="${XDG_CACHE_HOME:-$HOME/.cache}/fzf.zsh"
   if [[ ! -f "$_fzf_cache" ]] || [[ "$(command -v fzf)" -nt "$_fzf_cache" ]]; then
@@ -85,7 +85,7 @@ if command -v fzf >/dev/null 2>&1; then
   unset _fzf_cache
 fi
 
-# -- zoxide (z, zi) — cache init output to avoid forking every startup
+# -- zoxide (z, zi) - cache init output to avoid forking every startup
 if command -v zoxide >/dev/null 2>&1; then
   _zoxide_cache="${XDG_CACHE_HOME:-$HOME/.cache}/zoxide.zsh"
   if [[ ! -f "$_zoxide_cache" ]] || [[ "$(command -v zoxide)" -nt "$_zoxide_cache" ]]; then
@@ -115,7 +115,7 @@ if [[ -f "$NVM_DIR/alias/default" ]]; then
   unset _nvm_ver _nvm_bin
 fi
 
-# Lazy-load full nvm on first use — avoids 100–500 ms startup cost from sourcing nvm.sh
+# Lazy-load full nvm on first use - avoids 100-500 ms startup cost from sourcing nvm.sh
 _load_nvm() {
   unset -f nvm node npm npx pnpm
   [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
