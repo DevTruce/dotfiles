@@ -46,6 +46,6 @@ setup_zsh() {
     else
         step "Setting zsh as the default shell"
         sudo chsh -s "$ZSH_PATH" "$USER"
-        ok "Default shell updated — open a new terminal for this to take effect."
+        ok "Default shell updated"
     fi
 }
