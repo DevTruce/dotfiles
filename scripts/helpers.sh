@@ -13,6 +13,8 @@ YELLOW=$'\033[33m'
 BOLD_CYAN=$'\033[1;36m'
 BOLD_GREEN=$'\033[1;32m'
 BOLD_WHITE=$'\033[1;37m'
+RED=$'\033[31m'
+BOLD_RED=$'\033[1;31m'
 
 # -- Output
 
@@ -42,6 +44,10 @@ skip() {
 # warning
 warn() {
     printf "  ${YELLOW}⚠${RESET}  %s\n" "$1"
+}
+
+fail() {
+    printf "  ${BOLD_RED}✗${RESET}  %s\n" "$1"
 }
 
 # secondary info / sub-detail
@@ -92,7 +98,7 @@ _apt() {
     if wait "$_pid"; then
         rm -f "$_log"
     else
-        warn "${_LAST_STEP} failed."
+        fail "${_LAST_STEP} failed."
         echo ""
         cat "$_log"
         rm -f "$_log"
@@ -109,7 +115,7 @@ _brew() {
     if wait "$_pid"; then
         rm -f "$_log"
     else
-        warn "${_LAST_STEP} failed."
+        fail "${_LAST_STEP} failed."
         echo ""
         cat "$_log"
         rm -f "$_log"
@@ -126,7 +132,7 @@ _npm() {
     if wait "$_pid"; then
         rm -f "$_log"
     else
-        warn "${_LAST_STEP} failed."
+        fail "${_LAST_STEP} failed."
         echo ""
         cat "$_log"
         rm -f "$_log"

@@ -25,7 +25,7 @@ setup_homebrew() {
             rm -f "$_brew_log"
             ok "Homebrew installed."
         else
-            warn "${_LAST_STEP} failed."
+            fail "${_LAST_STEP} failed."
             echo ""
             cat "$_brew_log"
             rm -f "$_brew_log"

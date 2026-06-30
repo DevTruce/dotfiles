@@ -52,7 +52,7 @@ setup_fzf() {
                 _pid=$!
                 _spinner "$_pid"
                 if wait "$_pid"; then rm -f "$_log"
-                else warn "${_LAST_STEP} failed."; echo ""; cat "$_log"; rm -f "$_log"; return 1; fi
+                else fail "${_LAST_STEP} failed."; echo ""; cat "$_log"; rm -f "$_log"; return 1; fi
                 ;;
         esac
         ok "fzf installed."
@@ -92,7 +92,7 @@ setup_zoxide() {
                 _pid=$!
                 _spinner "$_pid"
                 if wait "$_pid"; then rm -f "$_log"
-                else warn "${_LAST_STEP} failed."; echo ""; cat "$_log"; rm -f "$_log"; return 1; fi
+                else fail "${_LAST_STEP} failed."; echo ""; cat "$_log"; rm -f "$_log"; return 1; fi
                 ;;
         esac
         ok "zoxide installed."
@@ -173,7 +173,7 @@ setup_lazygit() {
                 _pid=$!
                 _spinner "$_pid"
                 if wait "$_pid"; then rm -f "$_log"
-                else warn "${_LAST_STEP} failed."; echo ""; cat "$_log"; rm -f "$_log"; return 1; fi
+                else fail "${_LAST_STEP} failed."; echo ""; cat "$_log"; rm -f "$_log"; return 1; fi
                 ;;
         esac
         ok "lazygit installed."
@@ -214,7 +214,7 @@ setup_gh() {
                 _pid=$!
                 _spinner "$_pid"
                 if wait "$_pid"; then rm -f "$_log"
-                else warn "${_LAST_STEP} failed."; echo ""; cat "$_log"; rm -f "$_log"; return 1; fi
+                else fail "${_LAST_STEP} failed."; echo ""; cat "$_log"; rm -f "$_log"; return 1; fi
                 ;;
         esac
         ok "gh installed."

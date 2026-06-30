@@ -5,7 +5,7 @@ _on_exit() {
     local _rc=$?
     if [ "$_rc" -ne 0 ]; then
         echo ""
-        warn "Setup aborted — resolve the error above and re-run."
+        fail "Setup aborted — resolve the error above and re-run."
         echo ""
     fi
 }

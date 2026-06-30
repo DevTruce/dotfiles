@@ -20,7 +20,7 @@ setup_zsh_plugins() {
         _pid=$!
         _spinner "$_pid"
         if wait "$_pid"; then rm -f "$_log"
-        else warn "${_LAST_STEP} failed."; echo ""; cat "$_log"; rm -f "$_log"; return 1; fi
+        else fail "${_LAST_STEP} failed."; echo ""; cat "$_log"; rm -f "$_log"; return 1; fi
         ok "zinit installed."
         note "Plugins will be downloaded on first shell launch."
     fi
@@ -48,7 +48,7 @@ setup_nvm() {
         if wait "$_nvm_pid"; then
             rm -f "$_nvm_log"
         else
-            warn "${_LAST_STEP} failed."
+            fail "${_LAST_STEP} failed."
             echo ""
             cat "$_nvm_log"
             rm -f "$_nvm_log"
@@ -73,7 +73,7 @@ setup_nvm() {
         if wait "$_node_pid"; then
             rm -f "$_node_log"
         else
-            warn "${_LAST_STEP} failed."
+            fail "${_LAST_STEP} failed."
             echo ""
             cat "$_node_log"
             rm -f "$_node_log"
