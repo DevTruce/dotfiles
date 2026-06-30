@@ -248,6 +248,8 @@ setup_gh() {
                         "https://github.com/cli/cli/releases/download/v${_version}/gh_${_version}_checksums.txt" \
                         "$_asset" || { rm -f "$_dl"; exit 1; }
                     mkdir -p "${HOME}/.local/bin"
+                    # unlike fzf/zoxide/lazygit's flat binaries, gh's tarball nests the
+                    # binary under <pkg>/bin/gh - strip both directory levels on extract
                     tar -xzf "$_dl" --strip-components=2 -C "${HOME}/.local/bin/" \
                         "gh_${_version}_linux_${_arch}/bin/gh"
                     rm -f "$_dl"
