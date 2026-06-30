@@ -113,9 +113,8 @@ setup_git_lfs() {
         ok "git-lfs installed."
     fi
 
-    # check for the actual pre-push hook file rather than `git lfs env`'s LocalGitStorageDir
-    # (always present regardless of hook state) or the filter config (pre-seeded in the
-    # tracked .gitconfig and would always match) - both would skip registration forever
+    # confirms both that the hook file exists AND that core.hooksPath actually points
+    # at it, since either one alone doesn't prove the other is true
     local _git_hooks_dir="${HOME}/.config/git/hooks"
     local _configured_hooks_dir
     _configured_hooks_dir="$(git config --file "${HOME}/.gitconfig.local" core.hooksPath 2>/dev/null || true)"

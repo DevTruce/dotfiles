@@ -48,11 +48,20 @@ setup_ssh_key() {
         fi
     fi
 
+    # registers this key with gpg-agent's ssh-agent emulation so its passphrase gets
+    # cached instead of being re-prompted on every git push - macOS uses pinentry-mac's
+    # own keychain integration instead, so this whole block is Linux/WSL2-only
     if [ "$OS" != "macos" ] && command -v gpgconf >/dev/null 2>&1; then
         local _agent_sock
         _agent_sock="$(gpgconf --list-dirs agent-ssh-socket)"
+        # gpg-agent's ssh-agent emulation has no per-request TTY (the ssh-agent protocol
+        # doesn't carry one) - it always prompts pinentry on whichever terminal last
+        # called updatestartuptty below, so that has to run from *this* shell
         export GPG_TTY="$(tty 2>/dev/null || true)"
         gpgconf --launch gpg-agent 2>/dev/null
+        # gpgconf --launch returns before the agent's socket necessarily exists yet -
+        # without this wait, updatestartuptty below can silently no-op against a socket
+        # that isn't there, leaving no terminal registered for pinentry
         local _gpg_sock _gpg_retries=0
         _gpg_sock="$(gpgconf --list-dirs agent-socket 2>/dev/null)"
         until [ -S "$_gpg_sock" ] || [ "$_gpg_retries" -ge 10 ]; do
@@ -61,6 +70,8 @@ setup_ssh_key() {
         done
         gpg-connect-agent updatestartuptty /bye >/dev/null 2>&1
 
+        # ssh-add -l lists keys by fingerprint - compare against this key's fingerprint
+        # to avoid re-adding (and re-prompting for the passphrase) on every re-run
         local _fingerprint
         _fingerprint="$(ssh-keygen -lf "${SSH_KEY}.pub" 2>/dev/null | awk '{print $2}')"
         if [ -n "$_fingerprint" ] && SSH_AUTH_SOCK="$_agent_sock" ssh-add -l 2>/dev/null | grep -qF "$_fingerprint"; then
@@ -200,6 +211,10 @@ setup_gpg_agent_conf() {
             ;;
     esac
 
+    # "already configured" means the existing file already has every setting this
+    # function would write - any single missing line (e.g. an older gpg-agent.conf
+    # from before default-cache-ttl-ssh was added) forces a rewrite below, since the
+    # heredocs always write the full file rather than patching individual lines
     local _skip_check
     case "$OS" in
         macos)
