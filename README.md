@@ -183,6 +183,7 @@ Open a fresh terminal session for all changes (default shell, plugins, PATH) to 
 ```
 dotfiles/
 ├── .gitconfig                  # git aliases, LFS config, and default settings (identity in ~/.gitconfig.local)
+├── .gitignore                  # ignores keys, .gitconfig.local, OS junk, and zinit plugin cache
 ├── .p10k.zsh                   # Powerlevel10k prompt configuration
 ├── .zshrc                      # zsh config for all platforms (uses $OSTYPE for platform-specific blocks)
 ├── claude/
@@ -193,7 +194,7 @@ dotfiles/
 │   ├── MesloLGS NF Italic.ttf
 │   └── MesloLGS NF Bold Italic.ttf
 ├── scripts/                    # modular installer components
-│   ├── helpers.sh              # output helpers (section, step, ok, skip, warn, note, link) and detect_os()
+│   ├── helpers.sh              # output helpers (section, step, ok, skip, warn, fail, note, copy, link, _spinner) and detect_os(), _apt(), _brew(), _npm()
 │   ├── package-managers.sh     # setup_homebrew, setup_apt
 │   ├── shell.sh                # setup_zsh
 │   ├── version-control.sh      # setup_git, setup_git_lfs

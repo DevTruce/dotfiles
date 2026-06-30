@@ -10,6 +10,11 @@ setup_dotfiles() {
         if [ -L "$dest" ] && [ "$(readlink "$dest")" = "$src" ]; then
             skip "$(printf '%-24s already linked' "$label")"
         else
+            # back up any existing regular file so we don't silently destroy it
+            if [ -e "$dest" ] && [ ! -L "$dest" ]; then
+                warn "${label} already exists as a regular file — backing up to ${dest}.bak"
+                mv "$dest" "${dest}.bak"
+            fi
             ln -sf "$src" "$dest"
             link "$label" "$src"
         fi

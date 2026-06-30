@@ -60,13 +60,17 @@ setup_nvm() {
     # nvm references unbound variables internally, which trips set -u
     set +u
     \. "${NVM_DIR}/nvm.sh"
+    set -u
 
+    local _node_already_installed=false
     if nvm ls --no-colors 2>/dev/null | grep -q 'lts/\*'; then
         skip "Node.js LTS is already installed."
+        _node_already_installed=true
     else
         step "Installing the latest Node.js LTS release"
         local _node_log _node_pid
         _node_log="$(mktemp)"
+        set +u
         (nvm install --lts) > "$_node_log" 2>&1 &
         _node_pid=$!
         _spinner "$_node_pid"
@@ -80,17 +84,23 @@ setup_nvm() {
             set -u
             return 1
         fi
-        nvm use lts/* >/dev/null 2>&1
+        if ! nvm use lts/* >/dev/null 2>&1; then
+            fail "Failed to activate Node.js LTS after install."
+            set -u
+            return 1
+        fi
+        set -u
         local _node_ver _npm_ver
         _node_ver="$(node --version 2>/dev/null || echo "unknown")"
         _npm_ver="$(npm --version 2>/dev/null || echo "unknown")"
         ok "Node.js LTS installed."
         note "Node ${_node_ver}  ·  npm ${_npm_ver}"
-    fi
 
-    nvm alias default 'lts/*' >/dev/null
-    ok "Default alias set to lts/*."
-    set -u
+        set +u
+        nvm alias default 'lts/*' >/dev/null
+        set -u
+        ok "Default alias set to lts/*."
+    fi
 }
 
 # -- pnpm

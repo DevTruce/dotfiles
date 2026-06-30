@@ -8,15 +8,20 @@
 [init]
 	defaultBranch = main
 
+[pull]
+	rebase = false
+
+[push]
+	autoSetupRemote = true
+
 # ─────────────────────────────────────────
 # Aliases
 # ─────────────────────────────────────────
 [alias]
 	# -- History
-	hist = log --all --graph --decorate --oneline --pretty
+	hist = log --all --graph --decorate --oneline
 	lo   = log --oneline
 	l    = log --pretty=format:"%C(yellow)%h\\ %ad%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate --date=short
-	lds  = log --pretty=format:"%C(yellow)%h\\ %ad%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate --date=short
 	ld   = log --pretty=format:"%C(yellow)%h\\ %ad%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate --date=relative
 
 	# -- Workflow
@@ -29,6 +34,12 @@
 	ps  = push
 	br  = branch
 	ta  = tag --list
+
+# ─────────────────────────────────────────
+# GPG
+# ─────────────────────────────────────────
+[gpg]
+	program = gpg
 
 # ─────────────────────────────────────────
 # Git LFS

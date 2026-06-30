@@ -18,7 +18,9 @@ export PATH="${HOME}/.local/bin:${PATH}"
 # Bootstrap
 # ─────────────────────────────────────────
 
-# -- Load all setup functions
+# -- Load all setup functions (alphabetical order: helpers.sh loads 4th after
+#    dev-environment.sh, dotfiles.sh, finish.sh — those files must not execute
+#    any top-level code that references helpers or color variables)
 for f in "${DOTFILES_DIR}/scripts/"*.sh; do
     # shellcheck source=/dev/null
     . "$f"

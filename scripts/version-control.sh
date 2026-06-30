@@ -35,14 +35,30 @@ setup_git() {
         echo ""
 
         if [ -z "$existing_name" ]; then
-            printf "  Enter your git name:  "
-            read -r git_name
+            local _attempts=0
+            while [ -z "$git_name" ] && [ "$_attempts" -lt 3 ]; do
+                printf "  Enter your git name:  "
+                read -r git_name
+                _attempts=$(( _attempts + 1 ))
+            done
+            if [ -z "$git_name" ]; then
+                fail "Git name cannot be empty."
+                return 1
+            fi
             git config --file "$git_local" user.name "$git_name"
         fi
 
         if [ -z "$existing_email" ]; then
-            printf "  Enter your git email ${DIM}(tip: use your GitHub no-reply — github.com/settings/emails)${RESET}: "
-            read -r git_email
+            local _attempts=0
+            while [ -z "$git_email" ] && [ "$_attempts" -lt 3 ]; do
+                printf "  Enter your git email ${DIM}(tip: use your GitHub no-reply — github.com/settings/emails)${RESET}: "
+                read -r git_email
+                _attempts=$(( _attempts + 1 ))
+            done
+            if [ -z "$git_email" ]; then
+                fail "Git email cannot be empty."
+                return 1
+            fi
             git config --file "$git_local" user.email "$git_email"
         fi
 
@@ -95,11 +111,24 @@ setup_git_lfs() {
         ok "git-lfs installed."
     fi
 
-    if git config --global --get filter.lfs.process >/dev/null 2>&1; then
+    # check for the actual pre-push hook rather than the filter config (which is pre-seeded
+    # in the tracked .gitconfig and would always match, skipping hook registration forever)
+    local _git_hooks_dir="${HOME}/.config/git/hooks"
+    if git lfs env 2>/dev/null | grep -q "LocalGitStorageDir"; then
         skip "git-lfs hooks are already registered globally."
     else
         step "Registering git-lfs hooks globally"
-        git lfs install >/dev/null 2>&1
+        local _log
+        _log="$(mktemp)"
+        if git lfs install > "$_log" 2>&1; then
+            rm -f "$_log"
+        else
+            fail "${_LAST_STEP} failed."
+            echo ""
+            cat "$_log"
+            rm -f "$_log"
+            return 1
+        fi
         ok "git-lfs hooks registered."
     fi
 }

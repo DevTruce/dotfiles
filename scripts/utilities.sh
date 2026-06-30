@@ -43,11 +43,16 @@ setup_fzf() {
                     esac
                     _version="$(curl -fsSL https://api.github.com/repos/junegunn/fzf/releases/latest \
                         | grep '"tag_name"' | sed 's/.*"v\([^"]*\)".*/\1/')"
-                    curl -fsSLo /tmp/fzf.tar.gz \
+                    if [ -z "$_version" ]; then
+                        echo "ERROR: could not determine fzf version (GitHub API rate limit?)" >&2
+                        exit 1
+                    fi
+                    _dl="$(mktemp)"
+                    curl -fsSLo "$_dl" \
                         "https://github.com/junegunn/fzf/releases/download/v${_version}/fzf-${_version}-linux_${_arch}.tar.gz"
                     mkdir -p "${HOME}/.local/bin"
-                    tar -xzf /tmp/fzf.tar.gz -C "${HOME}/.local/bin/" fzf
-                    rm -f /tmp/fzf.tar.gz
+                    tar -xzf "$_dl" -C "${HOME}/.local/bin/" fzf
+                    rm -f "$_dl"
                 ) > "$_log" 2>&1 &
                 _pid=$!
                 _spinner "$_pid"
@@ -83,11 +88,16 @@ setup_zoxide() {
                     esac
                     _version="$(curl -fsSL https://api.github.com/repos/ajeetdsouza/zoxide/releases/latest \
                         | grep '"tag_name"' | sed 's/.*"v\([^"]*\)".*/\1/')"
-                    curl -fsSLo /tmp/zoxide.tar.gz \
+                    if [ -z "$_version" ]; then
+                        echo "ERROR: could not determine zoxide version (GitHub API rate limit?)" >&2
+                        exit 1
+                    fi
+                    _dl="$(mktemp)"
+                    curl -fsSLo "$_dl" \
                         "https://github.com/ajeetdsouza/zoxide/releases/download/v${_version}/zoxide-${_version}-${_arch}.tar.gz"
                     mkdir -p "${HOME}/.local/bin"
-                    tar -xzf /tmp/zoxide.tar.gz -C "${HOME}/.local/bin/" zoxide
-                    rm -f /tmp/zoxide.tar.gz
+                    tar -xzf "$_dl" -C "${HOME}/.local/bin/" zoxide
+                    rm -f "$_dl"
                 ) > "$_log" 2>&1 &
                 _pid=$!
                 _spinner "$_pid"
@@ -164,11 +174,16 @@ setup_lazygit() {
                     esac
                     _version="$(curl -fsSL https://api.github.com/repos/jesseduffield/lazygit/releases/latest \
                         | grep '"tag_name"' | sed 's/.*"v\([^"]*\)".*/\1/')"
-                    curl -fsSLo /tmp/lazygit.tar.gz \
+                    if [ -z "$_version" ]; then
+                        echo "ERROR: could not determine lazygit version (GitHub API rate limit?)" >&2
+                        exit 1
+                    fi
+                    _dl="$(mktemp)"
+                    curl -fsSLo "$_dl" \
                         "https://github.com/jesseduffield/lazygit/releases/download/v${_version}/lazygit_${_version}_Linux_${_arch}.tar.gz"
                     mkdir -p "${HOME}/.local/bin"
-                    tar -xzf /tmp/lazygit.tar.gz -C "${HOME}/.local/bin/" lazygit
-                    rm -f /tmp/lazygit.tar.gz
+                    tar -xzf "$_dl" -C "${HOME}/.local/bin/" lazygit
+                    rm -f "$_dl"
                 ) > "$_log" 2>&1 &
                 _pid=$!
                 _spinner "$_pid"
@@ -204,12 +219,17 @@ setup_gh() {
                     esac
                     _version="$(curl -fsSL https://api.github.com/repos/cli/cli/releases/latest \
                         | grep '"tag_name"' | sed 's/.*"v\([^"]*\)".*/\1/')"
-                    curl -fsSLo /tmp/gh.tar.gz \
+                    if [ -z "$_version" ]; then
+                        echo "ERROR: could not determine gh version (GitHub API rate limit?)" >&2
+                        exit 1
+                    fi
+                    _dl="$(mktemp)"
+                    curl -fsSLo "$_dl" \
                         "https://github.com/cli/cli/releases/download/v${_version}/gh_${_version}_linux_${_arch}.tar.gz"
                     mkdir -p "${HOME}/.local/bin"
-                    tar -xzf /tmp/gh.tar.gz --strip-components=2 -C "${HOME}/.local/bin/" \
+                    tar -xzf "$_dl" --strip-components=2 -C "${HOME}/.local/bin/" \
                         "gh_${_version}_linux_${_arch}/bin/gh"
-                    rm -f /tmp/gh.tar.gz
+                    rm -f "$_dl"
                 ) > "$_log" 2>&1 &
                 _pid=$!
                 _spinner "$_pid"

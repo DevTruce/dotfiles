@@ -51,7 +51,7 @@ setup_ssh_key() {
     if [ "$OS" != "macos" ] && command -v gpgconf >/dev/null 2>&1; then
         local _agent_sock
         _agent_sock="$(gpgconf --list-dirs agent-ssh-socket)"
-        export GPG_TTY="$(tty)"
+        export GPG_TTY="$(tty 2>/dev/null || true)"
         gpgconf --launch gpg-agent 2>/dev/null
         gpg-connect-agent updatestartuptty /bye >/dev/null 2>&1
 
@@ -99,14 +99,23 @@ setup_gpg_key() {
         if [ -z "$GIT_NAME" ] || [ -z "$GIT_EMAIL" ]; then
             warn "git user.name/user.email are not configured yet."
             note "Re-run the installer so setup_git can prompt for your identity first."
-            return
+            return 1
         fi
 
         step "Generating a GPG key for ${GIT_NAME} <${GIT_EMAIL}>"
         local _gpg_log
         _gpg_log="$(mktemp)"
+
+        # wait for the agent to be ready before invoking pinentry (timing race after --launch)
+        local _agent_retries=0
+        until gpg-connect-agent /bye >/dev/null 2>&1 || [ "$_agent_retries" -ge 3 ]; do
+            _agent_retries=$(( _agent_retries + 1 ))
+            sleep 0.5
+        done
+
         # passphrase is entered interactively via pinentry — never stored in the script,
-        # shell history, or the process list
+        # shell history, or the process list.
+        # ed25519 key has no expiry by default; add an expiry (e.g. 1y) if preferred.
         if gpg --quiet --no-tty --quick-gen-key "${GIT_NAME} <${GIT_EMAIL}>" ed25519 default > "$_gpg_log" 2>&1; then
             rm -f "$_gpg_log"
             ok "GPG key generated."
@@ -127,10 +136,11 @@ setup_gpg_key() {
         return 1
     fi
 
-    local existing_signingkey
+    local existing_signingkey existing_gpgsign
     existing_signingkey="$(git config --file "${HOME}/.gitconfig.local" user.signingkey 2>/dev/null || true)"
+    existing_gpgsign="$(git config --file "${HOME}/.gitconfig.local" commit.gpgsign 2>/dev/null || true)"
 
-    if [ "$existing_signingkey" = "$key_id" ]; then
+    if [ "$existing_signingkey" = "$key_id" ] && [ "$existing_gpgsign" = "true" ]; then
         skip "GPG signing config already set in ~/.gitconfig.local (key: ${key_id})."
     else
         git config --file "${HOME}/.gitconfig.local" user.signingkey "${key_id}"
@@ -207,7 +217,7 @@ enable-ssh-support
 EOF
                 ;;
         esac
-        step "Restarting gpg-agent to apply new configuration"
+        note "Restarting gpg-agent to apply new configuration"
         gpgconf --kill gpg-agent 2>/dev/null || true
         gpgconf --launch gpg-agent 2>/dev/null
         ok "gpg-agent configured and restarted."

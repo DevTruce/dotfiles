@@ -43,10 +43,16 @@ finish() {
             note "preferences and set the font to \"MesloLGS NF Regular\"."
             ;;
         *)
-            note "On WSL, fonts must be installed on the Windows side:"
-            note "  1. Double-click each .ttf file → Install for all users"
-            note "  2. Open Windows Terminal → Settings → your profile"
-            note "     → Appearance → Font face → MesloLGS NF"
+            if grep -qi microsoft /proc/version 2>/dev/null; then
+                note "On WSL, fonts must be installed on the Windows side:"
+                note "  1. Double-click each .ttf file → Install for all users"
+                note "  2. Open Windows Terminal → Settings → your profile"
+                note "     → Appearance → Font face → MesloLGS NF"
+            else
+                note "Install the fonts with your system font manager, then run:"
+                note "  fc-cache -fv"
+                note "Then set MesloLGS NF in your terminal emulator preferences."
+            fi
             ;;
     esac
     echo ""

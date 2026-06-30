@@ -55,11 +55,6 @@ note() {
     printf "       ${DIM}%s${RESET}\n" "$1"
 }
 
-# interactive password/passphrase prompt incoming
-prompt() {
-    printf "  ${CYAN}🔒${RESET}  %s\n" "$1"
-}
-
 # something the user needs to copy (SSH key, GPG key, etc.)
 copy() {
     printf "  ${CYAN}📋${RESET}  %s\n" "$1"
@@ -78,6 +73,8 @@ _spinner() {
     local pid=$1
     local frames='⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏'
     local i=0
+    # if the process already finished before we got here, skip the animation
+    kill -0 "$pid" 2>/dev/null || return 0
     printf "\033[1A"  # cursor up to the step line
     while kill -0 "$pid" 2>/dev/null; do
         printf "\r  ${CYAN}→${RESET}  %s ${CYAN}%s${RESET}" "$_LAST_STEP" "${frames:$i:1}"

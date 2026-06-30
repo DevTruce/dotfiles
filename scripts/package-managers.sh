@@ -31,6 +31,11 @@ setup_homebrew() {
             rm -f "$_brew_log"
             return 1
         fi
+
+        # on Apple Silicon, Homebrew installs to /opt/homebrew which is not in PATH yet
+        if [[ -x /opt/homebrew/bin/brew ]]; then
+            eval "$(/opt/homebrew/bin/brew shellenv)"
+        fi
     fi
 
     step "Fetching latest Homebrew updates"
@@ -38,9 +43,11 @@ setup_homebrew() {
     ok "Homebrew updated."
 
     step "Upgrading outdated packages"
-    # || true prevents a single failed formula from aborting the installer
-    _brew upgrade || true
-    ok "Packages up to date."
+    # || true prevents a single failed formula from aborting the installer;
+    # _brew already prints fail() on error, so only print ok on success
+    if _brew upgrade; then
+        ok "Packages up to date."
+    fi
 }
 
 # -- apt (Linux)
