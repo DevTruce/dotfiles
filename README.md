@@ -65,6 +65,7 @@ in place before doing anything, so it is safe to re-run at any time.
 | Powerlevel10k                  | Fast, highly configurable zsh prompt theme                                     |
 | nvm                            | Node Version Manager                                                           |
 | Node.js LTS                    | Latest long-term support release of Node.js                                    |
+| pnpm                           | Fast, disk-efficient Node.js package manager                                   |
 | tree                           | Directory tree display utility                                                 |
 | fzf                            | Fuzzy finder - CTRL-R history, CTRL-T file picker, ALT-C cd                    |
 | zoxide                         | Smart `cd` - jump to frecent dirs with `z`, interactive with `zi`              |
@@ -72,7 +73,6 @@ in place before doing anything, so it is safe to re-run at any time.
 | bat                            | `cat` with syntax highlighting and git integration                             |
 | lazygit                        | Terminal UI for git                                                            |
 | gh (GitHub CLI)                | GitHub operations (PRs, issues, repos) from the terminal                       |
-| pnpm                           | Fast, disk-efficient Node.js package manager                                   |
 | SSH + GPG keys (ed25519 / GPG) | _(personal)_ SSH key for GitHub auth; GPG key for commit and tag signing       |
 | pinentry-mac / pinentry-curses | _(personal)_ GPG passphrase prompt (GUI on macOS, terminal on Linux)           |
 | gpg-agent                      | _(personal)_ Passphrase caching for GPG and SSH keys (SSH support: Linux only) |
