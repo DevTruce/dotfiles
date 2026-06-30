@@ -14,8 +14,13 @@ setup_zsh_plugins() {
     else
         step "Installing zinit plugin manager"
         mkdir -p "$(dirname "$ZINIT_HOME")"
-        git clone --depth 1 --quiet https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME"
-        echo ""
+        local _log _pid
+        _log="$(mktemp)"
+        git clone --depth 1 --quiet https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME" > "$_log" 2>&1 &
+        _pid=$!
+        _spinner "$_pid"
+        if wait "$_pid"; then rm -f "$_log"
+        else cat "$_log"; rm -f "$_log"; return 1; fi
         ok "zinit installed."
         note "Plugins will be downloaded on first shell launch."
     fi
@@ -58,12 +63,29 @@ setup_nvm() {
         skip "Node.js LTS is already installed."
     else
         step "Installing the latest Node.js LTS release"
-        nvm install --lts
+        local _node_log _node_pid
+        _node_log="$(mktemp)"
+        (nvm install --lts) > "$_node_log" 2>&1 &
+        _node_pid=$!
+        _spinner "$_node_pid"
+        if wait "$_node_pid"; then
+            rm -f "$_node_log"
+        else
+            cat "$_node_log"
+            rm -f "$_node_log"
+            set -u
+            return 1
+        fi
+        nvm use lts/* >/dev/null 2>&1
+        local _node_ver _npm_ver
+        _node_ver="$(node --version 2>/dev/null || echo "unknown")"
+        _npm_ver="$(npm --version 2>/dev/null || echo "unknown")"
         ok "Node.js LTS installed."
+        note "Node ${_node_ver}  ·  npm ${_npm_ver}"
     fi
 
     nvm alias default 'lts/*' >/dev/null
-    ok "Node.js LTS set as the default version."
+    ok "Default alias set to lts/*."
     set -u
 }
 

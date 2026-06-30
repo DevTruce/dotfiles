@@ -30,7 +30,6 @@ setup_ssh_key() {
         skip "SSH key already exists at ${SSH_KEY}.pub — skipping generation."
     else
         step "Generating a new ed25519 SSH key"
-        prompt "Enter a passphrase to protect your private key."
         mkdir -p "${HOME}/.ssh"
         chmod 700 "${HOME}/.ssh"
         local _keygen_log
@@ -101,7 +100,7 @@ setup_gpg_key() {
         _gpg_log="$(mktemp)"
         # passphrase is entered interactively via pinentry — never stored in the script,
         # shell history, or the process list
-        if gpg --quick-gen-key "${GIT_NAME} <${GIT_EMAIL}>" default default > "$_gpg_log" 2>&1; then
+        if gpg --quiet --quick-gen-key "${GIT_NAME} <${GIT_EMAIL}>" default default > "$_gpg_log" 2>&1; then
             rm -f "$_gpg_log"
             ok "GPG key generated."
         else
@@ -112,7 +111,7 @@ setup_gpg_key() {
     fi
 
     local key_id
-    key_id="$(gpg --list-secret-keys --keyid-format=long | awk -F'/' '/^sec/{print $2}' | awk '{print $1}' | head -1)"
+    key_id="$(gpg --list-secret-keys --keyid-format=long 2>/dev/null | awk -F'/' '/^sec/{print $2}' | awk '{print $1}' | head -1)"
 
     if [ -z "$key_id" ]; then
         warn "Could not extract GPG key ID — skipping signing config."
@@ -136,7 +135,7 @@ setup_gpg_key() {
         echo ""
         note "Public key (copy this to GitHub → Settings → SSH and GPG Keys → New GPG key):"
         echo ""
-        gpg --armor --export "${key_id}"
+        gpg --armor --export "${key_id}" 2>/dev/null
         echo ""
     fi
 }
