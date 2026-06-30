@@ -261,13 +261,19 @@ Every function checks whether a tool is already present before doing anything, s
 bash ~/dev-bootstrap/install.sh
 ```
 
-To run a single setup function without the full install, use `run.sh`. It loads all scripts, detects your OS, and prompts for the personal machine flag automatically:
+To run a single setup function without the full install, use `run.sh`. Run it with no
+arguments for an interactive, grouped menu of every available function (OS-inapplicable
+entries like `setup_homebrew` on Linux are hidden automatically):
+
+```bash
+bash ~/dev-bootstrap/run.sh
+```
+
+Or invoke a function directly if you already know its name:
 
 ```bash
 bash ~/dev-bootstrap/run.sh setup_gpg_key
 ```
-
-Replace `setup_gpg_key` with any function name from the `scripts/` directory.
 
 ---
 
