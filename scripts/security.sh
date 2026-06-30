@@ -144,8 +144,9 @@ setup_gpg_key() {
         skip "GPG signing config already set in ~/.gitconfig.local (key: ${key_id})."
     else
         git config --file "${HOME}/.gitconfig.local" user.signingkey "${key_id}"
-        git config --file "${HOME}/.gitconfig.local" commit.gpgsign true
-        git config --file "${HOME}/.gitconfig.local" tag.gpgsign true
+        git config --file "${HOME}/.gitconfig.local" commit.gpgsign  true
+        git config --file "${HOME}/.gitconfig.local" tag.gpgsign     true
+        git config --file "${HOME}/.gitconfig.local" gpg.program     gpg
 
         echo ""
         copy "GPG public key - add to GitHub → Settings → SSH and GPG Keys → New GPG key"

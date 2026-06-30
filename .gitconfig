@@ -36,12 +36,6 @@
 	ta  = tag --list
 
 # ─────────────────────────────────────────
-# GPG
-# ─────────────────────────────────────────
-[gpg]
-	program = gpg
-
-# ─────────────────────────────────────────
 # Git LFS
 # ─────────────────────────────────────────
 # required for LFS smudge/clean filters to work; hooks are registered separately by setup_git_lfs
