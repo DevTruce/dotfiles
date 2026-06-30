@@ -16,9 +16,14 @@ setup_homebrew() {
         skip "Homebrew is already installed."
     else
         step "Installing Homebrew"
+        # pinned to a specific reviewed commit rather than HEAD (Homebrew/install has no
+        # version tags) so this always runs the same, known-good installer instead of
+        # whatever happens to be live upstream; bump deliberately after reviewing the diff:
+        # https://github.com/Homebrew/install/compare/db5debe9b6dac00d87e6a2277a5e2b6c2b0fb773...HEAD
+        local _brew_install_sha="db5debe9b6dac00d87e6a2277a5e2b6c2b0fb773"
         local _brew_log _brew_pid
         _brew_log="$(mktemp)"
-        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)" > "$_brew_log" 2>&1 &
+        /bin/bash -c "$(curl -fsSL "https://raw.githubusercontent.com/Homebrew/install/${_brew_install_sha}/install.sh")" > "$_brew_log" 2>&1 &
         _brew_pid=$!
         _spinner "$_brew_pid"
         if wait "$_brew_pid"; then
