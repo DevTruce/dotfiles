@@ -130,8 +130,13 @@ setup_git_lfs() {
         _log="$(mktemp)"
         # -c forces core.hooksPath for this invocation, independent of whether
         # ~/.gitconfig is symlinked yet (which is what normally makes the
-        # ~/.gitconfig.local write above visible) - safe to run in any call order
-        if git -c core.hooksPath="$_git_hooks_dir" lfs install > "$_log" 2>&1; then
+        # ~/.gitconfig.local write above visible) - safe to run in any call order.
+        # -C pins the repo context to this checkout: git-lfs only writes the hook
+        # file "if run from inside a git repository", which the caller's actual
+        # cwd (e.g. $HOME) isn't guaranteed to be. ${DOTFILES_DIR:-$PWD} falls back
+        # to $PWD when sourced standalone (e.g. bats), where the fake git-lfs stub
+        # doesn't care about cwd anyway.
+        if git -C "${DOTFILES_DIR:-$PWD}" -c core.hooksPath="$_git_hooks_dir" lfs install > "$_log" 2>&1; then
             rm -f "$_log"
         else
             fail "${_LAST_STEP} failed."
