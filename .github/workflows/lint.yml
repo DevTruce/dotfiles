@@ -11,8 +11,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      # shellcheck ships preinstalled on GitHub's ubuntu-latest runners
-      - run: shellcheck --rcfile=contributing/.shellcheckrc --severity=warning *.sh scripts/*.sh contributing/*.sh
+      # shellcheck ships preinstalled on GitHub's ubuntu-latest runners (0.9.0, which lacks
+      # --rcfile - use --exclude instead; see the same flag in contributing/ci.sh for why)
+      - run: shellcheck --exclude=SC2148,SC2088 --severity=warning *.sh scripts/*.sh contributing/*.sh
 
   zsh-syntax:
     # zsh, not POSIX sh, so shellcheck above doesn't cover .zshrc/.zshenv/.p10k.zsh -

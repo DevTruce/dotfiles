@@ -243,7 +243,6 @@ dev-bootstrap/
 ├── claude/
 │   └── settings.json            # Claude Code settings
 ├── contributing/                # everything needed only to develop dev-bootstrap itself - see Contributing
-│   ├── .shellcheckrc             # shellcheck config
 │   ├── ci.sh                     # runs test.sh + shellcheck + zsh -n in one pass - what CI runs, locally
 │   ├── test.sh                   # runs tests/**/*.bats, printed through this repo's ok/fail/warn convention
 │   └── tests/                    # bats unit tests for the installer's own logic, mirroring scripts/
@@ -357,11 +356,16 @@ below if you only need one.
 **Lint every script:**
 
 ```bash
-shellcheck --rcfile=contributing/.shellcheckrc --severity=warning *.sh scripts/*.sh contributing/*.sh
+shellcheck --exclude=SC2148,SC2088 --severity=warning *.sh scripts/*.sh contributing/*.sh
 ```
 
-- `contributing/.shellcheckrc` disables two checks that are false positives for this repo's
-  conventions - see the comments in that file for why.
+- The two excluded checks are false positives for this repo's conventions: SC2148 (missing
+  shebang) fires on `scripts/*.sh`, which are sourced only and never executed directly; SC2088
+  (tilde doesn't expand in quotes) fires on `"~/path"` strings that are literal display text,
+  not paths meant to expand. `--exclude` is used instead of a `.shellcheckrc` file because
+  ShellCheck's rcfile auto-discovery walks up from each target file's own directory, never
+  sideways into `contributing/` - and GitHub's runner ships ShellCheck 0.9.0, which predates
+  the `--rcfile` flag entirely.
 
 **Syntax-check the zsh dotfiles:**
 

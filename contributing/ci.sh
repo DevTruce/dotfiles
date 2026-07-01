@@ -24,7 +24,13 @@ section "Lint"
 if ! command -v shellcheck >/dev/null 2>&1; then
     warn "shellcheck not installed  (fix: ~/dev-bootstrap/run.sh setup_shellcheck)"
     _FAIL=$((_FAIL + 1))
-elif (cd "$DOTFILES_DIR" && shellcheck --rcfile=contributing/.shellcheckrc --severity=warning *.sh scripts/*.sh contributing/*.sh); then
+# --exclude, not --rcfile: shellcheck's .shellcheckrc auto-discovery walks up from each
+# target file's own directory, never sideways - a contributing/.shellcheckrc would never
+# apply to root-level or scripts/*.sh files no matter how it's invoked. --rcfile itself is
+# also unsupported by ShellCheck 0.9.0 (Ubuntu 24.04/GitHub Actions' preinstalled version).
+# SC2148: scripts/*.sh are sourced only, never executed - no shebang by design.
+# SC2088: "~/path" strings here are literal display text, not paths meant to expand.
+elif (cd "$DOTFILES_DIR" && shellcheck --exclude=SC2148,SC2088 --severity=warning *.sh scripts/*.sh contributing/*.sh); then
     ok "shellcheck passed"
 else
     fail "shellcheck failed"
