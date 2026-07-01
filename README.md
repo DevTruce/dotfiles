@@ -141,8 +141,7 @@ git clone https://github.com/DevTruce/dev-bootstrap.git ~/dev-bootstrap
 ### 2. Run the Installer
 
 ```bash
-cd ~/dev-bootstrap
-./install.sh
+~/dev-bootstrap/install.sh
 ```
 
 The installer detects your OS, symlinks your dotfiles, and prompts whether this is a personal machine. Answering **y** adds SSH/GPG key setup, GPG agent configuration, and Claude Code CLI. Answering **n** skips those and installs only the core tooling. It then prints a todo list of any remaining manual steps when it finishes.
