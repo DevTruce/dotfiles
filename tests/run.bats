@@ -125,6 +125,21 @@ setup() {
   [[ "$output" == *"Unknown function"* ]]
 }
 
+# -- _warn_if_unsupported_os() --
+
+@test "_warn_if_unsupported_os stays silent for macos, ubuntu, and debian" {
+  for OS in macos ubuntu debian; do
+    run _warn_if_unsupported_os
+    [ -z "$output" ]
+  done
+}
+
+@test "_warn_if_unsupported_os warns for an unrecognized distro" {
+  OS="fedora"
+  run _warn_if_unsupported_os
+  [[ "$output" == *"Unrecognized OS: fedora"* ]]
+}
+
 @test "running run.sh directly with a known function name invokes it" {
   # dispatches to detect_os specifically because it's side-effect-free - any real
   # setup_* function would risk triggering an actual package-manager install on a

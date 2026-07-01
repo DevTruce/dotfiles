@@ -39,6 +39,7 @@ setup_zsh_plugins() {
 setup_nvm() {
     section "Dev Environment - Node.js (nvm)"
 
+    # kept in sync with .zshrc's NVM_DIR and doctor.sh's _nvm_dir - see .zshrc's comment
     NVM_DIR="${HOME}/.nvm"
 
     if [ -s "${NVM_DIR}/nvm.sh" ]; then

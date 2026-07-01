@@ -105,7 +105,7 @@ setup_linux() {
 
 if [ "$OS" = "macos" ]; then
     setup_macos
-elif [ "$OS" = "ubuntu" ] || [ "$OS" = "debian" ]; then
+elif _is_supported_os; then
     setup_linux
 else
     echo ""

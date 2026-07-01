@@ -16,14 +16,23 @@ export PATH="$HOME/.local/bin:$PATH"
 
 # -- macOS: ensure Homebrew is in PATH (required on Apple Silicon without .zprofile)
 # cache init output to avoid forking brew + re-evaluating its full shellenv every startup
-if [[ "$OSTYPE" == darwin* ]] && [[ -x /opt/homebrew/bin/brew ]]; then
-  _brew_cache="${XDG_CACHE_HOME:-$HOME/.cache}/brew-shellenv.zsh"
-  if [[ ! -f "$_brew_cache" ]] || [[ /opt/homebrew/bin/brew -nt "$_brew_cache" ]]; then
-    mkdir -p "$(dirname "$_brew_cache")"
-    /opt/homebrew/bin/brew shellenv > "$_brew_cache" 2>/dev/null
+if [[ "$OSTYPE" == darwin* ]]; then
+  # Apple Silicon installs to /opt/homebrew, Intel to /usr/local - check both,
+  # since scripts/package-managers.sh's setup_homebrew supports either
+  if [[ -x /opt/homebrew/bin/brew ]]; then
+    _brew_bin="/opt/homebrew/bin/brew"
+  elif [[ -x /usr/local/bin/brew ]]; then
+    _brew_bin="/usr/local/bin/brew"
   fi
-  source "$_brew_cache"
-  unset _brew_cache
+  if [[ -n "${_brew_bin:-}" ]]; then
+    _brew_cache="${XDG_CACHE_HOME:-$HOME/.cache}/brew-shellenv.zsh"
+    if [[ ! -f "$_brew_cache" ]] || [[ "$_brew_bin" -nt "$_brew_cache" ]]; then
+      mkdir -p "$(dirname "$_brew_cache")"
+      "$_brew_bin" shellenv > "$_brew_cache" 2>/dev/null
+    fi
+    source "$_brew_cache"
+  fi
+  unset _brew_bin _brew_cache
 fi
 
 # ─────────────────────────────────────────
@@ -58,17 +67,33 @@ if [[ -f "$ZINIT_HOME/zinit.zsh" ]]; then
   # Shell Setup
   # ─────────────────────────────────────────
 
-  # -- Plugins (order matters: completions → autosuggestions → syntax-highlighting last)
-  zinit light zsh-users/zsh-completions
-  zinit light zsh-users/zsh-autosuggestions
-  zinit light zsh-users/zsh-syntax-highlighting
-  zinit ice as"completion"; zinit snippet "https://raw.githubusercontent.com/docker/cli/master/contrib/completion/zsh/_docker"
-
-  # -- Theme
+  # -- Theme (loaded synchronously, before the turbo-mode plugins below: renders the
+  #    prompt immediately via the instant-prompt cache at the top of this file, instead
+  #    of showing an unstyled prompt for a flash on every new terminal)
   zinit ice depth=1
   zinit light romkatv/powerlevel10k
 
-  # -- Completions (skip security audit when dump is less than 24 hours old)
+  # -- Plugins (turbo mode: `wait'0'` defers loading until zsh is idle right after the
+  #    prompt has drawn; `lucid` suppresses zinit's load-time output so it doesn't
+  #    clutter the prompt. Order still matters even deferred - completions before
+  #    autosuggestions before syntax-highlighting, since each plugin wraps widgets the
+  #    next one needs to already exist. zsh-autosuggestions needs an explicit `atload`
+  #    to (re)run its own init under turbo mode - without it, suggestions silently
+  #    never activate, since its normal auto-init only fires on synchronous plugin load)
+  zinit ice wait'0' lucid
+  zinit light zsh-users/zsh-completions
+
+  zinit ice wait'0' lucid atload'_zsh_autosuggest_start'
+  zinit light zsh-users/zsh-autosuggestions
+
+  zinit ice wait'0' lucid
+  zinit light zsh-users/zsh-syntax-highlighting
+
+  zinit ice wait'0' lucid as"completion"
+  zinit snippet "https://raw.githubusercontent.com/docker/cli/master/contrib/completion/zsh/_docker"
+
+  # -- Completions (dump missing/stale: full compinit with the docker-symlink-warning
+  #    filter below; dump <24h old: compinit -C skips the security audit for a faster start)
   autoload -Uz compinit
   if [[ -n ${HOME}/.zcompdump(#qN.mh+24) ]]; then
     # Docker Desktop's WSL integration leaves a symlink at
@@ -125,7 +150,13 @@ fi
 # NVM
 # ─────────────────────────────────────────
 
-export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
+# Plain constant, not XDG_CONFIG_HOME-aware: this repo never sets XDG_CONFIG_HOME
+# itself, and scripts/dev-environment.sh's setup_nvm (which clones nvm) and
+# doctor.sh's checks both hardcode ~/.nvm - keeping this a plain literal keeps all
+# three call sites in agreement. If you ever make this XDG-aware, update setup_nvm
+# and doctor.sh's _nvm_dir to match, or nvm silently never loads for anyone who has
+# XDG_CONFIG_HOME set in their own environment.
+export NVM_DIR="${HOME}/.nvm"
 
 # Fast path: resolve nvm's default alias chain and add the node bin dir to PATH
 # so globally installed CLIs (claude, pnpm, etc.) are available without sourcing nvm
@@ -184,14 +215,22 @@ export GPG_TTY=$TTY
 if command -v gpgconf >/dev/null 2>&1; then
   # only redirect SSH auth to gpg-agent on machines where SSH support is configured
   if [[ -f "$HOME/.gnupg/gpg-agent.conf" ]] && grep -q "enable-ssh-support" "$HOME/.gnupg/gpg-agent.conf" 2>/dev/null; then
-    export SSH_AUTH_SOCK="$(gpgconf --list-dirs agent-ssh-socket)"
+    # cache the socket path to avoid forking gpgconf every startup, same pattern as
+    # brew/fzf/zoxide above - the path is derived from gnupg's homedir + version, not
+    # live agent state, so it's stable until gpg-agent.conf itself changes (e.g. a
+    # pinentry-path update from setup_gpg_agent_conf), which invalidates the cache
+    _gpg_ssh_sock_cache="${XDG_CACHE_HOME:-$HOME/.cache}/gpg-ssh-socket.txt"
+    if [[ ! -f "$_gpg_ssh_sock_cache" ]] || [[ "$HOME/.gnupg/gpg-agent.conf" -nt "$_gpg_ssh_sock_cache" ]]; then
+      mkdir -p "$(dirname "$_gpg_ssh_sock_cache")"
+      gpgconf --list-dirs agent-ssh-socket > "$_gpg_ssh_sock_cache" 2>/dev/null
+    fi
+    export SSH_AUTH_SOCK="$(<"$_gpg_ssh_sock_cache")"
+    unset _gpg_ssh_sock_cache
   fi
   # backgrounded (&!): launching the agent, waiting for its socket, and registering
   # this terminal's TTY for pinentry are only needed before the first git/ssh command,
   # not before the prompt renders - doing this synchronously added up to ~1s plus
-  # several subprocess spawns to every shell startup. SSH_AUTH_SOCK above stays
-  # synchronous since it's just a path computation, not a live agent round-trip, and
-  # other commands may read it immediately.
+  # several subprocess spawns to every shell startup.
   (
     gpgconf --launch gpg-agent 2>/dev/null
     _gpg_sock="$(gpgconf --list-dirs agent-socket 2>/dev/null)"

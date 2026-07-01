@@ -187,6 +187,32 @@ detect_os() {
     esac
 }
 
+# Whether $OS is one install.sh actually knows how to fully set up end-to-end.
+# Every other Linux distro's case "$OS" in macos) ...; *) ... in scripts/*.sh still
+# takes the apt/Debian branch (harmless if the distro is apt-based, like most
+# WSL2 setups; a loud failure otherwise once apt-get itself isn't found) - this
+# is the single place that distinction is decided, so install.sh can hard-block
+# on it while run.sh/doctor.sh can just warn.
+_is_supported_os() {
+    case "$OS" in
+        macos|ubuntu|debian) return 0 ;;
+        *)                   return 1 ;;
+    esac
+}
+
+# -- Architecture Detection
+
+# Collapses the aarch64/arm64-vs-everything-else uname -m branch that repeats
+# across every GitHub-release binary installer in scripts/utilities.sh - each
+# tool just supplies its own pair of release-asset arch literals.
+# Usage: _uname_arch <value-if-aarch64-or-arm64> <value-otherwise>
+_uname_arch() {
+    case "$(uname -m)" in
+        aarch64|arm64) echo "$1" ;;
+        *)             echo "$2" ;;
+    esac
+}
+
 # -- Symlink Status (shared by doctor.sh's _check_symlink and its own tests)
 
 # Prints one of: linked | broken:<current-target> | regular-file | missing.
@@ -217,5 +243,16 @@ _configured_login_shell() {
     case "$OS" in
         macos) dscl . -read "/Users/$USER" UserShell 2>/dev/null | awk '{print $2}' ;;
         *)     getent passwd "$USER" 2>/dev/null | cut -d: -f7 ;;
+    esac
+}
+
+# -- bat Binary Name (shared by setup_bat and doctor.sh's check)
+
+# Debian/Ubuntu's bat package installs the binary as `batcat` to avoid a name
+# collision with another package that already owns `bat`; Homebrew's doesn't.
+_bat_binary_name() {
+    case "$OS" in
+        macos) echo "bat" ;;
+        *)     echo "batcat" ;;
     esac
 }

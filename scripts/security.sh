@@ -238,6 +238,9 @@ pinentry-program ${PINENTRY_PATH}
 enable-ssh-support
 EOF
         note "Restarting gpg-agent to apply new configuration"
+        # kill can fail harmlessly if no agent is currently running (nothing to kill) -
+        # the --launch below starts a fresh one either way, so a kill failure here is
+        # never itself a real problem
         gpgconf --kill gpg-agent 2>/dev/null || true
         gpgconf --launch gpg-agent 2>/dev/null
         ok "gpg-agent configured and restarted."

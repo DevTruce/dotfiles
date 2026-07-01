@@ -33,6 +33,13 @@ echo ""
 note "Tip: open a new terminal after install.sh before running this check for full accuracy"
 echo ""
 
+# doctor.sh is diagnostic-only (never blocks), so an unrecognized OS just gets a warning
+# here rather than a hard stop like install.sh's - every case "$OS" in macos) ...; *) ...
+# check below still runs against it, falling back to apt/Debian-based expectations.
+if ! _is_supported_os; then
+    _warn "Unrecognized OS: ${OS} - checks below assume apt-based (Ubuntu/Debian) behavior for anything that isn't macOS."
+fi
+
 # ─────────────────────────────────────────
 # Shell
 # ─────────────────────────────────────────
@@ -141,6 +148,7 @@ done
 
 section "Node.js"
 
+# kept in sync with .zshrc's NVM_DIR and setup_nvm's NVM_DIR - see .zshrc's comment
 _nvm_dir="${HOME}/.nvm"
 if [ -s "${_nvm_dir}/nvm.sh" ]; then
     _pass "nvm installed  (${_nvm_dir})"
@@ -216,10 +224,7 @@ else
     _fail "ripgrep (rg)  not found"
 fi
 
-case "$OS" in
-    macos) _bat_cmd="bat" ;;
-    *)     _bat_cmd="batcat" ;;
-esac
+_bat_cmd="$(_bat_binary_name)"
 if command -v "$_bat_cmd" >/dev/null 2>&1; then
     _bat_ver="$("$_bat_cmd" --version 2>/dev/null | awk '{print $2}')"
     _pass "bat  ${_bat_ver}  (${_bat_cmd})"
@@ -299,10 +304,18 @@ else
 fi
 
 if [ "$OS" = "macos" ]; then
-    if printf '%s\n' "${PATH//:/$'\n'}" | grep -qx "/opt/homebrew/bin"; then
-        _pass "/opt/homebrew/bin  in PATH"
+    # Apple Silicon installs to /opt/homebrew, Intel to /usr/local - accept either
+    if [ -x /opt/homebrew/bin/brew ]; then
+        _brew_prefix="/opt/homebrew/bin"
+    elif [ -x /usr/local/bin/brew ]; then
+        _brew_prefix="/usr/local/bin"
     else
-        _fail "/opt/homebrew/bin  not in PATH  (Apple Silicon Homebrew)"
+        _brew_prefix=""
+    fi
+    if [ -n "$_brew_prefix" ] && printf '%s\n' "${PATH//:/$'\n'}" | grep -qx "$_brew_prefix"; then
+        _pass "${_brew_prefix}  in PATH"
+    else
+        _fail "Homebrew bin dir not in PATH  (expected /opt/homebrew/bin or /usr/local/bin)"
     fi
 fi
 
@@ -324,6 +337,28 @@ if [ -f "$_zoxide_cache" ]; then
     _pass "zoxide init cache  (${_zoxide_cache})"
 else
     _pending "zoxide init cache  (generated on first shell launch)"
+fi
+
+_gpg_ssh_sock_cache="${XDG_CACHE_HOME:-${HOME}/.cache}/gpg-ssh-socket.txt"
+if [ -f "$_gpg_ssh_sock_cache" ]; then
+    _pass "gpg SSH-socket cache  (${_gpg_ssh_sock_cache})"
+else
+    _pending "gpg SSH-socket cache  (generated on first shell launch, personal machines only)"
+fi
+
+# ─────────────────────────────────────────
+# Startup Time
+# ─────────────────────────────────────────
+
+section "Startup Time"
+
+# informational only, not a pass/fail check - there's no threshold that's meaningful
+# across arbitrary machines (disk speed, cold vs warm cache), just a number to track
+if command -v zsh >/dev/null 2>&1; then
+    _startup_s="$( { /usr/bin/time -p zsh -i -c exit; } 2>&1 | awk '/^real/{print $2}' )"
+    if [ -n "$_startup_s" ]; then
+        note "Interactive shell startup: ${_startup_s}s  (run again after opening a fresh terminal for a warm-cache reading)"
+    fi
 fi
 
 # ─────────────────────────────────────────

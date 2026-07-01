@@ -93,6 +93,42 @@ EOF
   [ "$output" = "linux" ]
 }
 
+# -- _is_supported_os() --
+
+@test "_is_supported_os succeeds for macos, ubuntu, and debian" {
+  for OS in macos ubuntu debian; do
+    run _is_supported_os
+    [ "$status" -eq 0 ]
+  done
+}
+
+@test "_is_supported_os fails for an unrecognized or unknown distro" {
+  for OS in fedora arch linux unknown; do
+    run _is_supported_os
+    [ "$status" -eq 1 ]
+  done
+}
+
+# -- _uname_arch() --
+
+@test "_uname_arch returns the first value on an aarch64 kernel" {
+  _fake_uname "aarch64"
+  run _uname_arch arm64 amd64
+  [ "$output" = "arm64" ]
+}
+
+@test "_uname_arch returns the first value on an arm64 kernel" {
+  _fake_uname "arm64"
+  run _uname_arch arm64 amd64
+  [ "$output" = "arm64" ]
+}
+
+@test "_uname_arch returns the second value on x86_64" {
+  _fake_uname "x86_64"
+  run _uname_arch arm64 amd64
+  [ "$output" = "amd64" ]
+}
+
 # -- _verify_sha256() --
 # uses file:// URLs so curl reads local fixtures instead of hitting the network
 
@@ -255,4 +291,18 @@ EOF
   chmod +x "${_FAKE_BIN}/getent"
   run _configured_login_shell
   [ "$output" = "/usr/bin/zsh" ]
+}
+
+# -- _bat_binary_name() --
+
+@test "_bat_binary_name returns 'bat' on macOS" {
+  OS="macos"
+  run _bat_binary_name
+  [ "$output" = "bat" ]
+}
+
+@test "_bat_binary_name returns 'batcat' on Debian/Ubuntu" {
+  OS="ubuntu"
+  run _bat_binary_name
+  [ "$output" = "batcat" ]
 }

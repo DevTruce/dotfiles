@@ -48,6 +48,11 @@ in place before doing anything, so it is safe to re-run at any time.
 | macOS                            | Homebrew        |
 | Ubuntu / Debian (including WSL2) | apt             |
 
+Only these are validated end-to-end: `install.sh` refuses to run on anything else. `run.sh`
+and `doctor.sh` will still run against other Linux distros, falling back to apt-based logic
+with a warning, since picking a function directly is its own consent - but they aren't a
+supported target.
+
 ---
 
 ## What Gets Installed
@@ -222,7 +227,8 @@ bash ~/dev-bootstrap/doctor.sh
 
 All items should show a green checkmark. Zinit plugins and shell init caches that haven't
 downloaded yet will show a dim checkmark - they are guaranteed to materialize the moment you
-opened the new terminal.
+opened the new terminal. `doctor.sh` also reports an approximate interactive shell startup
+time, purely informational (there's no fixed pass/fail threshold across different machines).
 
 ---
 
@@ -246,7 +252,7 @@ dev-bootstrap/
 │   ├── MesloLGS NF Italic.ttf
 │   └── MesloLGS NF Bold Italic.ttf
 ├── scripts/                     # modular installer components
-│   ├── helpers.sh               # output helpers (section, step, ok, skip, warn, fail, note, copy, link, _spinner), detect_os(), _apt(), _brew(), _npm(), _verify_sha256(), _symlink_status(), _configured_login_shell()
+│   ├── helpers.sh               # output helpers (section, step, ok, skip, warn, fail, note, copy, link, _spinner), detect_os(), _is_supported_os(), _uname_arch(), _apt(), _brew(), _npm(), _verify_sha256(), _symlink_status(), _configured_login_shell(), _bat_binary_name()
 │   ├── package-managers.sh      # setup_homebrew, setup_apt
 │   ├── shell.sh                 # setup_zsh
 │   ├── version-control.sh       # setup_git, setup_git_lfs

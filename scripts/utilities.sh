@@ -37,10 +37,7 @@ setup_fzf() {
                 local _log _pid
                 _log="$(mktemp)"
                 (
-                    case "$(uname -m)" in
-                        aarch64) _arch="arm64" ;;
-                        *)       _arch="amd64" ;;
-                    esac
+                    _arch="$(_uname_arch arm64 amd64)"
                     _version="$(curl -fsSL https://api.github.com/repos/junegunn/fzf/releases/latest \
                         | grep '"tag_name"' | sed 's/.*"v\([^"]*\)".*/\1/')"
                     if [ -z "$_version" ]; then
@@ -86,10 +83,7 @@ setup_zoxide() {
                 local _log _pid
                 _log="$(mktemp)"
                 (
-                    case "$(uname -m)" in
-                        aarch64) _arch="aarch64-unknown-linux-musl" ;;
-                        *)       _arch="x86_64-unknown-linux-musl" ;;
-                    esac
+                    _arch="$(_uname_arch aarch64-unknown-linux-musl x86_64-unknown-linux-musl)"
                     _version="$(curl -fsSL https://api.github.com/repos/ajeetdsouza/zoxide/releases/latest \
                         | grep '"tag_name"' | sed 's/.*"v\([^"]*\)".*/\1/')"
                     if [ -z "$_version" ]; then
@@ -144,12 +138,8 @@ setup_ripgrep() {
 setup_bat() {
     section "Utilities - bat"
 
-    # On Ubuntu/Debian, bat is installed as 'batcat' due to a naming conflict
     local _bat_cmd
-    case "$OS" in
-        macos) _bat_cmd="bat" ;;
-        *)     _bat_cmd="batcat" ;;
-    esac
+    _bat_cmd="$(_bat_binary_name)"
 
     if command -v "$_bat_cmd" >/dev/null 2>&1; then
         skip "bat is already installed."
@@ -181,10 +171,7 @@ setup_lazygit() {
                 local _log _pid
                 _log="$(mktemp)"
                 (
-                    case "$(uname -m)" in
-                        aarch64) _arch="arm64" ;;
-                        *)       _arch="x86_64" ;;
-                    esac
+                    _arch="$(_uname_arch arm64 x86_64)"
                     _version="$(curl -fsSL https://api.github.com/repos/jesseduffield/lazygit/releases/latest \
                         | grep '"tag_name"' | sed 's/.*"v\([^"]*\)".*/\1/')"
                     if [ -z "$_version" ]; then
@@ -230,10 +217,7 @@ setup_gh() {
                 local _log _pid
                 _log="$(mktemp)"
                 (
-                    case "$(uname -m)" in
-                        aarch64) _arch="arm64" ;;
-                        *)       _arch="amd64" ;;
-                    esac
+                    _arch="$(_uname_arch arm64 amd64)"
                     _version="$(curl -fsSL https://api.github.com/repos/cli/cli/releases/latest \
                         | grep '"tag_name"' | sed 's/.*"v\([^"]*\)".*/\1/')"
                     if [ -z "$_version" ]; then

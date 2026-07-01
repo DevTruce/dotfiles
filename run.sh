@@ -20,6 +20,18 @@ done
 # -- Detect OS
 OS="$(detect_os)"
 
+# non-blocking, unlike install.sh's hard "Unsupported OS" exit: run.sh's whole design is
+# that explicitly picking a function is its own consent (see PERSONAL_MACHINE below), so
+# an unrecognized OS still gets to run - it just needs telling that every
+# case "$OS" in macos) ...; *) ... branch in scripts/*.sh falls back to apt/Debian-based
+# logic, not a dedicated "unsupported" path.
+_warn_if_unsupported_os() {
+    if ! _is_supported_os; then
+        warn "Unrecognized OS: ${OS} - functions below fall back to apt-based (Ubuntu/Debian) logic for anything that isn't macOS. If ${OS} isn't apt-based, expect failures."
+    fi
+}
+_warn_if_unsupported_os
+
 # run.sh always runs exactly one explicitly-chosen function, unlike install.sh's "do you
 # want the personal bundle or just core" prompt over a whole batch - choosing to run a
 # personal-only function (e.g. setup_ssh_key) already is the consent, so there's nothing
