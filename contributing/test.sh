@@ -25,7 +25,7 @@ _warn() { warn "$1"; _WARN=$((_WARN + 1)); }
 # ─────────────────────────────────────────
 
 # skipped when run under ci.sh (_FROM_CI_SH=1), since the per-file sections and
-# closing summary below already announce this phase - standalone `./test.sh`
+# closing summary below already announce this phase - standalone `./contributing/test.sh`
 # still gets this banner
 if [ -z "${_FROM_CI_SH:-}" ]; then
     echo ""
