@@ -22,7 +22,7 @@ _FROM_CI_SH=1 "${DOTFILES_DIR}/test.sh" || _FAIL=$((_FAIL + 1))
 
 section "Lint"
 if ! command -v shellcheck >/dev/null 2>&1; then
-    warn "shellcheck not installed  (fix: ./run.sh setup_shellcheck)"
+    warn "shellcheck not installed  (fix: ~/dev-bootstrap/run.sh setup_shellcheck)"
     _FAIL=$((_FAIL + 1))
 elif (cd "$DOTFILES_DIR" && shellcheck --severity=warning *.sh scripts/*.sh); then
     ok "shellcheck passed"
