@@ -75,7 +75,7 @@ in place before doing anything, so it is safe to re-run at any time.
 | gh (GitHub CLI)                | GitHub operations (PRs, issues, repos) from the terminal                       |
 | SSH + GPG keys (ed25519 / GPG) | _(personal)_ SSH key for GitHub auth; GPG key for commit and tag signing       |
 | pinentry-mac / pinentry-curses | _(personal)_ GPG passphrase prompt (GUI on macOS, terminal on Linux)           |
-| gpg-agent                      | _(personal)_ Passphrase caching for GPG and SSH keys (SSH support: Linux only) |
+| gpg-agent                      | _(personal)_ Passphrase caching for GPG and SSH keys                           |
 | Claude Code CLI                | _(personal)_ Terminal AI coding assistant                                      |
 
 > Items marked _(personal)_ are only installed when you answer **y** to the personal machine prompt.

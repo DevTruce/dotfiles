@@ -355,7 +355,7 @@ else
     _warn "gpg-agent.conf not found  (personal machine only)"
 fi
 
-if [ "$OS" != "macos" ] && command -v gpgconf >/dev/null 2>&1; then
+if command -v gpgconf >/dev/null 2>&1; then
     if [ -f "${HOME}/.gnupg/gpg-agent.conf" ] && grep -q "enable-ssh-support" "${HOME}/.gnupg/gpg-agent.conf" 2>/dev/null; then
         _gpg_ssh_sock="$(gpgconf --list-dirs agent-ssh-socket 2>/dev/null)"
         # ssh-add -l exit code 2 = cannot connect; 0 = keys present; 1 = agent alive, no keys

@@ -160,29 +160,27 @@ load-nvmrc
 # GPG Agent
 # ─────────────────────────────────────────
 
-if [[ "$OSTYPE" != "darwin"* ]]; then
-  export GPG_TTY=$TTY
-  if command -v gpgconf >/dev/null 2>&1; then
-    # only redirect SSH auth to gpg-agent on machines where SSH support is configured
-    if [[ -f "$HOME/.gnupg/gpg-agent.conf" ]] && grep -q "enable-ssh-support" "$HOME/.gnupg/gpg-agent.conf" 2>/dev/null; then
-      export SSH_AUTH_SOCK="$(gpgconf --list-dirs agent-ssh-socket)"
-    fi
-    # backgrounded (&!): launching the agent, waiting for its socket, and registering
-    # this terminal's TTY for pinentry are only needed before the first git/ssh command,
-    # not before the prompt renders - doing this synchronously added up to ~1s plus
-    # several subprocess spawns to every shell startup. SSH_AUTH_SOCK above stays
-    # synchronous since it's just a path computation, not a live agent round-trip, and
-    # other commands may read it immediately.
-    (
-      gpgconf --launch gpg-agent 2>/dev/null
-      _gpg_sock="$(gpgconf --list-dirs agent-socket 2>/dev/null)"
-      _gpg_retries=0
-      until [[ -S "$_gpg_sock" ]] || (( _gpg_retries++ >= 10 )); do
-        sleep 0.1
-      done
-      gpg-connect-agent updatestartuptty /bye >/dev/null 2>&1
-    ) &!
+export GPG_TTY=$TTY
+if command -v gpgconf >/dev/null 2>&1; then
+  # only redirect SSH auth to gpg-agent on machines where SSH support is configured
+  if [[ -f "$HOME/.gnupg/gpg-agent.conf" ]] && grep -q "enable-ssh-support" "$HOME/.gnupg/gpg-agent.conf" 2>/dev/null; then
+    export SSH_AUTH_SOCK="$(gpgconf --list-dirs agent-ssh-socket)"
   fi
+  # backgrounded (&!): launching the agent, waiting for its socket, and registering
+  # this terminal's TTY for pinentry are only needed before the first git/ssh command,
+  # not before the prompt renders - doing this synchronously added up to ~1s plus
+  # several subprocess spawns to every shell startup. SSH_AUTH_SOCK above stays
+  # synchronous since it's just a path computation, not a live agent round-trip, and
+  # other commands may read it immediately.
+  (
+    gpgconf --launch gpg-agent 2>/dev/null
+    _gpg_sock="$(gpgconf --list-dirs agent-socket 2>/dev/null)"
+    _gpg_retries=0
+    until [[ -S "$_gpg_sock" ]] || (( _gpg_retries++ >= 10 )); do
+      sleep 0.1
+    done
+    gpg-connect-agent updatestartuptty /bye >/dev/null 2>&1
+  ) &!
 fi
 
 # ─────────────────────────────────────────

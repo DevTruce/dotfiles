@@ -49,9 +49,11 @@ setup_ssh_key() {
     fi
 
     # registers this key with gpg-agent's ssh-agent emulation so its passphrase gets
-    # cached instead of being re-prompted on every git push - macOS uses pinentry-mac's
-    # own keychain integration instead, so this whole block is Linux/WSL2-only
-    if [ "$OS" != "macos" ] && command -v gpgconf >/dev/null 2>&1; then
+    # cached instead of being re-prompted on every git push - this is the same cache
+    # setup_gpg_agent_conf configures for GPG commit signing (enable-ssh-support), just
+    # reused for SSH too. pinentry-mac/pinentry-curses are only the prompt UI gpg-agent
+    # invokes; this works identically on macOS and Linux/WSL2.
+    if command -v gpgconf >/dev/null 2>&1; then
         local _agent_sock
         _agent_sock="$(gpgconf --list-dirs agent-ssh-socket)"
         # gpg-agent's ssh-agent emulation has no per-request TTY (the ssh-agent protocol
@@ -214,34 +216,19 @@ setup_gpg_agent_conf() {
     # "already configured" means the existing file already has every setting this
     # function would write - any single missing line (e.g. an older gpg-agent.conf
     # from before default-cache-ttl-ssh was added) forces a rewrite below, since the
-    # heredocs always write the full file rather than patching individual lines
+    # heredoc always writes the full file rather than patching individual lines.
+    # enable-ssh-support is required on every OS: it's what lets gpg-agent double as
+    # the ssh-agent that caches this key's passphrase for git push/pull, not just GPG
+    # commit signing - pinentry-mac/pinentry-curses are only the prompt UI either way.
     local _skip_check
-    case "$OS" in
-        macos)
-            _skip_check="$(grep -q "pinentry-program ${PINENTRY_PATH}" "$GPG_AGENT_CONF" 2>/dev/null && grep -q "default-cache-ttl-ssh" "$GPG_AGENT_CONF" 2>/dev/null && echo yes || echo no)"
-            ;;
-        *)
-            _skip_check="$(grep -q "enable-ssh-support" "$GPG_AGENT_CONF" 2>/dev/null && grep -q "pinentry-program ${PINENTRY_PATH}" "$GPG_AGENT_CONF" 2>/dev/null && grep -q "default-cache-ttl-ssh" "$GPG_AGENT_CONF" 2>/dev/null && echo yes || echo no)"
-            ;;
-    esac
+    _skip_check="$(grep -q "enable-ssh-support" "$GPG_AGENT_CONF" 2>/dev/null && grep -q "pinentry-program ${PINENTRY_PATH}" "$GPG_AGENT_CONF" 2>/dev/null && grep -q "default-cache-ttl-ssh" "$GPG_AGENT_CONF" 2>/dev/null && echo yes || echo no)"
 
     if [ "$_skip_check" = "yes" ]; then
         skip "gpg-agent.conf is already configured (pinentry: ${PINENTRY_PATH})."
     else
         step "Writing gpg-agent.conf"
         note "Pinentry: ${PINENTRY_PATH}"
-        case "$OS" in
-            macos)
-                cat > "$GPG_AGENT_CONF" <<EOF
-default-cache-ttl 28800
-max-cache-ttl 86400
-default-cache-ttl-ssh 28800
-max-cache-ttl-ssh 86400
-pinentry-program ${PINENTRY_PATH}
-EOF
-                ;;
-            *)
-                cat > "$GPG_AGENT_CONF" <<EOF
+        cat > "$GPG_AGENT_CONF" <<EOF
 default-cache-ttl 28800
 max-cache-ttl 86400
 default-cache-ttl-ssh 28800
@@ -249,8 +236,6 @@ max-cache-ttl-ssh 86400
 pinentry-program ${PINENTRY_PATH}
 enable-ssh-support
 EOF
-                ;;
-        esac
         note "Restarting gpg-agent to apply new configuration"
         gpgconf --kill gpg-agent 2>/dev/null || true
         gpgconf --launch gpg-agent 2>/dev/null
