@@ -84,61 +84,46 @@ _spinner() {
     printf "\r\033[K"  # erase the step+spinner line so ok/warn prints in its place
 }
 
+# -- Run-with-spinner: shared by every long-running install step in this repo (package
+# manager wrappers below, git clones, GitHub-release downloads). Backgrounds its argv,
+# animates the spinner via _spinner while it runs, and surfaces the captured output only
+# on failure - callers just get a normal exit status back.
+# Usage: call step() first (its message is what the spinner animates and what "failed."
+# refers to), then _run_with_spinner <cmd> [args...]. For a multi-step sequence, wrap it
+# in a small named function first and pass that function's name.
+_run_with_spinner() {
+    local _log _pid
+    _log="$(mktemp)"
+    # the redirect below is opened by this shell against its own tempfile before any
+    # sudo exec inside "$@", not by the elevated process, so it's not the
+    # sudo-doesn't-affect-redirects pitfall shellcheck would otherwise warn about
+    # shellcheck disable=SC2024
+    "$@" > "$_log" 2>&1 &
+    _pid=$!
+    _spinner "$_pid"
+    if wait "$_pid"; then
+        rm -f "$_log"
+    else
+        fail "${_LAST_STEP} failed."
+        echo ""
+        cat "$_log"
+        rm -f "$_log"
+        return 1
+    fi
+}
+
 # -- Silent package manager wrappers: run in background with spinner, surface output only on failure
 
 _apt() {
-    local _log _pid
-    _log="$(mktemp)"
-    # the redirect below is opened by this (non-root) shell against its own tempfile
-    # before sudo's exec, not by the elevated apt-get process, so it's not the
-    # sudo-doesn't-affect-redirects pitfall shellcheck is warning about here
-    # shellcheck disable=SC2024
-    DEBIAN_FRONTEND=noninteractive sudo apt-get "$@" > "$_log" 2>&1 &
-    _pid=$!
-    _spinner "$_pid"
-    if wait "$_pid"; then
-        rm -f "$_log"
-    else
-        fail "${_LAST_STEP} failed."
-        echo ""
-        cat "$_log"
-        rm -f "$_log"
-        return 1
-    fi
+    _run_with_spinner env DEBIAN_FRONTEND=noninteractive sudo apt-get "$@"
 }
 
 _brew() {
-    local _log _pid
-    _log="$(mktemp)"
-    brew "$@" > "$_log" 2>&1 &
-    _pid=$!
-    _spinner "$_pid"
-    if wait "$_pid"; then
-        rm -f "$_log"
-    else
-        fail "${_LAST_STEP} failed."
-        echo ""
-        cat "$_log"
-        rm -f "$_log"
-        return 1
-    fi
+    _run_with_spinner brew "$@"
 }
 
 _npm() {
-    local _log _pid
-    _log="$(mktemp)"
-    npm "$@" > "$_log" 2>&1 &
-    _pid=$!
-    _spinner "$_pid"
-    if wait "$_pid"; then
-        rm -f "$_log"
-    else
-        fail "${_LAST_STEP} failed."
-        echo ""
-        cat "$_log"
-        rm -f "$_log"
-        return 1
-    fi
+    _run_with_spinner npm "$@"
 }
 
 # -- Checksum verification

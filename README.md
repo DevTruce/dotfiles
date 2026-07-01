@@ -237,7 +237,7 @@ time, purely informational (there's no fixed pass/fail threshold across differen
 ```
 dev-bootstrap/
 ├── .github/
-│   └── workflows/               # lint.yml (shellcheck) and test.yml (./test.sh) - see Contributing
+│   └── workflows/               # lint.yml (shellcheck + zsh -n) and test.yml (./test.sh) - see Contributing
 ├── .gitconfig                   # git aliases, LFS config, and default settings (identity in ~/.gitconfig.local)
 ├── .gitignore                   # ignores keys, .gitconfig.local, OS junk, and zinit plugin cache
 ├── .p10k.zsh                    # Powerlevel10k prompt configuration
@@ -252,7 +252,7 @@ dev-bootstrap/
 │   ├── MesloLGS NF Italic.ttf
 │   └── MesloLGS NF Bold Italic.ttf
 ├── scripts/                     # modular installer components
-│   ├── helpers.sh               # output helpers (section, step, ok, skip, warn, fail, note, copy, link, _spinner), detect_os(), _is_supported_os(), _uname_arch(), _apt(), _brew(), _npm(), _verify_sha256(), _symlink_status(), _configured_login_shell(), _bat_binary_name()
+│   ├── helpers.sh               # output helpers (section, step, ok, skip, warn, fail, note, copy, link, _spinner), _run_with_spinner(), detect_os(), _is_supported_os(), _uname_arch(), _apt(), _brew(), _npm(), _verify_sha256(), _symlink_status(), _configured_login_shell(), _bat_binary_name()
 │   ├── package-managers.sh      # setup_homebrew, setup_apt
 │   ├── shell.sh                 # setup_zsh
 │   ├── version-control.sh       # setup_git, setup_git_lfs
@@ -263,11 +263,11 @@ dev-bootstrap/
 │   └── finish.sh                # completion banner and manual todo list
 ├── tests/                       # bats unit tests for the installer's own logic, mirroring scripts/ - see Contributing
 │   ├── scripts/
-│   │   ├── helpers.bats          # detect_os(), _verify_sha256(), _apt/_brew/_npm, _spinner, _symlink_status(), _configured_login_shell()
+│   │   ├── helpers.bats          # detect_os(), _is_supported_os(), _uname_arch(), _verify_sha256(), _run_with_spinner(), _apt/_brew/_npm, _spinner, _symlink_status(), _configured_login_shell(), _bat_binary_name()
 │   │   ├── dotfiles.bats          # setup_dotfiles()
 │   │   ├── version_control.bats   # setup_git()'s identity prompt and editor selection
 │   │   └── security.bats          # setup_gpg_agent_conf()'s config detection
-│   └── run.bats                  # _run_selection(), menu OS-filtering, direct dispatch
+│   └── run.bats                  # _run_selection(), menu OS-filtering, direct dispatch, _warn_if_unsupported_os()
 ├── install.sh                   # entry point: loads scripts, detects OS, dispatches
 ├── doctor.sh                    # post-install verification: checks all tools, symlinks, PATH, git identity, and security
 ├── run.sh                       # run a single setup function without the full install
@@ -336,8 +336,17 @@ If `shellcheck` isn't installed yet: `bash ~/dev-bootstrap/run.sh setup_shellche
 `.shellcheckrc` disables two checks that are false positives for this repo's
 conventions - see the comments in that file for why.
 
-Both run automatically in CI on every push and pull request (`.github/workflows/`) -
-neither touches a real machine or runs as part of `install.sh`.
+**Syntax-check the zsh dotfiles:**
+
+```bash
+zsh -n .zshrc && zsh -n .zshenv && zsh -n .p10k.zsh
+```
+
+Catches a broken `.zshrc` (parse errors only, not semantic bugs, since `-n` never
+runs the file) - shellcheck doesn't cover these three since they're zsh, not POSIX sh.
+
+All three run automatically in CI on every push and pull request
+(`.github/workflows/`) - none touch a real machine or run as part of `install.sh`.
 
 ---
 

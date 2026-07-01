@@ -34,15 +34,14 @@ setup_fzf() {
                 ;;
             *)
                 # apt ships fzf 0.29-0.44 which predates `fzf --zsh`; pull latest from GitHub
-                local _log _pid
-                _log="$(mktemp)"
-                (
+                _install_fzf_linux() {
+                    local _arch _version _asset _dl
                     _arch="$(_uname_arch arm64 amd64)"
                     _version="$(curl -fsSL https://api.github.com/repos/junegunn/fzf/releases/latest \
                         | grep '"tag_name"' | sed 's/.*"v\([^"]*\)".*/\1/')"
                     if [ -z "$_version" ]; then
                         echo "ERROR: could not determine fzf version (GitHub API rate limit?)" >&2
-                        exit 1
+                        return 1
                     fi
                     _asset="fzf-${_version}-linux_${_arch}.tar.gz"
                     _dl="$(mktemp)"
@@ -50,15 +49,12 @@ setup_fzf() {
                         "https://github.com/junegunn/fzf/releases/download/v${_version}/${_asset}"
                     _verify_sha256 "$_dl" \
                         "https://github.com/junegunn/fzf/releases/download/v${_version}/fzf_${_version}_checksums.txt" \
-                        "$_asset" || { rm -f "$_dl"; exit 1; }
+                        "$_asset" || { rm -f "$_dl"; return 1; }
                     mkdir -p "${HOME}/.local/bin"
                     tar -xzf "$_dl" -C "${HOME}/.local/bin/" fzf
                     rm -f "$_dl"
-                ) > "$_log" 2>&1 &
-                _pid=$!
-                _spinner "$_pid"
-                if wait "$_pid"; then rm -f "$_log"
-                else fail "${_LAST_STEP} failed."; echo ""; cat "$_log"; rm -f "$_log"; return 1; fi
+                }
+                _run_with_spinner _install_fzf_linux || return 1
                 ;;
         esac
         ok "fzf installed."
@@ -80,15 +76,14 @@ setup_zoxide() {
                 ;;
             *)
                 # zoxide not available in Ubuntu 22.04 apt repos; pull latest from GitHub
-                local _log _pid
-                _log="$(mktemp)"
-                (
+                _install_zoxide_linux() {
+                    local _arch _version _dl
                     _arch="$(_uname_arch aarch64-unknown-linux-musl x86_64-unknown-linux-musl)"
                     _version="$(curl -fsSL https://api.github.com/repos/ajeetdsouza/zoxide/releases/latest \
                         | grep '"tag_name"' | sed 's/.*"v\([^"]*\)".*/\1/')"
                     if [ -z "$_version" ]; then
                         echo "ERROR: could not determine zoxide version (GitHub API rate limit?)" >&2
-                        exit 1
+                        return 1
                     fi
                     _dl="$(mktemp)"
                     curl -fsSLo "$_dl" \
@@ -100,16 +95,13 @@ setup_zoxide() {
                     if ! tar -tzf "$_dl" zoxide >/dev/null 2>&1; then
                         echo "ERROR: downloaded zoxide archive is invalid or missing the zoxide binary" >&2
                         rm -f "$_dl"
-                        exit 1
+                        return 1
                     fi
                     mkdir -p "${HOME}/.local/bin"
                     tar -xzf "$_dl" -C "${HOME}/.local/bin/" zoxide
                     rm -f "$_dl"
-                ) > "$_log" 2>&1 &
-                _pid=$!
-                _spinner "$_pid"
-                if wait "$_pid"; then rm -f "$_log"
-                else fail "${_LAST_STEP} failed."; echo ""; cat "$_log"; rm -f "$_log"; return 1; fi
+                }
+                _run_with_spinner _install_zoxide_linux || return 1
                 ;;
         esac
         ok "zoxide installed."
@@ -168,15 +160,14 @@ setup_lazygit() {
                 ;;
             *)
                 # lazygit not available in Ubuntu 22.04 apt repos; pull latest from GitHub
-                local _log _pid
-                _log="$(mktemp)"
-                (
+                _install_lazygit_linux() {
+                    local _arch _version _asset _dl
                     _arch="$(_uname_arch arm64 x86_64)"
                     _version="$(curl -fsSL https://api.github.com/repos/jesseduffield/lazygit/releases/latest \
                         | grep '"tag_name"' | sed 's/.*"v\([^"]*\)".*/\1/')"
                     if [ -z "$_version" ]; then
                         echo "ERROR: could not determine lazygit version (GitHub API rate limit?)" >&2
-                        exit 1
+                        return 1
                     fi
                     _asset="lazygit_${_version}_linux_${_arch}.tar.gz"
                     _dl="$(mktemp)"
@@ -184,15 +175,12 @@ setup_lazygit() {
                         "https://github.com/jesseduffield/lazygit/releases/download/v${_version}/${_asset}"
                     _verify_sha256 "$_dl" \
                         "https://github.com/jesseduffield/lazygit/releases/download/v${_version}/checksums.txt" \
-                        "$_asset" || { rm -f "$_dl"; exit 1; }
+                        "$_asset" || { rm -f "$_dl"; return 1; }
                     mkdir -p "${HOME}/.local/bin"
                     tar -xzf "$_dl" -C "${HOME}/.local/bin/" lazygit
                     rm -f "$_dl"
-                ) > "$_log" 2>&1 &
-                _pid=$!
-                _spinner "$_pid"
-                if wait "$_pid"; then rm -f "$_log"
-                else fail "${_LAST_STEP} failed."; echo ""; cat "$_log"; rm -f "$_log"; return 1; fi
+                }
+                _run_with_spinner _install_lazygit_linux || return 1
                 ;;
         esac
         ok "lazygit installed."
@@ -214,15 +202,14 @@ setup_gh() {
                 ;;
             *)
                 # apt ships an older gh; pull latest from GitHub releases
-                local _log _pid
-                _log="$(mktemp)"
-                (
+                _install_gh_linux() {
+                    local _arch _version _asset _dl
                     _arch="$(_uname_arch arm64 amd64)"
                     _version="$(curl -fsSL https://api.github.com/repos/cli/cli/releases/latest \
                         | grep '"tag_name"' | sed 's/.*"v\([^"]*\)".*/\1/')"
                     if [ -z "$_version" ]; then
                         echo "ERROR: could not determine gh version (GitHub API rate limit?)" >&2
-                        exit 1
+                        return 1
                     fi
                     _asset="gh_${_version}_linux_${_arch}.tar.gz"
                     _dl="$(mktemp)"
@@ -230,18 +217,15 @@ setup_gh() {
                         "https://github.com/cli/cli/releases/download/v${_version}/${_asset}"
                     _verify_sha256 "$_dl" \
                         "https://github.com/cli/cli/releases/download/v${_version}/gh_${_version}_checksums.txt" \
-                        "$_asset" || { rm -f "$_dl"; exit 1; }
+                        "$_asset" || { rm -f "$_dl"; return 1; }
                     mkdir -p "${HOME}/.local/bin"
                     # unlike fzf/zoxide/lazygit's flat binaries, gh's tarball nests the
                     # binary under <pkg>/bin/gh - strip both directory levels on extract
                     tar -xzf "$_dl" --strip-components=2 -C "${HOME}/.local/bin/" \
                         "gh_${_version}_linux_${_arch}/bin/gh"
                     rm -f "$_dl"
-                ) > "$_log" 2>&1 &
-                _pid=$!
-                _spinner "$_pid"
-                if wait "$_pid"; then rm -f "$_log"
-                else fail "${_LAST_STEP} failed."; echo ""; cat "$_log"; rm -f "$_log"; return 1; fi
+                }
+                _run_with_spinner _install_gh_linux || return 1
                 ;;
         esac
         ok "gh installed."

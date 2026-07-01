@@ -174,6 +174,26 @@ EOF
   [[ "$output" == *"could not download checksums file"* ]]
 }
 
+# -- _run_with_spinner() --
+# the shared primitive _apt/_brew/_npm and every GitHub-release installer in
+# scripts/utilities.sh are built on - test it directly against a plain function,
+# not just through those thin wrappers.
+
+@test "_run_with_spinner returns success and cleans up when the command succeeds" {
+  step "Doing a thing" >/dev/null
+  run _run_with_spinner true
+  [ "$status" -eq 0 ]
+}
+
+@test "_run_with_spinner reports failure and surfaces the command's output" {
+  _fake_thing() { echo "something went wrong"; return 1; }
+  step "Doing a thing" >/dev/null
+  run _run_with_spinner _fake_thing
+  [ "$status" -eq 1 ]
+  [[ "$output" == *"Doing a thing failed."* ]]
+  [[ "$output" == *"something went wrong"* ]]
+}
+
 # -- _apt() / _brew() / _npm() --
 # shared plumbing every setup_* function depends on - widest blast radius in the
 # repo if broken. Faked binaries mean no real package manager is ever touched.

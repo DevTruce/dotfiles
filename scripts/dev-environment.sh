@@ -22,13 +22,7 @@ setup_zsh_plugins() {
     else
         step "Installing zinit plugin manager"
         mkdir -p "$(dirname "$ZINIT_HOME")"
-        local _log _pid
-        _log="$(mktemp)"
-        git clone --depth 1 --quiet https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME" > "$_log" 2>&1 &
-        _pid=$!
-        _spinner "$_pid"
-        if wait "$_pid"; then rm -f "$_log"
-        else fail "${_LAST_STEP} failed."; echo ""; cat "$_log"; rm -f "$_log"; return 1; fi
+        _run_with_spinner git clone --depth 1 --quiet https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME" || return 1
         ok "zinit installed."
         note "Plugins will be downloaded on first shell launch."
     fi
@@ -52,28 +46,17 @@ setup_nvm() {
         # own (only install.sh does that, which we no longer run), so this is both safer
         # (no remote script execution, just a tagged git checkout) and makes PROFILE=/dev/null
         # unnecessary
-        local _nvm_log _nvm_pid
-        _nvm_log="$(mktemp)"
-        (
+        _install_nvm() {
+            local _nvm_tag
             _nvm_tag="$(curl -fsSL https://api.github.com/repos/nvm-sh/nvm/releases/latest \
                 | grep '"tag_name"' | sed 's/.*"\(v[^"]*\)".*/\1/')"
             if [ -z "$_nvm_tag" ]; then
                 echo "ERROR: could not determine nvm version (GitHub API rate limit?)" >&2
-                exit 1
+                return 1
             fi
             git clone --depth 1 --branch "$_nvm_tag" --quiet https://github.com/nvm-sh/nvm.git "$NVM_DIR"
-        ) > "$_nvm_log" 2>&1 &
-        _nvm_pid=$!
-        _spinner "$_nvm_pid"
-        if wait "$_nvm_pid"; then
-            rm -f "$_nvm_log"
-        else
-            fail "${_LAST_STEP} failed."
-            echo ""
-            cat "$_nvm_log"
-            rm -f "$_nvm_log"
-            return 1
-        fi
+        }
+        _run_with_spinner _install_nvm || return 1
         ok "nvm installed."
     fi
 
@@ -89,19 +72,10 @@ setup_nvm() {
         skip "Node.js LTS is already installed."
     else
         step "Installing the latest Node.js LTS release"
-        local _node_log _node_pid
-        _node_log="$(mktemp)"
+        # set +u spans this whole block, including the nvm use call below - nvm
+        # references unbound variables internally, same reason as elsewhere in this file
         set +u
-        (nvm install --lts) > "$_node_log" 2>&1 &
-        _node_pid=$!
-        _spinner "$_node_pid"
-        if wait "$_node_pid"; then
-            rm -f "$_node_log"
-        else
-            fail "${_LAST_STEP} failed."
-            echo ""
-            cat "$_node_log"
-            rm -f "$_node_log"
+        if ! _run_with_spinner nvm install --lts; then
             set -u
             return 1
         fi

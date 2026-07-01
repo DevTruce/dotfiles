@@ -13,3 +13,15 @@ jobs:
       - uses: actions/checkout@v4
       # shellcheck ships preinstalled on GitHub's ubuntu-latest runners
       - run: shellcheck --severity=warning *.sh scripts/*.sh
+
+  zsh-syntax:
+    # zsh, not POSIX sh, so shellcheck above doesn't cover .zshrc/.zshenv/.p10k.zsh -
+    # this only catches parse errors (a typo), not semantic bugs, since `zsh -n` never
+    # runs the file - still a cheap guard against a broken .zshrc reaching a real machine
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      # zsh ships preinstalled on GitHub's ubuntu-latest runners, but install it if
+      # that ever changes rather than let the whole job fail on a missing binary
+      - run: command -v zsh >/dev/null || sudo apt-get install -y --no-install-recommends zsh
+      - run: zsh -n .zshrc && zsh -n .zshenv && zsh -n .p10k.zsh
