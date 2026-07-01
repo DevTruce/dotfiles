@@ -67,9 +67,22 @@ if [[ -f "$ZINIT_HOME/zinit.zsh" ]]; then
     # Docker Desktop's WSL integration leaves a symlink at
     # /usr/share/zsh/vendor-completions/_docker pointing into a mount that
     # isn't always attached yet at shell startup; when dangling, compinit's
-    # full-rebuild scan fails to read it and prints a harmless warning -
-    # filter just that line, let any other compinit output through untouched.
-    compinit 2> >(grep -v 'no such file or directory:.*vendor-completions/_docker$')
+    # full-rebuild scan fails to read it and prints a harmless warning on
+    # WSL/Linux - filter just that line, let everything else through.
+    #
+    # Captured to a temp file rather than `2> >(grep ...)` or `compinit |
+    # grep`: process substitution spawns an async background reader zsh
+    # doesn't wait for, which can get reaped after the prompt has already
+    # drawn and cause zsh to redraw it (apparent duplicate prompt on new
+    # terminals); a pipe forces compinit itself into a forked subshell,
+    # discarding the completion definitions it's supposed to install into
+    # this shell. Redirecting to a file keeps compinit unsubshelled while
+    # still filtering synchronously - only runs on the rare stale-dump path.
+    _compinit_err="$(mktemp)"
+    compinit 2>"$_compinit_err"
+    grep -v 'no such file or directory:.*vendor-completions/_docker$' "$_compinit_err" >&2
+    rm -f "$_compinit_err"
+    unset _compinit_err
   else
     compinit -C
   fi
