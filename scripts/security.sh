@@ -59,7 +59,8 @@ setup_ssh_key() {
         # gpg-agent's ssh-agent emulation has no per-request TTY (the ssh-agent protocol
         # doesn't carry one) - it always prompts pinentry on whichever terminal last
         # called updatestartuptty below, so that has to run from *this* shell
-        export GPG_TTY="$(tty 2>/dev/null || true)"
+        GPG_TTY="$(tty 2>/dev/null || true)"
+        export GPG_TTY
         gpgconf --launch gpg-agent 2>/dev/null
         # gpgconf --launch returns before the agent's socket necessarily exists yet -
         # without this wait, updatestartuptty below can silently no-op against a socket

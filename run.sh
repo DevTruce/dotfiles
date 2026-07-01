@@ -1,7 +1,10 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-DOTFILES_DIR="$(cd "$(dirname "$0")" && pwd)"
+# BASH_SOURCE[0] (not $0) so this still resolves correctly when the file is
+# `source`d rather than executed directly - $0 would point at the sourcing
+# process (e.g. bats) instead of this file
+DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 export PATH="${HOME}/.local/bin:${PATH}"
 
 # ─────────────────────────────────────────
@@ -21,6 +24,7 @@ OS="$(detect_os)"
 # want the personal bundle or just core" prompt over a whole batch - choosing to run a
 # personal-only function (e.g. setup_ssh_key) already is the consent, so there's nothing
 # to ask. Only setup_dotfiles reads this (to also symlink claude/settings.json).
+# shellcheck disable=SC2034 # read by scripts/dotfiles.sh, not this file
 PERSONAL_MACHINE="y"
 
 # ─────────────────────────────────────────
@@ -168,14 +172,18 @@ _run_selection() {
 # Dispatch
 # ─────────────────────────────────────────
 
-if [ $# -eq 0 ]; then
-    _run_interactive
-    exit 0
-fi
+# guarded so this file can be `source`d (e.g. by tests, to reach _run_selection and
+# friends) without triggering the interactive menu or a function dispatch as a side effect
+if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
+    if [ $# -eq 0 ]; then
+        _run_interactive
+        exit 0
+    fi
 
-if ! declare -f "$1" >/dev/null 2>&1; then
-    warn "Unknown function: $1"
-    exit 1
-fi
+    if ! declare -f "$1" >/dev/null 2>&1; then
+        warn "Unknown function: $1"
+        exit 1
+    fi
 
-"$1"
+    "$1"
+fi

@@ -5,15 +5,15 @@
 # -- Colors
 
 RESET=$'\033[0m'
+# shellcheck disable=SC2034 # used by scripts that source this file (finish.sh)
 BOLD=$'\033[1m'
 DIM=$'\033[2m'
 CYAN=$'\033[36m'
-GREEN=$'\033[32m'
 YELLOW=$'\033[33m'
 BOLD_CYAN=$'\033[1;36m'
 BOLD_GREEN=$'\033[1;32m'
+# shellcheck disable=SC2034 # used by scripts that source this file (install.sh, doctor.sh, run.sh, finish.sh)
 BOLD_WHITE=$'\033[1;37m'
-RED=$'\033[31m'
 BOLD_RED=$'\033[1;31m'
 
 # -- Output
@@ -89,6 +89,10 @@ _spinner() {
 _apt() {
     local _log _pid
     _log="$(mktemp)"
+    # the redirect below is opened by this (non-root) shell against its own tempfile
+    # before sudo's exec, not by the elevated apt-get process, so it's not the
+    # sudo-doesn't-affect-redirects pitfall shellcheck is warning about here
+    # shellcheck disable=SC2024
     DEBIAN_FRONTEND=noninteractive sudo apt-get "$@" > "$_log" 2>&1 &
     _pid=$!
     _spinner "$_pid"
@@ -161,11 +165,14 @@ _verify_sha256() {
 # -- OS Detection
 
 detect_os() {
+    # overridable only so tests can point this at a fixture file instead of the real
+    # /etc/os-release - every real call site leaves this unset and gets the real path
+    local _os_release="${_DETECT_OS_RELEASE_FILE:-/etc/os-release}"
     case "$(uname -s)" in
         Linux*)
-            if [ -f /etc/os-release ]; then
-                # shellcheck disable=SC1091
-                . /etc/os-release
+            if [ -f "$_os_release" ]; then
+                # shellcheck disable=SC1090
+                . "$_os_release"
                 echo "${ID:-linux}"
             else
                 echo "linux"
