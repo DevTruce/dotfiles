@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.0.0](https://github.com/DevTruce/dev-bootstrap/compare/v0.1.0...v1.0.0) (2026-07-01)
+
+
+### Bug Fixes
+
+* match doctor.sh path style in finish.sh's manual-verify hint ([0dfa479](https://github.com/DevTruce/dev-bootstrap/commit/0dfa4793af8d752ac8dbdac25dfe95a0859e166a))
+* pin git-lfs hook install to the repo, not the caller's cwd ([4faeada](https://github.com/DevTruce/dev-bootstrap/commit/4faeada0983f40292036042f020bffcde1ad9ff9))
+* point run.sh fix-hints at ~/dev-bootstrap instead of ./ ([5a2ca84](https://github.com/DevTruce/dev-bootstrap/commit/5a2ca84e940db3d77cc6c45511f9daee6d63e3a9))
+* unalias zi so zoxide's zi wins over zinit's built-in alias ([b0f81b3](https://github.com/DevTruce/dev-bootstrap/commit/b0f81b3f0a56cc52d481904940ae835d14d1a1e8))
+
 ## 0.1.0 (2026-07-01)
 
 
