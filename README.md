@@ -233,7 +233,7 @@ time, purely informational (there's no fixed pass/fail threshold across differen
 ```
 dev-bootstrap/
 ├── .github/
-│   └── workflows/               # lint.yml (shellcheck + zsh -n) and test.yml (./test.sh) - see Contributing
+│   └── workflows/               # lint.yml (shellcheck + zsh -n), test.yml (./test.sh), release-please.yml - see Contributing
 ├── .gitconfig                   # git aliases, LFS config, and default settings (identity in ~/.gitconfig.local)
 ├── .gitignore                   # ignores keys, .gitconfig.local, OS junk, and zinit plugin cache
 ├── .p10k.zsh                    # Powerlevel10k prompt configuration
@@ -269,6 +269,8 @@ dev-bootstrap/
 ├── run.sh                       # run a single setup function without the full install
 ├── test.sh                      # runs tests/**/*.bats, printed through this repo's ok/fail/warn convention
 ├── ci.sh                        # runs test.sh + shellcheck + zsh -n in one pass - what CI runs, locally
+├── release-please-config.json   # release-please settings - see Contributing
+├── .release-please-manifest.json # release-please's current-version tracking - see Contributing
 └── LICENSE                      # MIT
 ```
 
@@ -363,6 +365,16 @@ zsh -n .zshrc && zsh -n .zshenv && zsh -n .p10k.zsh
 - Catches a broken `.zshrc` (parse errors only, not semantic bugs, since `-n` never runs the
   file).
 - shellcheck doesn't cover these three since they're zsh, not POSIX sh.
+
+**Releases:**
+
+Commit messages on `main` must follow [Conventional Commits](https://www.conventionalcommits.org/)
+(`feat:`, `fix:`, `docs:`, `refactor:`, `test:`, `chore:`, etc. - already the convention
+used throughout this repo's history). [release-please](https://github.com/googleapis/release-please)
+watches those commits and keeps a standing `chore(main): release X.Y.Z` pull request
+up to date with the next version bump and `CHANGELOG.md` entry. Nothing is tagged or
+published automatically - merging that PR is what creates the git tag and publishes the
+GitHub Release. Regular commits and pushes never trigger a release by themselves.
 
 ---
 
