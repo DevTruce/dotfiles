@@ -5,9 +5,9 @@
 
 setup() {
   # shellcheck disable=SC1091
-  source "${BATS_TEST_DIRNAME}/../../scripts/helpers.sh"
+  source "${BATS_TEST_DIRNAME}/../../../scripts/helpers.sh"
   # shellcheck disable=SC1091
-  source "${BATS_TEST_DIRNAME}/../../scripts/dotfiles.sh"
+  source "${BATS_TEST_DIRNAME}/../../../scripts/dotfiles.sh"
 
   _FAKE_HOME="$(mktemp -d)"
   _FAKE_DOTFILES="$(mktemp -d)"

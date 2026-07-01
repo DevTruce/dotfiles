@@ -7,7 +7,7 @@
 
 setup() {
   # shellcheck disable=SC1091
-  source "${BATS_TEST_DIRNAME}/../../scripts/helpers.sh"
+  source "${BATS_TEST_DIRNAME}/../../../scripts/helpers.sh"
 
   _FAKE_BIN="$(mktemp -d)"
   export PATH="${_FAKE_BIN}:${PATH}"

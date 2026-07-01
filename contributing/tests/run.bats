@@ -7,7 +7,7 @@
 
 setup() {
   # shellcheck disable=SC1091
-  source "${BATS_TEST_DIRNAME}/../run.sh"
+  source "${BATS_TEST_DIRNAME}/../../run.sh"
 
   _names=()
   _names[1]="fn_one"
@@ -120,7 +120,7 @@ setup() {
 # invoking `bash run.sh setup_x` actually does
 
 @test "running run.sh directly with an unknown function name exits 1" {
-  run bash "${BATS_TEST_DIRNAME}/../run.sh" this_function_does_not_exist
+  run bash "${BATS_TEST_DIRNAME}/../../run.sh" this_function_does_not_exist
   [ "$status" -eq 1 ]
   [[ "$output" == *"Unknown function"* ]]
 }
@@ -144,7 +144,7 @@ setup() {
   # dispatches to detect_os specifically because it's side-effect-free - any real
   # setup_* function would risk triggering an actual package-manager install on a
   # machine that doesn't already have that tool (e.g. a fresh CI runner)
-  run bash "${BATS_TEST_DIRNAME}/../run.sh" detect_os
+  run bash "${BATS_TEST_DIRNAME}/../../run.sh" detect_os
   [ "$status" -eq 0 ]
   [[ "$output" =~ ^(macos|ubuntu|debian|linux|unknown)$ ]]
 }
