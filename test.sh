@@ -24,11 +24,16 @@ _warn() { warn "$1"; _WARN=$((_WARN + 1)); }
 # Header
 # ─────────────────────────────────────────
 
-echo ""
-printf "  ${BOLD_CYAN}┌──────────────────────────────────────────────────────┐${RESET}\n"
-printf "  ${BOLD_CYAN}│${RESET}  ${BOLD_WHITE}%-52s${RESET}${BOLD_CYAN}│${RESET}\n" "Test Suite"
-printf "  ${BOLD_CYAN}└──────────────────────────────────────────────────────┘${RESET}\n"
-echo ""
+# skipped when run under ci.sh (_FROM_CI_SH=1), since the per-file sections and
+# closing summary below already announce this phase - standalone `./test.sh`
+# still gets this banner
+if [ -z "${_FROM_CI_SH:-}" ]; then
+    echo ""
+    printf "  ${BOLD_CYAN}┌──────────────────────────────────────────────────────┐${RESET}\n"
+    printf "  ${BOLD_CYAN}│${RESET}  ${BOLD_WHITE}%-52s${RESET}${BOLD_CYAN}│${RESET}\n" "Test Suite"
+    printf "  ${BOLD_CYAN}└──────────────────────────────────────────────────────┘${RESET}\n"
+    echo ""
+fi
 
 if ! command -v bats >/dev/null 2>&1; then
     fail "bats not found  (fix: ./run.sh setup_bats)"

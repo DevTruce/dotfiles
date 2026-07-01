@@ -15,8 +15,10 @@ printf "  ${BOLD_CYAN}┌──────────────────�
 printf "  ${BOLD_CYAN}│${RESET}  ${BOLD_WHITE}%-52s${RESET}${BOLD_CYAN}│${RESET}\n" "Full Check (matches CI)"
 printf "  ${BOLD_CYAN}└──────────────────────────────────────────────────────┘${RESET}\n"
 
-section "Tests"
-"${DOTFILES_DIR}/test.sh" || _FAIL=$((_FAIL + 1))
+# _FROM_CI_SH tells test.sh to skip its own "Test Suite" banner; test.sh's own
+# per-file sections and closing summary already announce this phase, so a
+# wrapping "▸ Tests" header here would be a redundant, contentless header.
+_FROM_CI_SH=1 "${DOTFILES_DIR}/test.sh" || _FAIL=$((_FAIL + 1))
 
 section "Lint"
 if ! command -v shellcheck >/dev/null 2>&1; then
