@@ -24,6 +24,7 @@ own setup and preferences rather than a general-purpose, everyone's-preferences 
   - [4. Open a New Terminal and Verify](#4-open-a-new-terminal-and-verify)
 - [File Structure](#file-structure)
 - [Re-running the Installer](#re-running-the-installer)
+- [Development](#development)
 - [License](#license)
 
 ---
@@ -77,8 +78,12 @@ in place before doing anything, so it is safe to re-run at any time.
 | pinentry-mac / pinentry-curses | _(personal)_ GPG passphrase prompt (GUI on macOS, terminal on Linux)           |
 | gpg-agent                      | _(personal)_ Passphrase caching for GPG and SSH keys                           |
 | Claude Code CLI                | _(personal)_ Terminal AI coding assistant                                      |
+| bats                           | _(personal)_ Test runner used by this repo's own `tests/` suite                |
+| shellcheck                     | _(personal)_ Linter used to check this repo's own scripts                      |
 
 > Items marked _(personal)_ are only installed when you answer **y** to the personal machine prompt.
+> `bats` and `shellcheck` are only useful if you're developing dev-bootstrap itself - see
+> [Development](#development) - not for using it to bootstrap an unrelated machine.
 
 **On Linux, four tools are pulled from GitHub releases instead of apt**, since Ubuntu's
 repos ship versions too old (fzf, lazygit) or don't package them at all (zoxide, gh): fzf,
@@ -225,32 +230,43 @@ opened the new terminal.
 
 ```
 dev-bootstrap/
-├── .gitconfig                  # git aliases, LFS config, and default settings (identity in ~/.gitconfig.local)
-├── .gitignore                  # ignores keys, .gitconfig.local, OS junk, and zinit plugin cache
-├── .p10k.zsh                   # Powerlevel10k prompt configuration
-├── .zshenv                     # disables macOS Terminal.app's session save/restore (SHELL_SESSIONS_DISABLE)
-├── .zshrc                      # zsh config for all platforms (uses $OSTYPE for platform-specific blocks)
+├── .github/
+│   └── workflows/               # lint.yml (shellcheck) and test.yml (./test.sh) - see Development
+├── .gitconfig                   # git aliases, LFS config, and default settings (identity in ~/.gitconfig.local)
+├── .gitignore                   # ignores keys, .gitconfig.local, OS junk, and zinit plugin cache
+├── .p10k.zsh                    # Powerlevel10k prompt configuration
+├── .shellcheckrc                # shellcheck config - see Development
+├── .zshenv                      # disables macOS Terminal.app's session save/restore (SHELL_SESSIONS_DISABLE)
+├── .zshrc                       # zsh config for all platforms (uses $OSTYPE for platform-specific blocks)
 ├── claude/
-│   └── settings.json           # Claude Code settings
-├── fonts/                      # MesloLGS NF font files (install manually - see Manual Steps)
+│   └── settings.json            # Claude Code settings
+├── fonts/                       # MesloLGS NF font files (install manually - see Manual Steps)
 │   ├── MesloLGS NF Regular.ttf
 │   ├── MesloLGS NF Bold.ttf
 │   ├── MesloLGS NF Italic.ttf
 │   └── MesloLGS NF Bold Italic.ttf
-├── scripts/                    # modular installer components
-│   ├── helpers.sh              # output helpers (section, step, ok, skip, warn, fail, note, copy, link, _spinner), detect_os(), _apt(), _brew(), _npm(), _verify_sha256()
-│   ├── package-managers.sh     # setup_homebrew, setup_apt
-│   ├── shell.sh                # setup_zsh
-│   ├── version-control.sh      # setup_git, setup_git_lfs
-│   ├── security.sh             # setup_gpg_tools, setup_ssh_key, setup_gpg_key, setup_gpg_agent_conf
-│   ├── dev-environment.sh      # setup_zsh_plugins, setup_nvm, setup_pnpm, setup_claude
-│   ├── dotfiles.sh             # setup_dotfiles - symlinks all dotfiles into home directory
-│   ├── utilities.sh            # setup_tree, setup_fzf, setup_zoxide, setup_ripgrep, setup_bat, setup_lazygit, setup_gh
-│   └── finish.sh               # completion banner and manual todo list
-├── install.sh                  # entry point: loads scripts, detects OS, dispatches
-├── doctor.sh                   # post-install verification: checks all tools, symlinks, PATH, git identity, and security
-├── run.sh                      # run a single setup function without the full install
-└── LICENSE                     # MIT
+├── scripts/                     # modular installer components
+│   ├── helpers.sh               # output helpers (section, step, ok, skip, warn, fail, note, copy, link, _spinner), detect_os(), _apt(), _brew(), _npm(), _verify_sha256(), _symlink_status(), _configured_login_shell()
+│   ├── package-managers.sh      # setup_homebrew, setup_apt
+│   ├── shell.sh                 # setup_zsh
+│   ├── version-control.sh       # setup_git, setup_git_lfs
+│   ├── security.sh              # setup_gpg_tools, setup_ssh_key, setup_gpg_key, setup_gpg_agent_conf
+│   ├── dev-environment.sh       # setup_zsh_plugins, setup_nvm, setup_pnpm, setup_claude, setup_bats, setup_shellcheck
+│   ├── dotfiles.sh              # setup_dotfiles - symlinks all dotfiles into home directory
+│   ├── utilities.sh             # setup_tree, setup_fzf, setup_zoxide, setup_ripgrep, setup_bat, setup_lazygit, setup_gh
+│   └── finish.sh                # completion banner and manual todo list
+├── tests/                       # bats unit tests for the installer's own logic, mirroring scripts/ - see Development
+│   ├── scripts/
+│   │   ├── helpers.bats          # detect_os(), _verify_sha256(), _apt/_brew/_npm, _spinner, _symlink_status(), _configured_login_shell()
+│   │   ├── dotfiles.bats          # setup_dotfiles()
+│   │   ├── version_control.bats   # setup_git()'s identity prompt and editor selection
+│   │   └── security.bats          # setup_gpg_agent_conf()'s config detection
+│   └── run.bats                  # _run_selection(), menu OS-filtering, direct dispatch
+├── install.sh                   # entry point: loads scripts, detects OS, dispatches
+├── doctor.sh                    # post-install verification: checks all tools, symlinks, PATH, git identity, and security
+├── run.sh                       # run a single setup function without the full install
+├── test.sh                      # runs tests/**/*.bats, printed through this repo's ok/fail/warn convention
+└── LICENSE                      # MIT
 ```
 
 ---
@@ -280,6 +296,47 @@ Or invoke a function directly if you already know its name:
 ```bash
 bash ~/dev-bootstrap/run.sh setup_gpg_key
 ```
+
+---
+
+## Development
+
+This section is for editing dev-bootstrap's own scripts - not for using it to set up a
+machine, which is what the rest of this README covers.
+
+Two dev-only tools are needed: `bats` to run the test suite, `shellcheck` to lint the
+scripts. Get both via the personal machine prompt, or directly:
+
+```bash
+bash ~/dev-bootstrap/run.sh setup_bats
+bash ~/dev-bootstrap/run.sh setup_shellcheck
+```
+
+**Run the test suite:**
+
+```bash
+./test.sh
+```
+
+`tests/` mirrors `scripts/` and the root-level `.sh` files one-to-one (e.g.
+`tests/scripts/helpers.bats` tests `scripts/helpers.sh`, `tests/run.bats` tests
+`run.sh`). Tests cover the installer's own logic - menu parsing, symlinking and
+idempotency, identity prompts, config detection - against fixtures and fake binaries,
+never the real machine or a real package manager. `test.sh` prints results through
+this repo's own `ok`/`fail`/`warn` output (green ✓ / red ✗ / yellow ⚠, matching
+`doctor.sh`) instead of bats' default TAP output. Raw TAP: `bats tests/ -r`.
+
+**Lint every script:**
+
+```bash
+shellcheck --severity=warning *.sh scripts/*.sh
+```
+
+`.shellcheckrc` disables two checks that are false positives for this repo's
+conventions - see the comments in that file for why.
+
+Both run automatically in CI on every push and pull request (`.github/workflows/`) -
+neither touches a real machine or runs as part of `install.sh`.
 
 ---
 
