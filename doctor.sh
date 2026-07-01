@@ -148,16 +148,14 @@ done
 
 section "Node.js"
 
-# kept in sync with .zshrc's NVM_DIR and setup_nvm's NVM_DIR - see .zshrc's comment
-_nvm_dir="${HOME}/.nvm"
-if [ -s "${_nvm_dir}/nvm.sh" ]; then
-    _pass "nvm installed  (${_nvm_dir})"
+if [ -s "${NVM_DIR}/nvm.sh" ]; then
+    _pass "nvm installed  (${NVM_DIR})"
 else
-    _fail "nvm not found  (${_nvm_dir}/nvm.sh missing)"
+    _fail "nvm not found  (${NVM_DIR}/nvm.sh missing)"
 fi
 
-if [ -f "${_nvm_dir}/alias/default" ] && [ -s "${_nvm_dir}/alias/default" ]; then
-    _nvm_default="$(cat "${_nvm_dir}/alias/default")"
+if [ -f "${NVM_DIR}/alias/default" ] && [ -s "${NVM_DIR}/alias/default" ]; then
+    _nvm_default="$(cat "${NVM_DIR}/alias/default")"
     _pass "nvm default alias set  (${_nvm_default})"
 else
     _fail "nvm default alias not configured"
@@ -166,7 +164,7 @@ fi
 # source nvm to resolve node/npm versions
 set +u
 # shellcheck disable=SC1091
-[ -s "${_nvm_dir}/nvm.sh" ] && \. "${_nvm_dir}/nvm.sh"
+[ -s "${NVM_DIR}/nvm.sh" ] && \. "${NVM_DIR}/nvm.sh"
 set -u
 
 if command -v node >/dev/null 2>&1; then

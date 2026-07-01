@@ -126,6 +126,23 @@ _npm() {
     _run_with_spinner npm "$@"
 }
 
+# -- Latest GitHub Release Version (shared by every GitHub-release binary installer
+# in scripts/utilities.sh: setup_fzf, setup_zoxide, setup_lazygit, setup_gh)
+
+# Usage: _latest_github_version <owner/repo> <tool-name-for-error-message>
+# Echoes the release tag with its leading "v" stripped; returns 1 with a message on
+# stderr if the API call comes back empty (e.g. rate-limited).
+_latest_github_version() {
+    local _repo="$1" _tool="$2" _version
+    _version="$(curl -fsSL "https://api.github.com/repos/${_repo}/releases/latest" \
+        | grep '"tag_name"' | sed 's/.*"v\([^"]*\)".*/\1/')"
+    if [ -z "$_version" ]; then
+        echo "ERROR: could not determine ${_tool} version (GitHub API rate limit?)" >&2
+        return 1
+    fi
+    echo "$_version"
+}
+
 # -- Checksum verification
 
 # Verifies a downloaded file's sha256 against a project-published checksums file.
@@ -230,6 +247,13 @@ _configured_login_shell() {
         *)     getent passwd "$USER" 2>/dev/null | cut -d: -f7 ;;
     esac
 }
+
+# -- nvm (shared by setup_nvm and doctor.sh's checks so both bash call sites agree
+# by construction; .zshrc keeps its own independent copy of this same path since it
+# must stay self-contained even if this repo is later moved or deleted - see its
+# comment)
+# shellcheck disable=SC2034 # used by scripts that source this file (dev-environment.sh, doctor.sh)
+NVM_DIR="${HOME}/.nvm"
 
 # -- bat Binary Name (shared by setup_bat and doctor.sh's check)
 

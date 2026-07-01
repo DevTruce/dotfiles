@@ -151,10 +151,12 @@ fi
 # ─────────────────────────────────────────
 
 # Plain constant, not XDG_CONFIG_HOME-aware: this repo never sets XDG_CONFIG_HOME
-# itself, and scripts/dev-environment.sh's setup_nvm (which clones nvm) and
-# doctor.sh's checks both hardcode ~/.nvm - keeping this a plain literal keeps all
-# three call sites in agreement. If you ever make this XDG-aware, update setup_nvm
-# and doctor.sh's _nvm_dir to match, or nvm silently never loads for anyone who has
+# itself, and scripts/helpers.sh hardcodes the same ~/.nvm for setup_nvm and
+# doctor.sh (the two bash call sites, kept in agreement by sharing that one
+# constant). This file keeps its own independent copy rather than sourcing
+# helpers.sh, since .zshrc must stay self-contained even if this repo is later
+# moved or deleted. If you ever make this XDG-aware, update scripts/helpers.sh's
+# NVM_DIR to match, or nvm silently never loads for anyone who has
 # XDG_CONFIG_HOME set in their own environment.
 export NVM_DIR="${HOME}/.nvm"
 

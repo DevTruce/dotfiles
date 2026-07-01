@@ -37,12 +37,7 @@ setup_fzf() {
                 _install_fzf_linux() {
                     local _arch _version _asset _dl
                     _arch="$(_uname_arch arm64 amd64)"
-                    _version="$(curl -fsSL https://api.github.com/repos/junegunn/fzf/releases/latest \
-                        | grep '"tag_name"' | sed 's/.*"v\([^"]*\)".*/\1/')"
-                    if [ -z "$_version" ]; then
-                        echo "ERROR: could not determine fzf version (GitHub API rate limit?)" >&2
-                        return 1
-                    fi
+                    _version="$(_latest_github_version junegunn/fzf fzf)" || return 1
                     _asset="fzf-${_version}-linux_${_arch}.tar.gz"
                     _dl="$(mktemp)"
                     curl -fsSLo "$_dl" \
@@ -79,12 +74,7 @@ setup_zoxide() {
                 _install_zoxide_linux() {
                     local _arch _version _dl
                     _arch="$(_uname_arch aarch64-unknown-linux-musl x86_64-unknown-linux-musl)"
-                    _version="$(curl -fsSL https://api.github.com/repos/ajeetdsouza/zoxide/releases/latest \
-                        | grep '"tag_name"' | sed 's/.*"v\([^"]*\)".*/\1/')"
-                    if [ -z "$_version" ]; then
-                        echo "ERROR: could not determine zoxide version (GitHub API rate limit?)" >&2
-                        return 1
-                    fi
+                    _version="$(_latest_github_version ajeetdsouza/zoxide zoxide)" || return 1
                     _dl="$(mktemp)"
                     curl -fsSLo "$_dl" \
                         "https://github.com/ajeetdsouza/zoxide/releases/download/v${_version}/zoxide-${_version}-${_arch}.tar.gz"
@@ -163,12 +153,7 @@ setup_lazygit() {
                 _install_lazygit_linux() {
                     local _arch _version _asset _dl
                     _arch="$(_uname_arch arm64 x86_64)"
-                    _version="$(curl -fsSL https://api.github.com/repos/jesseduffield/lazygit/releases/latest \
-                        | grep '"tag_name"' | sed 's/.*"v\([^"]*\)".*/\1/')"
-                    if [ -z "$_version" ]; then
-                        echo "ERROR: could not determine lazygit version (GitHub API rate limit?)" >&2
-                        return 1
-                    fi
+                    _version="$(_latest_github_version jesseduffield/lazygit lazygit)" || return 1
                     _asset="lazygit_${_version}_linux_${_arch}.tar.gz"
                     _dl="$(mktemp)"
                     curl -fsSLo "$_dl" \
@@ -205,12 +190,7 @@ setup_gh() {
                 _install_gh_linux() {
                     local _arch _version _asset _dl
                     _arch="$(_uname_arch arm64 amd64)"
-                    _version="$(curl -fsSL https://api.github.com/repos/cli/cli/releases/latest \
-                        | grep '"tag_name"' | sed 's/.*"v\([^"]*\)".*/\1/')"
-                    if [ -z "$_version" ]; then
-                        echo "ERROR: could not determine gh version (GitHub API rate limit?)" >&2
-                        return 1
-                    fi
+                    _version="$(_latest_github_version cli/cli gh)" || return 1
                     _asset="gh_${_version}_linux_${_arch}.tar.gz"
                     _dl="$(mktemp)"
                     curl -fsSLo "$_dl" \

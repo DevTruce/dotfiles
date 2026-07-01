@@ -248,7 +248,7 @@ dev-bootstrap/
 │   ├── MesloLGS NF Italic.ttf
 │   └── MesloLGS NF Bold Italic.ttf
 ├── scripts/                     # modular installer components
-│   ├── helpers.sh               # output helpers (section, step, ok, skip, warn, fail, note, copy, link, _spinner), _run_with_spinner(), _apt(), _brew(), _npm(), _verify_sha256(), detect_os(), _is_supported_os(), _uname_arch(), _symlink_status(), _configured_login_shell(), _bat_binary_name()
+│   ├── helpers.sh               # output helpers (section, step, ok, skip, warn, fail, note, copy, link, _spinner), _run_with_spinner(), _apt(), _brew(), _npm(), _latest_github_version(), _verify_sha256(), detect_os(), _is_supported_os(), _uname_arch(), _symlink_status(), _configured_login_shell(), _bat_binary_name()
 │   ├── package-managers.sh      # setup_homebrew, setup_apt
 │   ├── shell.sh                 # setup_zsh
 │   ├── version-control.sh       # setup_git, setup_git_lfs
@@ -259,7 +259,7 @@ dev-bootstrap/
 │   └── finish.sh                # completion banner and manual todo list
 ├── tests/                       # bats unit tests for the installer's own logic, mirroring scripts/ - see Contributing
 │   ├── scripts/
-│   │   ├── helpers.bats          # detect_os(), _is_supported_os(), _uname_arch(), _verify_sha256(), _run_with_spinner(), _apt/_brew/_npm, _spinner, _symlink_status(), _configured_login_shell(), _bat_binary_name()
+│   │   ├── helpers.bats          # detect_os(), _is_supported_os(), _uname_arch(), _latest_github_version(), _verify_sha256(), _run_with_spinner(), _apt/_brew/_npm, _spinner, _symlink_status(), _configured_login_shell(), _bat_binary_name()
 │   │   ├── dotfiles.bats          # setup_dotfiles()
 │   │   ├── version_control.bats   # setup_git()'s identity prompt and editor selection, setup_git_lfs()'s hook registration
 │   │   └── security.bats          # setup_gpg_agent_conf()'s config detection

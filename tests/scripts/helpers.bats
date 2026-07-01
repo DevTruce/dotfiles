@@ -174,6 +174,33 @@ EOF
   [[ "$output" == *"could not download checksums file"* ]]
 }
 
+# -- _latest_github_version() --
+# fakes curl on PATH so no real GitHub API call is made - written with its own
+# quoted heredoc (like _fake_uname) rather than _fake_cmd, since _fake_cmd's
+# unquoted heredoc can't safely carry embedded double quotes like real JSON has
+
+_fake_curl_json() {
+  cat > "${_FAKE_BIN}/curl" <<EOF
+#!/usr/bin/env bash
+echo '$1'
+EOF
+  chmod +x "${_FAKE_BIN}/curl"
+}
+
+@test "_latest_github_version returns the tag with its leading v stripped" {
+  _fake_curl_json '{"tag_name": "v1.2.3", "name": "1.2.3"}'
+  run _latest_github_version junegunn/fzf fzf
+  [ "$status" -eq 0 ]
+  [ "$output" = "1.2.3" ]
+}
+
+@test "_latest_github_version fails with the tool name when tag_name is absent" {
+  _fake_curl_json '{"message": "API rate limit exceeded"}'
+  run _latest_github_version junegunn/fzf fzf
+  [ "$status" -eq 1 ]
+  [[ "$output" == *"could not determine fzf version"* ]]
+}
+
 # -- _run_with_spinner() --
 # the shared primitive _apt/_brew/_npm and every GitHub-release installer in
 # scripts/utilities.sh are built on - test it directly against a plain function,

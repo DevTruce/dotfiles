@@ -33,9 +33,6 @@ setup_zsh_plugins() {
 setup_nvm() {
     section "Dev Environment - Node.js (nvm)"
 
-    # kept in sync with .zshrc's NVM_DIR and doctor.sh's _nvm_dir - see .zshrc's comment
-    NVM_DIR="${HOME}/.nvm"
-
     if [ -s "${NVM_DIR}/nvm.sh" ]; then
         skip "nvm is already installed."
     else
@@ -105,7 +102,7 @@ setup_pnpm() {
     section "Dev Environment - pnpm"
 
     set +u
-    [ -s "${NVM_DIR:-$HOME/.nvm}/nvm.sh" ] && \. "${NVM_DIR:-$HOME/.nvm}/nvm.sh"
+    [ -s "${NVM_DIR}/nvm.sh" ] && \. "${NVM_DIR}/nvm.sh"
     set -u
 
     if command -v pnpm >/dev/null 2>&1; then
@@ -123,7 +120,7 @@ setup_claude() {
     section "Dev Environment - Claude Code CLI"
 
     set +u
-    [ -s "${NVM_DIR:-$HOME/.nvm}/nvm.sh" ] && \. "${NVM_DIR:-$HOME/.nvm}/nvm.sh"
+    [ -s "${NVM_DIR}/nvm.sh" ] && \. "${NVM_DIR}/nvm.sh"
     set -u
 
     if command -v claude >/dev/null 2>&1; then
