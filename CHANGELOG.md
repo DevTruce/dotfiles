@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.0.1](https://github.com/DevTruce/dev-bootstrap/compare/v1.0.0...v1.0.1) (2026-07-01)
+
+
+### Bug Fixes
+
+* correct bats fixtures' relative path depth after tests/ moved into contributing/ ([fc851d4](https://github.com/DevTruce/dev-bootstrap/commit/fc851d48d42252e94718d187d2989eb8d7a5e446))
+* use --exclude instead of --rcfile for shellcheck (unsupported on CI's version) ([c8b3f10](https://github.com/DevTruce/dev-bootstrap/commit/c8b3f1060ebb1b388d896d99470378c37f3c464f))
+
 ## [1.0.0](https://github.com/DevTruce/dev-bootstrap/compare/v0.1.0...v1.0.0) (2026-07-01)
 
 
