@@ -144,6 +144,10 @@ if command -v zoxide >/dev/null 2>&1; then
   fi
   source "$_zoxide_cache"
   unset _zoxide_cache
+  # zinit defines its own `alias zi=zinit`; aliases win over same-named
+  # functions at parse time regardless of load order, so it silently
+  # shadows zoxide's `zi` function unless removed here.
+  unalias zi 2>/dev/null
 fi
 
 # ─────────────────────────────────────────
