@@ -83,12 +83,8 @@ supported target.
 | pinentry-mac / pinentry-curses | _(personal)_ GPG passphrase prompt (GUI on macOS, terminal on Linux)     |
 | gpg-agent                      | _(personal)_ Passphrase caching for GPG and SSH keys                     |
 | Claude Code CLI                | _(personal)_ Terminal AI coding assistant                                |
-| bats                           | _(personal)_ Test runner used by this repo's own `tests/` suite          |
-| shellcheck                     | _(personal)_ Linter used to check this repo's own scripts                |
 
 > Items marked _(personal)_ are only installed when you answer **y** to the personal machine prompt.
-> `bats` and `shellcheck` are only useful if you're developing dev-bootstrap itself - see
-> [Contributing](#contributing) - not for using it to bootstrap an unrelated machine.
 
 **On Linux, four tools are pulled from GitHub releases instead of apt**, since Ubuntu's
 repos ship versions too old (fzf, lazygit) or don't package them at all (zoxide, gh): fzf,
@@ -146,7 +142,7 @@ git clone https://github.com/DevTruce/dev-bootstrap.git ~/dev-bootstrap
 
 ```bash
 cd ~/dev-bootstrap
-bash install.sh
+./install.sh
 ```
 
 The installer detects your OS, symlinks your dotfiles, and prompts whether this is a personal machine. Answering **y** adds SSH/GPG key setup, GPG agent configuration, and Claude Code CLI. Answering **n** skips those and installs only the core tooling. It then prints a todo list of any remaining manual steps when it finishes.
@@ -222,7 +218,7 @@ Open a fresh terminal session for all changes (default shell, plugins, PATH) to 
 Then run the doctor to confirm everything is wired up correctly:
 
 ```bash
-bash ~/dev-bootstrap/doctor.sh
+~/dev-bootstrap/doctor.sh
 ```
 
 All items should show a green checkmark. Zinit plugins and shell init caches that haven't
@@ -252,7 +248,7 @@ dev-bootstrap/
 │   ├── MesloLGS NF Italic.ttf
 │   └── MesloLGS NF Bold Italic.ttf
 ├── scripts/                     # modular installer components
-│   ├── helpers.sh               # output helpers (section, step, ok, skip, warn, fail, note, copy, link, _spinner), _run_with_spinner(), detect_os(), _is_supported_os(), _uname_arch(), _apt(), _brew(), _npm(), _verify_sha256(), _symlink_status(), _configured_login_shell(), _bat_binary_name()
+│   ├── helpers.sh               # output helpers (section, step, ok, skip, warn, fail, note, copy, link, _spinner), _run_with_spinner(), _apt(), _brew(), _npm(), _verify_sha256(), detect_os(), _is_supported_os(), _uname_arch(), _symlink_status(), _configured_login_shell(), _bat_binary_name()
 │   ├── package-managers.sh      # setup_homebrew, setup_apt
 │   ├── shell.sh                 # setup_zsh
 │   ├── version-control.sh       # setup_git, setup_git_lfs
@@ -265,13 +261,14 @@ dev-bootstrap/
 │   ├── scripts/
 │   │   ├── helpers.bats          # detect_os(), _is_supported_os(), _uname_arch(), _verify_sha256(), _run_with_spinner(), _apt/_brew/_npm, _spinner, _symlink_status(), _configured_login_shell(), _bat_binary_name()
 │   │   ├── dotfiles.bats          # setup_dotfiles()
-│   │   ├── version_control.bats   # setup_git()'s identity prompt and editor selection
+│   │   ├── version_control.bats   # setup_git()'s identity prompt and editor selection, setup_git_lfs()'s hook registration
 │   │   └── security.bats          # setup_gpg_agent_conf()'s config detection
 │   └── run.bats                  # _run_selection(), menu OS-filtering, direct dispatch, _warn_if_unsupported_os()
 ├── install.sh                   # entry point: loads scripts, detects OS, dispatches
 ├── doctor.sh                    # post-install verification: checks all tools, symlinks, PATH, git identity, and security
 ├── run.sh                       # run a single setup function without the full install
 ├── test.sh                      # runs tests/**/*.bats, printed through this repo's ok/fail/warn convention
+├── ci.sh                        # runs test.sh + shellcheck + zsh -n in one pass - what CI runs, locally
 └── LICENSE                      # MIT
 ```
 
@@ -282,7 +279,7 @@ dev-bootstrap/
 Every function checks whether a tool is already present before doing anything, so re-running is safe and fast - most steps will print "already installed" and skip. Pull the latest changes and re-run to pick up any new tools:
 
 ```bash
-bash ~/dev-bootstrap/install.sh
+~/dev-bootstrap/install.sh
 ```
 
 To run a single setup function without the full install, use `run.sh`. Run it with no
@@ -290,7 +287,7 @@ arguments for an interactive, grouped menu of every available function (OS-inapp
 entries like `setup_homebrew` on Linux are hidden automatically):
 
 ```bash
-bash ~/dev-bootstrap/run.sh
+~/dev-bootstrap/run.sh
 ```
 
 Pick one or more steps at the `Select:` prompt - a single number (`3`), a comma/space-separated
@@ -300,7 +297,7 @@ runs `doctor.sh` to verify your setup without leaving the menu, and `q` quits.
 Or invoke a function directly if you already know its name:
 
 ```bash
-bash ~/dev-bootstrap/run.sh setup_gpg_key
+~/dev-bootstrap/run.sh setup_gpg_key
 ```
 
 ---
@@ -308,7 +305,25 @@ bash ~/dev-bootstrap/run.sh setup_gpg_key
 ## Contributing
 
 This section is for editing dev-bootstrap's own scripts - not for using it to set up a
-machine, which is what the rest of this README covers.
+machine, which is what the rest of this README covers. `bats` and `shellcheck` (used below)
+are dev-only tools and are never installed automatically by `install.sh` - install them
+yourself first:
+
+```bash
+~/dev-bootstrap/run.sh setup_bats
+~/dev-bootstrap/run.sh setup_shellcheck
+```
+
+**Run everything CI runs, in one pass:**
+
+```bash
+./ci.sh
+```
+
+Runs the test suite, shellcheck, and the zsh syntax-check below in sequence and prints one
+pass/fail summary - the same three checks `.github/workflows/` runs on every push and pull
+request. None touch a real machine or run as part of `install.sh`. Run them individually
+below if you only need one.
 
 **Run the test suite:**
 
@@ -316,15 +331,19 @@ machine, which is what the rest of this README covers.
 ./test.sh
 ```
 
-If `bats` isn't installed yet, `test.sh` tells you so and exits - run
-`bash ~/dev-bootstrap/run.sh setup_bats` (or answer **y** to the personal machine
-prompt during install) and try again. `tests/` mirrors `scripts/` and the root-level
-`.sh` files one-to-one (e.g. `tests/scripts/helpers.bats` tests `scripts/helpers.sh`,
-`tests/run.bats` tests `run.sh`). Tests cover the installer's own logic - menu parsing,
-symlinking and idempotency, identity prompts, config detection - against fixtures and
-fake binaries, never the real machine or a real package manager. `test.sh` prints
-results through this repo's own `ok`/`fail`/`warn` output (green ✓ / red ✗ / yellow ⚠,
-matching `doctor.sh`) instead of bats' default TAP output. Raw TAP: `bats tests/ -r`.
+- Runs every `*.bats` file under `tests/` via the `bats` test runner (installed above).
+- `tests/` follows a naming convention mirroring `scripts/` and the root-level `.sh` files
+  where a test exists - e.g. `tests/scripts/helpers.bats` tests `scripts/helpers.sh`,
+  `tests/run.bats` tests `run.sh`. Coverage isn't exhaustive - not every script has a
+  `.bats` file yet. **These `.bats` files are test files, not runners** - `tests/run.bats` doesn't run
+  anything, it just contains unit tests for `run.sh`'s functions. `./test.sh` is always the
+  command that runs the suite.
+- Tests cover the installer's own logic - menu parsing, symlinking and idempotency, identity
+  prompts, config detection - against fixtures and fake binaries, never the real machine or a
+  real package manager.
+- Results print through this repo's own `ok`/`fail`/`warn` output (green ✓ / red ✗ / yellow
+  ⚠, matching `doctor.sh`) instead of bats' default TAP output. Want raw TAP instead?
+  `bats tests/ -r`.
 
 **Lint every script:**
 
@@ -332,9 +351,8 @@ matching `doctor.sh`) instead of bats' default TAP output. Raw TAP: `bats tests/
 shellcheck --severity=warning *.sh scripts/*.sh
 ```
 
-If `shellcheck` isn't installed yet: `bash ~/dev-bootstrap/run.sh setup_shellcheck`.
-`.shellcheckrc` disables two checks that are false positives for this repo's
-conventions - see the comments in that file for why.
+- `.shellcheckrc` disables two checks that are false positives for this repo's conventions -
+  see the comments in that file for why.
 
 **Syntax-check the zsh dotfiles:**
 
@@ -342,11 +360,9 @@ conventions - see the comments in that file for why.
 zsh -n .zshrc && zsh -n .zshenv && zsh -n .p10k.zsh
 ```
 
-Catches a broken `.zshrc` (parse errors only, not semantic bugs, since `-n` never
-runs the file) - shellcheck doesn't cover these three since they're zsh, not POSIX sh.
-
-All three run automatically in CI on every push and pull request
-(`.github/workflows/`) - none touch a real machine or run as part of `install.sh`.
+- Catches a broken `.zshrc` (parse errors only, not semantic bugs, since `-n` never runs the
+  file).
+- shellcheck doesn't cover these three since they're zsh, not POSIX sh.
 
 ---
 
