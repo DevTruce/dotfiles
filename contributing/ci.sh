@@ -2,8 +2,8 @@
 set -uo pipefail
 
 # BASH_SOURCE[0] (not $0) so this still resolves correctly if ever sourced instead
-# of executed directly
-DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# of executed directly. One level up from contributing/ to the repo root.
+DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
 # shellcheck disable=SC1091
 . "${DOTFILES_DIR}/scripts/helpers.sh"
@@ -18,13 +18,13 @@ printf "  ${BOLD_CYAN}└──────────────────�
 # _FROM_CI_SH tells test.sh to skip its own "Test Suite" banner; test.sh's own
 # per-file sections and closing summary already announce this phase, so a
 # wrapping "▸ Tests" header here would be a redundant, contentless header.
-_FROM_CI_SH=1 "${DOTFILES_DIR}/test.sh" || _FAIL=$((_FAIL + 1))
+_FROM_CI_SH=1 "${DOTFILES_DIR}/contributing/test.sh" || _FAIL=$((_FAIL + 1))
 
 section "Lint"
 if ! command -v shellcheck >/dev/null 2>&1; then
     warn "shellcheck not installed  (fix: ~/dev-bootstrap/run.sh setup_shellcheck)"
     _FAIL=$((_FAIL + 1))
-elif (cd "$DOTFILES_DIR" && shellcheck --severity=warning *.sh scripts/*.sh); then
+elif (cd "$DOTFILES_DIR" && shellcheck --rcfile=contributing/.shellcheckrc --severity=warning *.sh scripts/*.sh contributing/*.sh); then
     ok "shellcheck passed"
 else
     fail "shellcheck failed"

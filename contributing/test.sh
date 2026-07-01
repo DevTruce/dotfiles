@@ -2,8 +2,8 @@
 set -uo pipefail
 
 # BASH_SOURCE[0] (not $0) so this still resolves correctly if ever sourced instead
-# of executed directly
-DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# of executed directly. One level up from contributing/ to the repo root.
+DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
 # shellcheck disable=SC1091
 . "${DOTFILES_DIR}/scripts/helpers.sh"
@@ -50,7 +50,7 @@ fi
 # ─────────────────────────────────────────
 
 while IFS= read -r _bats_file; do
-    _rel="${_bats_file#"${DOTFILES_DIR}"/tests/}"
+    _rel="${_bats_file#"${DOTFILES_DIR}"/contributing/tests/}"
     _rel="${_rel%.bats}"
     section "$_rel"
 
@@ -68,7 +68,7 @@ while IFS= read -r _bats_file; do
         # anything else (the "1..N" plan line, indented failure diagnostics) is
         # TAP scaffolding, not a test result - ignored
     done < <(bats --tap "$_bats_file")
-done < <(find "${DOTFILES_DIR}/tests" -name '*.bats' | sort)
+done < <(find "${DOTFILES_DIR}/contributing/tests" -name '*.bats' | sort)
 
 # ─────────────────────────────────────────
 # Summary

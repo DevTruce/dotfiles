@@ -12,7 +12,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       # shellcheck ships preinstalled on GitHub's ubuntu-latest runners
-      - run: shellcheck --severity=warning *.sh scripts/*.sh
+      - run: shellcheck --rcfile=contributing/.shellcheckrc --severity=warning *.sh scripts/*.sh contributing/*.sh
 
   zsh-syntax:
     # zsh, not POSIX sh, so shellcheck above doesn't cover .zshrc/.zshenv/.p10k.zsh -
