@@ -75,6 +75,8 @@ setup_personal() {
     setup_ssh_key
     setup_gpg_key
     setup_claude
+    setup_bats
+    setup_shellcheck
 }
 
 setup_macos() {

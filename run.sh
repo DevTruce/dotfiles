@@ -55,6 +55,8 @@ _MENU_ITEMS=(
     "Security (personal)|setup_gpg_key|Generate a GPG key and configure commit signing"
     "Security (personal)|setup_gpg_agent_conf|Configure gpg-agent (pinentry, cache TTLs)"
     "Security (personal)|setup_claude|Install the Claude Code CLI"
+    "Testing (personal)|setup_bats|Install bats (test runner for this repo's own scripts)"
+    "Testing (personal)|setup_shellcheck|Install shellcheck (linter for this repo's own scripts)"
 )
 
 _run_interactive() {

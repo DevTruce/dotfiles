@@ -159,3 +159,37 @@ setup_claude() {
         ok "Claude Code installed."
     fi
 }
+
+# -- bats (test runner for this repo's own scripts)
+
+setup_bats() {
+    section "Dev Environment - bats (test runner)"
+
+    if command -v bats >/dev/null 2>&1; then
+        skip "bats is already installed."
+    else
+        step "Installing bats"
+        case "$OS" in
+            macos) _brew install bats-core ;;
+            *)     _apt install -y bats ;;
+        esac
+        ok "bats installed."
+    fi
+}
+
+# -- shellcheck (linter for this repo's own scripts)
+
+setup_shellcheck() {
+    section "Dev Environment - shellcheck"
+
+    if command -v shellcheck >/dev/null 2>&1; then
+        skip "shellcheck is already installed."
+    else
+        step "Installing shellcheck"
+        case "$OS" in
+            macos) _brew install shellcheck ;;
+            *)     _apt install -y shellcheck ;;
+        esac
+        ok "shellcheck installed."
+    fi
+}
