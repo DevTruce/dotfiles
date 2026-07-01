@@ -20,6 +20,7 @@ setup_dotfiles() {
         fi
     }
 
+    _symlink "${DOTFILES_DIR}/.zshenv"             "${HOME}/.zshenv"             "~/.zshenv"
     _symlink "${DOTFILES_DIR}/.zshrc"              "${HOME}/.zshrc"              "~/.zshrc"
     _symlink "${DOTFILES_DIR}/.gitconfig"          "${HOME}/.gitconfig"          "~/.gitconfig"
     _symlink "${DOTFILES_DIR}/.p10k.zsh"           "${HOME}/.p10k.zsh"           "~/.p10k.zsh"
