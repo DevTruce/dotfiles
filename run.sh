@@ -40,7 +40,7 @@ _warn_if_unsupported_os
 PERSONAL_MACHINE="y"
 
 # ─────────────────────────────────────────
-# Interactive menu (bash run.sh, no arguments)
+# Interactive menu (./run.sh, no arguments)
 # ─────────────────────────────────────────
 
 # category|function|description entries, in display order. Plain indexed array (not
@@ -67,8 +67,8 @@ _MENU_ITEMS=(
     "Security (personal)|setup_gpg_key|Generate a GPG key and configure commit signing"
     "Security (personal)|setup_gpg_agent_conf|Configure gpg-agent (pinentry, cache TTLs)"
     "Security (personal)|setup_claude|Install the Claude Code CLI"
-    "Testing (personal)|setup_bats|Install bats (test runner for this repo's own scripts)"
-    "Testing (personal)|setup_shellcheck|Install shellcheck (linter for this repo's own scripts)"
+    "Testing (dev-only)|setup_bats|Install bats (test runner for this repo's own scripts)"
+    "Testing (dev-only)|setup_shellcheck|Install shellcheck (linter for this repo's own scripts)"
 )
 
 _run_interactive() {

@@ -97,7 +97,7 @@ if command -v git-lfs >/dev/null 2>&1; then
     if [ -n "$_git_hooks_dir" ] && [ -f "${_git_hooks_dir}/pre-push" ]; then
         _pass "git-lfs hooks registered"
     else
-        _fail "git-lfs hooks not registered  (fix: bash run.sh setup_git_lfs)"
+        _fail "git-lfs hooks not registered  (fix: ./run.sh setup_git_lfs)"
     fi
 fi
 
@@ -393,7 +393,7 @@ if [ -f "${HOME}/.gnupg/gpg-agent.conf" ]; then
     if grep -q "default-cache-ttl-ssh" "${HOME}/.gnupg/gpg-agent.conf" 2>/dev/null; then
         _pass "gpg-agent SSH cache TTL configured"
     else
-        _warn "gpg-agent SSH cache TTL not set  (fix: bash run.sh setup_gpg_agent_conf)"
+        _warn "gpg-agent SSH cache TTL not set  (fix: ./run.sh setup_gpg_agent_conf)"
     fi
     # gpg-agent.conf recording a pinentry-program path doesn't prove that binary still
     # exists (e.g. a Homebrew upgrade can move it) - check the recorded path directly
@@ -401,7 +401,7 @@ if [ -f "${HOME}/.gnupg/gpg-agent.conf" ]; then
     if [ -n "$_pinentry_path" ] && [ -x "$_pinentry_path" ]; then
         _pass "pinentry  ${_pinentry_path}"
     else
-        _warn "pinentry  not found at configured path (${_pinentry_path:-none})  (fix: bash run.sh setup_gpg_agent_conf)"
+        _warn "pinentry  not found at configured path (${_pinentry_path:-none})  (fix: ./run.sh setup_gpg_agent_conf)"
     fi
 else
     _warn "gpg-agent.conf not found  (personal machine only)"
@@ -440,14 +440,14 @@ if command -v bats >/dev/null 2>&1; then
     _bats_ver="$(bats --version 2>/dev/null | awk '{print $2}')"
     _pass "bats  ${_bats_ver}"
 else
-    _warn "bats  not installed  (only needed to run this repo's own tests - fix: bash run.sh setup_bats)"
+    _warn "bats  not installed  (only needed to run this repo's own tests - fix: ./run.sh setup_bats)"
 fi
 
 if command -v shellcheck >/dev/null 2>&1; then
     _shellcheck_ver="$(shellcheck --version 2>/dev/null | awk '/^version:/{print $2}')"
     _pass "shellcheck  ${_shellcheck_ver}"
 else
-    _warn "shellcheck  not installed  (only needed to lint this repo's own scripts - fix: bash run.sh setup_shellcheck)"
+    _warn "shellcheck  not installed  (only needed to lint this repo's own scripts - fix: ./run.sh setup_shellcheck)"
 fi
 
 # ─────────────────────────────────────────

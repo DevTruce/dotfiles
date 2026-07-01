@@ -31,7 +31,7 @@ printf "  ${BOLD_CYAN}└──────────────────�
 echo ""
 
 if ! command -v bats >/dev/null 2>&1; then
-    fail "bats not found  (fix: bash run.sh setup_bats)"
+    fail "bats not found  (fix: ./run.sh setup_bats)"
     echo ""
     exit 1
 fi
