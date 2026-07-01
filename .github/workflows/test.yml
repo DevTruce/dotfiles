@@ -1,0 +1,15 @@
+name: Test
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  bats:
+    # unit tests target pure-logic functions with no OS-specific behavior, so a
+    # single Linux runner covers both the macOS and Ubuntu/Debian code paths
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: sudo apt-get update && sudo apt-get install -y bats
+      - run: ./test.sh

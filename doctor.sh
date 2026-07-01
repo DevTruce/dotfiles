@@ -46,13 +46,10 @@ else
     _fail "zsh  not found"
 fi
 
-# reads the OS-level login shell directly (dscl/getent), not $SHELL, since $SHELL only
-# reflects the shell the current session happens to be running, not what's configured
-_configured_shell=""
-case "$OS" in
-    macos) _configured_shell="$(dscl . -read "/Users/$USER" UserShell 2>/dev/null | awk '{print $2}')" ;;
-    *)     _configured_shell="$(getent passwd "$USER" 2>/dev/null | cut -d: -f7)" ;;
-esac
+# _configured_login_shell() (scripts/helpers.sh) reads the OS-level login shell
+# directly (dscl/getent), not $SHELL, since $SHELL only reflects the shell the
+# current session happens to be running, not what's configured
+_configured_shell="$(_configured_login_shell)"
 _zsh_path="$(command -v zsh 2>/dev/null || true)"
 # resolved through realpath before comparing - /etc/shells or chsh may record a
 # symlinked path (e.g. /usr/bin/zsh -> zsh-5.9) that wouldn't string-match $_zsh_path
@@ -250,19 +247,21 @@ fi
 
 section "Dotfiles (Symlinks)"
 
+# thin wrapper around the shared _symlink_status() (scripts/helpers.sh) that maps
+# each status to this script's own _pass/_fail message text
 _check_symlink() {
     local dest="$1" src="$2" label="$3"
-    if [ -L "$dest" ] && [ "$(readlink "$dest")" = "$src" ]; then
-        _pass "${label}  → ${src}"
-    elif [ -L "$dest" ]; then
-        _fail "${label}  broken symlink (points to: $(readlink "$dest"))"
-    elif [ -e "$dest" ]; then
-        _fail "${label}  exists as a regular file, not a symlink"
-    else
-        _fail "${label}  not found"
-    fi
+    local _status
+    _status="$(_symlink_status "$dest" "$src")"
+    case "$_status" in
+        linked)       _pass "${label}  → ${src}" ;;
+        broken:*)     _fail "${label}  broken symlink (points to: ${_status#broken:})" ;;
+        regular-file) _fail "${label}  exists as a regular file, not a symlink" ;;
+        missing)      _fail "${label}  not found" ;;
+    esac
 }
 
+_check_symlink "${HOME}/.zshenv"    "${DOTFILES_DIR}/.zshenv"    "~/.zshenv"
 _check_symlink "${HOME}/.zshrc"     "${DOTFILES_DIR}/.zshrc"     "~/.zshrc"
 _check_symlink "${HOME}/.gitconfig" "${DOTFILES_DIR}/.gitconfig" "~/.gitconfig"
 _check_symlink "${HOME}/.p10k.zsh"  "${DOTFILES_DIR}/.p10k.zsh"  "~/.p10k.zsh"
@@ -275,6 +274,16 @@ elif [ -e "$_claude_settings" ]; then
     _warn "~/.claude/settings.json  exists but is not linked to dotfiles"
 else
     _warn "~/.claude/settings.json  not linked  (personal machine only)"
+fi
+
+# the settings.json symlink check above only proves the config is wired up, not that
+# the CLI itself is actually installed (e.g. a silently-failed npm install would still
+# pass that check) - so check the binary too
+if command -v claude >/dev/null 2>&1; then
+    _claude_ver="$(claude --version 2>/dev/null | awk '{print $1}')"
+    _pass "Claude Code CLI  ${_claude_ver}"
+else
+    _warn "Claude Code CLI  not installed  (personal machine only)"
 fi
 
 # ─────────────────────────────────────────
@@ -351,6 +360,14 @@ if [ -f "${HOME}/.gnupg/gpg-agent.conf" ]; then
     else
         _warn "gpg-agent SSH cache TTL not set  (fix: bash run.sh setup_gpg_agent_conf)"
     fi
+    # gpg-agent.conf recording a pinentry-program path doesn't prove that binary still
+    # exists (e.g. a Homebrew upgrade can move it) - check the recorded path directly
+    _pinentry_path="$(awk '/^pinentry-program/{print $2}' "${HOME}/.gnupg/gpg-agent.conf" 2>/dev/null)"
+    if [ -n "$_pinentry_path" ] && [ -x "$_pinentry_path" ]; then
+        _pass "pinentry  ${_pinentry_path}"
+    else
+        _warn "pinentry  not found at configured path (${_pinentry_path:-none})  (fix: bash run.sh setup_gpg_agent_conf)"
+    fi
 else
     _warn "gpg-agent.conf not found  (personal machine only)"
 fi
@@ -375,6 +392,27 @@ if command -v gpgconf >/dev/null 2>&1; then
             _fail "gpg-agent not responding  (fix: open a new terminal, or run: source ~/.zshrc)"
         fi
     fi
+fi
+
+# ─────────────────────────────────────────
+# Dev Tooling (warn-only - only needed to develop/test this repo itself,
+# not for using it to bootstrap a machine)
+# ─────────────────────────────────────────
+
+section "Dev Tooling"
+
+if command -v bats >/dev/null 2>&1; then
+    _bats_ver="$(bats --version 2>/dev/null | awk '{print $2}')"
+    _pass "bats  ${_bats_ver}"
+else
+    _warn "bats  not installed  (only needed to run this repo's own tests - fix: bash run.sh setup_bats)"
+fi
+
+if command -v shellcheck >/dev/null 2>&1; then
+    _shellcheck_ver="$(shellcheck --version 2>/dev/null | awk '/^version:/{print $2}')"
+    _pass "shellcheck  ${_shellcheck_ver}"
+else
+    _warn "shellcheck  not installed  (only needed to lint this repo's own scripts - fix: bash run.sh setup_shellcheck)"
 fi
 
 # ─────────────────────────────────────────

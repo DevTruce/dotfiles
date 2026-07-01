@@ -1,0 +1,15 @@
+name: Lint
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  shellcheck:
+    # OS-independent static analysis of the script text - a single Linux runner
+    # covers both the macOS and Ubuntu/Debian code paths since it's not executing them
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      # shellcheck ships preinstalled on GitHub's ubuntu-latest runners
+      - run: shellcheck --severity=warning *.sh scripts/*.sh

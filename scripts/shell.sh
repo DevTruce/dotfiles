@@ -48,12 +48,10 @@ setup_zsh() {
             ;;
     esac
 
-    # compare against the OS-level configured shell (not $SHELL which reflects the login session)
+    # _configured_login_shell() (scripts/helpers.sh) compares against the OS-level
+    # configured shell, not $SHELL which reflects the login session
     local _configured_shell
-    case "$OS" in
-        macos) _configured_shell="$(dscl . -read "/Users/$USER" UserShell 2>/dev/null | awk '{print $2}')" ;;
-        *)     _configured_shell="$(getent passwd "$USER" 2>/dev/null | cut -d: -f7)" ;;
-    esac
+    _configured_shell="$(_configured_login_shell)"
 
     if [ "$_configured_shell" = "$ZSH_PATH" ]; then
         skip "zsh is already the default shell."

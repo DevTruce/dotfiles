@@ -186,3 +186,36 @@ detect_os() {
             ;;
     esac
 }
+
+# -- Symlink Status (shared by doctor.sh's _check_symlink and its own tests)
+
+# Prints one of: linked | broken:<current-target> | regular-file | missing.
+# Pure filesystem check, no output side effects, so it's testable directly
+# against real temp-dir fixtures without mocking anything.
+_symlink_status() {
+    local dest="$1" expected_src="$2"
+    if [ -L "$dest" ] && [ "$(readlink "$dest")" = "$expected_src" ]; then
+        echo "linked"
+    elif [ -L "$dest" ]; then
+        echo "broken:$(readlink "$dest")"
+    elif [ -e "$dest" ]; then
+        echo "regular-file"
+    else
+        echo "missing"
+    fi
+}
+
+# -- Configured Login Shell (shared by doctor.sh and setup_zsh)
+
+# Prints the OS-level configured login shell for the current user - not $SHELL,
+# which only reflects whatever shell the current session happens to be running,
+# not what's actually configured. doctor.sh does a realpath-based equivalence
+# check on top of this (reporting); setup_zsh does an exact-match check on top
+# (decides whether to run chsh) - only this lookup itself is shared, since the
+# two comparisons built on it genuinely differ in purpose.
+_configured_login_shell() {
+    case "$OS" in
+        macos) dscl . -read "/Users/$USER" UserShell 2>/dev/null | awk '{print $2}' ;;
+        *)     getent passwd "$USER" 2>/dev/null | cut -d: -f7 ;;
+    esac
+}
