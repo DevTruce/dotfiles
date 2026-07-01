@@ -91,6 +91,14 @@ EOF
 @test "creates ~/.gnupg with 700 permissions" {
   run setup_gpg_agent_conf
   local _perms
-  _perms="$(stat -f '%Lp' "${_FAKE_HOME}/.gnupg" 2>/dev/null || stat -c '%a' "${_FAKE_HOME}/.gnupg")"
+  # can't fall back on exit status here (stat -f 'FMT' file 2>/dev/null || stat -c ...):
+  # on Linux, `stat -f` means "filesystem info" not "format" - it still exits 0 with
+  # the wrong output instead of failing, so the || fallback never triggers. Branch on
+  # uname directly instead.
+  if [[ "$(uname -s)" == "Darwin" ]]; then
+    _perms="$(stat -f '%Lp' "${_FAKE_HOME}/.gnupg")"
+  else
+    _perms="$(stat -c '%a' "${_FAKE_HOME}/.gnupg")"
+  fi
   [ "$_perms" = "700" ]
 }
