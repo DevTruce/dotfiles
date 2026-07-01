@@ -135,7 +135,17 @@ _run_selection() {
                 fi
                 ;;
             ''|*[!0-9]*) _valid=false ;;
-            *) _selected+=("$_token") ;;
+            # reject out-of-range bounds here too, for the same reason as the range
+            # case above - otherwise a typo like "3,999" would run 3 before the
+            # invalid 999 is discovered, contradicting the "nothing runs until the
+            # whole list validates" guarantee this function promises
+            *)
+                if [ "$_token" -gt "${#_names[@]}" ]; then
+                    _valid=false
+                else
+                    _selected+=("$_token")
+                fi
+                ;;
         esac
         [ "$_valid" = true ] || break
     done

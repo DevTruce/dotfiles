@@ -1,16 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-_on_exit() {
-    local _rc=$?
-    if [ "$_rc" -ne 0 ]; then
-        echo ""
-        fail "Setup aborted - resolve the error above and re-run."
-        echo ""
-    fi
-}
-trap '_on_exit' EXIT
-
 DOTFILES_DIR="$(cd "$(dirname "$0")" && pwd)"
 export PATH="${HOME}/.local/bin:${PATH}"
 
@@ -25,6 +15,19 @@ for f in "${DOTFILES_DIR}/scripts/"*.sh; do
     # shellcheck source=/dev/null
     . "$f"
 done
+
+# -- Trap registered only after helpers.sh (source of fail()) is guaranteed loaded -
+#    otherwise a top-level failure while sourcing scripts above would have this trap
+#    call fail() before it exists, masking the real error with "fail: command not found"
+_on_exit() {
+    local _rc=$?
+    if [ "$_rc" -ne 0 ]; then
+        echo ""
+        fail "Setup aborted - resolve the error above and re-run."
+        echo ""
+    fi
+}
+trap '_on_exit' EXIT
 
 # -- Detect OS
 OS="$(detect_os)"
