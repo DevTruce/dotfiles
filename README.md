@@ -24,7 +24,7 @@ own setup and preferences rather than a general-purpose, everyone's-preferences 
   - [4. Open a New Terminal and Verify](#4-open-a-new-terminal-and-verify)
 - [File Structure](#file-structure)
 - [Re-running the Installer](#re-running-the-installer)
-- [Development](#development)
+- [Contributing](#contributing)
 - [License](#license)
 
 ---
@@ -52,38 +52,38 @@ in place before doing anything, so it is safe to re-run at any time.
 
 ## What Gets Installed
 
-| Tool                           | Description                                                                    |
-| ------------------------------ | ------------------------------------------------------------------------------ |
-| Homebrew / apt                 | Package manager for the platform                                               |
-| zsh                            | Shell - set as the default login shell                                         |
-| git                            | Version control                                                                |
-| git-lfs                        | Git extension for large file storage                                           |
-| zinit                          | Zsh plugin manager (plugins download on first shell launch)                    |
-| zsh-syntax-highlighting        | Command syntax highlighting in the shell                                       |
-| zsh-autosuggestions            | Fish-style inline command suggestions                                          |
-| zsh-completions                | Extended zsh completion definitions                                            |
-| docker completion              | Direct `_docker` completion from the official `docker/cli` repo                |
-| Powerlevel10k                  | Fast, highly configurable zsh prompt theme                                     |
-| nvm                            | Node Version Manager                                                           |
-| Node.js LTS                    | Latest long-term support release of Node.js                                    |
-| pnpm                           | Fast, disk-efficient Node.js package manager                                   |
-| tree                           | Directory tree display utility                                                 |
-| fzf                            | Fuzzy finder - CTRL-R history, CTRL-T file picker, ALT-C cd                    |
-| zoxide                         | Smart `cd` - jump to frecent dirs with `z`, interactive with `zi`              |
-| ripgrep (rg)                   | Fast grep replacement with better defaults                                     |
-| bat                            | `cat` with syntax highlighting and git integration                             |
-| lazygit                        | Terminal UI for git                                                            |
-| gh (GitHub CLI)                | GitHub operations (PRs, issues, repos) from the terminal                       |
-| SSH + GPG keys (ed25519 / GPG) | _(personal)_ SSH key for GitHub auth; GPG key for commit and tag signing       |
-| pinentry-mac / pinentry-curses | _(personal)_ GPG passphrase prompt (GUI on macOS, terminal on Linux)           |
-| gpg-agent                      | _(personal)_ Passphrase caching for GPG and SSH keys                           |
-| Claude Code CLI                | _(personal)_ Terminal AI coding assistant                                      |
-| bats                           | _(personal)_ Test runner used by this repo's own `tests/` suite                |
-| shellcheck                     | _(personal)_ Linter used to check this repo's own scripts                      |
+| Tool                           | Description                                                              |
+| ------------------------------ | ------------------------------------------------------------------------ |
+| Homebrew / apt                 | Package manager for the platform                                         |
+| zsh                            | Shell - set as the default login shell                                   |
+| git                            | Version control                                                          |
+| git-lfs                        | Git extension for large file storage                                     |
+| zinit                          | Zsh plugin manager (plugins download on first shell launch)              |
+| zsh-syntax-highlighting        | Command syntax highlighting in the shell                                 |
+| zsh-autosuggestions            | Fish-style inline command suggestions                                    |
+| zsh-completions                | Extended zsh completion definitions                                      |
+| docker completion              | Direct `_docker` completion from the official `docker/cli` repo          |
+| Powerlevel10k                  | Fast, highly configurable zsh prompt theme                               |
+| nvm                            | Node Version Manager                                                     |
+| Node.js LTS                    | Latest long-term support release of Node.js                              |
+| pnpm                           | Fast, disk-efficient Node.js package manager                             |
+| tree                           | Directory tree display utility                                           |
+| fzf                            | Fuzzy finder - CTRL-R history, CTRL-T file picker, ALT-C cd              |
+| zoxide                         | Smart `cd` - jump to frecent dirs with `z`, interactive with `zi`        |
+| ripgrep (rg)                   | Fast grep replacement with better defaults                               |
+| bat                            | `cat` with syntax highlighting and git integration                       |
+| lazygit                        | Terminal UI for git                                                      |
+| gh (GitHub CLI)                | GitHub operations (PRs, issues, repos) from the terminal                 |
+| SSH + GPG keys (ed25519 / GPG) | _(personal)_ SSH key for GitHub auth; GPG key for commit and tag signing |
+| pinentry-mac / pinentry-curses | _(personal)_ GPG passphrase prompt (GUI on macOS, terminal on Linux)     |
+| gpg-agent                      | _(personal)_ Passphrase caching for GPG and SSH keys                     |
+| Claude Code CLI                | _(personal)_ Terminal AI coding assistant                                |
+| bats                           | _(personal)_ Test runner used by this repo's own `tests/` suite          |
+| shellcheck                     | _(personal)_ Linter used to check this repo's own scripts                |
 
 > Items marked _(personal)_ are only installed when you answer **y** to the personal machine prompt.
 > `bats` and `shellcheck` are only useful if you're developing dev-bootstrap itself - see
-> [Development](#development) - not for using it to bootstrap an unrelated machine.
+> [Contributing](#contributing) - not for using it to bootstrap an unrelated machine.
 
 **On Linux, four tools are pulled from GitHub releases instead of apt**, since Ubuntu's
 repos ship versions too old (fzf, lazygit) or don't package them at all (zoxide, gh): fzf,
@@ -105,16 +105,16 @@ The first five are symlinked directly from this repo. The rest are generated by 
 installer at install time - not tracked, since they hold machine-specific or sensitive
 values (identity, keys, local paths).
 
-| File                  | Repo Path               | Destination                                          |
-| ---------------------- | ------------------------ | ------------------------------------------------------ |
-| zshenv                | `.zshenv`               | `~/.zshenv`                                            |
-| zshrc                 | `.zshrc`                | `~/.zshrc`                                            |
-| git config            | `.gitconfig`             | `~/.gitconfig`                                        |
-| Powerlevel10k config  | `.p10k.zsh`              | `~/.p10k.zsh`                                         |
-| Claude Code settings  | `claude/settings.json`  | `~/.claude/settings.json` _(personal)_                 |
-| local git config      | _(generated)_            | `~/.gitconfig.local`                                  |
-| git-lfs hook script   | _(generated)_            | `~/.config/git/hooks/pre-push`                        |
-| GPG agent config      | _(generated)_            | `~/.gnupg/gpg-agent.conf` _(personal)_                 |
+| File                 | Repo Path              | Destination                            |
+| -------------------- | ---------------------- | -------------------------------------- |
+| zshenv               | `.zshenv`              | `~/.zshenv`                            |
+| zshrc                | `.zshrc`               | `~/.zshrc`                             |
+| git config           | `.gitconfig`           | `~/.gitconfig`                         |
+| Powerlevel10k config | `.p10k.zsh`            | `~/.p10k.zsh`                          |
+| Claude Code settings | `claude/settings.json` | `~/.claude/settings.json` _(personal)_ |
+| local git config     | _(generated)_          | `~/.gitconfig.local`                   |
+| git-lfs hook script  | _(generated)_          | `~/.config/git/hooks/pre-push`         |
+| GPG agent config     | _(generated)_          | `~/.gnupg/gpg-agent.conf` _(personal)_ |
 
 ---
 
@@ -231,11 +231,11 @@ opened the new terminal.
 ```
 dev-bootstrap/
 ├── .github/
-│   └── workflows/               # lint.yml (shellcheck) and test.yml (./test.sh) - see Development
+│   └── workflows/               # lint.yml (shellcheck) and test.yml (./test.sh) - see Contributing
 ├── .gitconfig                   # git aliases, LFS config, and default settings (identity in ~/.gitconfig.local)
 ├── .gitignore                   # ignores keys, .gitconfig.local, OS junk, and zinit plugin cache
 ├── .p10k.zsh                    # Powerlevel10k prompt configuration
-├── .shellcheckrc                # shellcheck config - see Development
+├── .shellcheckrc                # shellcheck config - see Contributing
 ├── .zshenv                      # disables macOS Terminal.app's session save/restore (SHELL_SESSIONS_DISABLE)
 ├── .zshrc                       # zsh config for all platforms (uses $OSTYPE for platform-specific blocks)
 ├── claude/
@@ -255,7 +255,7 @@ dev-bootstrap/
 │   ├── dotfiles.sh              # setup_dotfiles - symlinks all dotfiles into home directory
 │   ├── utilities.sh             # setup_tree, setup_fzf, setup_zoxide, setup_ripgrep, setup_bat, setup_lazygit, setup_gh
 │   └── finish.sh                # completion banner and manual todo list
-├── tests/                       # bats unit tests for the installer's own logic, mirroring scripts/ - see Development
+├── tests/                       # bats unit tests for the installer's own logic, mirroring scripts/ - see Contributing
 │   ├── scripts/
 │   │   ├── helpers.bats          # detect_os(), _verify_sha256(), _apt/_brew/_npm, _spinner, _symlink_status(), _configured_login_shell()
 │   │   ├── dotfiles.bats          # setup_dotfiles()
@@ -299,18 +299,10 @@ bash ~/dev-bootstrap/run.sh setup_gpg_key
 
 ---
 
-## Development
+## Contributing
 
 This section is for editing dev-bootstrap's own scripts - not for using it to set up a
 machine, which is what the rest of this README covers.
-
-Two dev-only tools are needed: `bats` to run the test suite, `shellcheck` to lint the
-scripts. Get both via the personal machine prompt, or directly:
-
-```bash
-bash ~/dev-bootstrap/run.sh setup_bats
-bash ~/dev-bootstrap/run.sh setup_shellcheck
-```
 
 **Run the test suite:**
 
@@ -318,13 +310,15 @@ bash ~/dev-bootstrap/run.sh setup_shellcheck
 ./test.sh
 ```
 
-`tests/` mirrors `scripts/` and the root-level `.sh` files one-to-one (e.g.
-`tests/scripts/helpers.bats` tests `scripts/helpers.sh`, `tests/run.bats` tests
-`run.sh`). Tests cover the installer's own logic - menu parsing, symlinking and
-idempotency, identity prompts, config detection - against fixtures and fake binaries,
-never the real machine or a real package manager. `test.sh` prints results through
-this repo's own `ok`/`fail`/`warn` output (green ✓ / red ✗ / yellow ⚠, matching
-`doctor.sh`) instead of bats' default TAP output. Raw TAP: `bats tests/ -r`.
+If `bats` isn't installed yet, `test.sh` tells you so and exits - run
+`bash ~/dev-bootstrap/run.sh setup_bats` (or answer **y** to the personal machine
+prompt during install) and try again. `tests/` mirrors `scripts/` and the root-level
+`.sh` files one-to-one (e.g. `tests/scripts/helpers.bats` tests `scripts/helpers.sh`,
+`tests/run.bats` tests `run.sh`). Tests cover the installer's own logic - menu parsing,
+symlinking and idempotency, identity prompts, config detection - against fixtures and
+fake binaries, never the real machine or a real package manager. `test.sh` prints
+results through this repo's own `ok`/`fail`/`warn` output (green ✓ / red ✗ / yellow ⚠,
+matching `doctor.sh`) instead of bats' default TAP output. Raw TAP: `bats tests/ -r`.
 
 **Lint every script:**
 
@@ -332,6 +326,7 @@ this repo's own `ok`/`fail`/`warn` output (green ✓ / red ✗ / yellow ⚠, mat
 shellcheck --severity=warning *.sh scripts/*.sh
 ```
 
+If `shellcheck` isn't installed yet: `bash ~/dev-bootstrap/run.sh setup_shellcheck`.
 `.shellcheckrc` disables two checks that are false positives for this repo's
 conventions - see the comments in that file for why.
 

@@ -395,11 +395,11 @@ if command -v gpgconf >/dev/null 2>&1; then
 fi
 
 # ─────────────────────────────────────────
-# Dev Tooling (warn-only - only needed to develop/test this repo itself,
+# Repo Tooling (warn-only - only needed to develop/test this repo itself,
 # not for using it to bootstrap a machine)
 # ─────────────────────────────────────────
 
-section "Dev Tooling"
+section "Repo Tooling"
 
 if command -v bats >/dev/null 2>&1; then
     _bats_ver="$(bats --version 2>/dev/null | awk '{print $2}')"
