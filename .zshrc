@@ -15,8 +15,15 @@ fi
 export PATH="$HOME/.local/bin:$PATH"
 
 # -- macOS: ensure Homebrew is in PATH (required on Apple Silicon without .zprofile)
+# cache init output to avoid forking brew + re-evaluating its full shellenv every startup
 if [[ "$OSTYPE" == darwin* ]] && [[ -x /opt/homebrew/bin/brew ]]; then
-  eval "$(/opt/homebrew/bin/brew shellenv)"
+  _brew_cache="${XDG_CACHE_HOME:-$HOME/.cache}/brew-shellenv.zsh"
+  if [[ ! -f "$_brew_cache" ]] || [[ /opt/homebrew/bin/brew -nt "$_brew_cache" ]]; then
+    mkdir -p "$(dirname "$_brew_cache")"
+    /opt/homebrew/bin/brew shellenv > "$_brew_cache" 2>/dev/null
+  fi
+  source "$_brew_cache"
+  unset _brew_cache
 fi
 
 # ─────────────────────────────────────────
